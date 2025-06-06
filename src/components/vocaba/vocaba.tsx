@@ -1,17 +1,21 @@
+'use client'; 
 
 import React from 'react';
 
 type Props = {
-  title: string;
+    width: number;
+    height: number;
 };
 
-const Vocaba: React.FC<Props> = ({ title }) => {
-  return (
-    <div>
-      <h2>{title}</h2>
-      <p>This is a vocaba component test.</p>
-    </div>
-  );
-};
+function Vocaba({ width, height }: Props) {
+    const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
 
+    return (
+        <canvas
+            ref={canvasRef}
+            width={width}
+            height={height}
+        />
+    );
+}
 export default Vocaba;
