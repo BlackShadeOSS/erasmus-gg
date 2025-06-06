@@ -9,7 +9,7 @@ export default function VocabaPage() {
     </head>
     <body>
         <p>Vocaba test</p>
-        <Vocaba title="test"></Vocaba>
+        <Vocaba width={100} height={100}></Vocaba>
     </body>
     </html>
   );
