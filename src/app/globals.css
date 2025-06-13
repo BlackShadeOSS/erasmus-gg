@@ -146,3 +146,8 @@
 body {
   font-family: var(--font-geist-sans), sans-serif;
 }
+
+html,
+body {
+  height: 100%;
+}
