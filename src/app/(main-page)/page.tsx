@@ -1,17 +1,35 @@
 import NavBar from "@/components/NavBar";
 import { LineShadowText } from "@/components/ui/line-shadow-text";
+import NoiseFilter from "@/components/NoiseFilter";
+import { DotPattern } from "@/components/ui/dot-pattern";
+import { cn } from "@/lib/utils";
+import GlowingCircle from "@/components/ui/glowing-circle";
 
 export default function Home() {
   return (
-    <div className="relative">
+    <div>
       <NavBar />
-
+      <GlowingCircle />
+      <GlowingCircle isRight={true} />
       <main>
         <section className="h-screen flex flex-col items-center justify-center">
           <h1 className="text-7xl w-full font-bold text-center text-white">
             Ucz się z <br />
-            <LineShadowText className="mx-2 italic">Vocenglish</LineShadowText>
+            <LineShadowText
+              className="mx-2 italic text-[#fdef7b]"
+              shadowColor="#fdef7b"
+            >
+              VocEnglish
+            </LineShadowText>
           </h1>
+          <div className="-z-10">
+            <DotPattern
+              glow={false}
+              className={cn(
+                "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)] opacity-50 -translate-y-1/20"
+              )}
+            />
+          </div>
         </section>
 
         <section className="bg-gray-100 text-gray-900 p-10">
@@ -30,6 +48,7 @@ export default function Home() {
           </div>
         </section>
       </main>
+      <NoiseFilter className="z-[-100]" />
     </div>
   );
 }
