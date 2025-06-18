@@ -89,6 +89,8 @@
   --sidebar-ring: oklch(0.708 0 0);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
+  --VocYellow: oklch(92.4% 0.12 95.746);
+  --VocYellowSelection: oklch(0.92 0.1 83 / 0.3);
 }
 
 .dark {
@@ -161,7 +163,7 @@ body {
   width: 300px;
   height: 300px;
   z-index: -50;
-  background: #000;
+
   filter: url(#noiseFilter);
   opacity: 15%;
   clip-path: url(#rounded-clip);
@@ -174,13 +176,17 @@ body::after {
   position: fixed;
   content: "";
   z-index: -1;
-  opacity: 5%;
+  opacity: 6%;
 }
 
 body::before {
-  background: #0c101b;
   filter: url(#noiseFilter);
   width: 100%;
   height: 100%;
   pointer-events: none;
+}
+
+body::selection {
+  background: var(--VocYellowSelection);
+  color: var(--VocYellow);
 }
