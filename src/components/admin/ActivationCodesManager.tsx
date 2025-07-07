@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,6 +16,8 @@ import {
     TableCell,
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/toast";
+import { adminCache, generateCacheKey } from "@/lib/admin-cache";
+import { DataStatusIndicator, type DataStatus } from "@/components/ui/data-status-indicator";
 
 interface ActivationCode {
     id: string;
@@ -45,6 +47,8 @@ const initialFormData: ActivationCodeFormData = {
 export default function ActivationCodesManager() {
     const [codes, setCodes] = useState<ActivationCode[]>([]);
     const [loading, setLoading] = useState(true);
+    const [backgroundLoading, setBackgroundLoading] = useState(false);
+    const [hasError, setHasError] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedStatus, setSelectedStatus] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -68,6 +72,7 @@ export default function ActivationCodesManager() {
     const fetchCodes = async () => {
         try {
             setLoading(true);
+            setHasError(false);
             const params = new URLSearchParams({
                 page: currentPage.toString(),
                 limit: limit.toString(),
@@ -83,13 +88,16 @@ export default function ActivationCodesManager() {
             if (response.ok && data.success) {
                 setCodes(data.codes);
                 setTotalPages(data.pagination?.totalPages || 1);
+                setHasError(false);
             } else {
+                setHasError(true);
                 showToast(
                     data.error || "Błąd podczas pobierania kodów aktywacyjnych",
                     "error"
                 );
             }
         } catch (error) {
+            setHasError(true);
             showToast("Błąd połączenia z serwerem", "error");
         } finally {
             setLoading(false);
@@ -217,13 +225,28 @@ export default function ActivationCodesManager() {
         <div className="space-y-6">
             {ToastComponent}
 
-            <div>
-                <h2 className="text-2xl font-bold text-neutral-100">
-                    Kody Aktywacyjne
-                </h2>
-                <p className="text-neutral-400 mt-2">
-                    Generuj i zarządzaj kodami aktywacyjnymi
-                </p>
+            <div className="flex items-center justify-between">
+                <div>
+                    <h2 className="text-2xl font-bold text-neutral-100">
+                        Kody Aktywacyjne
+                    </h2>
+                    <p className="text-neutral-400 mt-2">
+                        Generuj i zarządzaj kodami aktywacyjnymi
+                    </p>
+                </div>
+                <div className="flex items-center space-x-4">
+                    <DataStatusIndicator 
+                        status={
+                            hasError 
+                                ? "error" 
+                                : backgroundLoading 
+                                    ? "refreshing" 
+                                    : loading 
+                                        ? "loading" 
+                                        : "current"
+                        } 
+                    />
+                </div>
             </div>
 
             {/* Filters and Search */}
