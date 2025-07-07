@@ -133,19 +133,21 @@ export async function authenticateUser(username: string, password: string) {
 
 export async function validateActivationCode(code: string) {
   try {
-    console.log('=== ACTIVATION CODE VALIDATION START ===')
-    console.log('Input code analysis:', {
-      original: `"${code}"`,
-      length: code.length,
-      type: typeof code,
-      trimmed: `"${code.trim()}"`,
-      upperCase: `"${code.toUpperCase()}"`,
-      lowerCase: `"${code.toLowerCase()}"`,
-      hasWhitespace: /\s/.test(code),
-      charCodes: Array.from(code).map((c, i) => `${i}:"${c}"(${c.charCodeAt(0)})`),
-      isString: typeof code === 'string',
-      constructor: code.constructor.name
-    })
+    if (DEBUG) {
+      console.log('=== ACTIVATION CODE VALIDATION START ===');
+      console.log('Input code analysis:', {
+        original: `"${code}"`,
+        length: code.length,
+        type: typeof code,
+        trimmed: `"${code.trim()}"`,
+        upperCase: `"${code.toUpperCase()}"`,
+        lowerCase: `"${code.toLowerCase()}"`,
+        hasWhitespace: /\s/.test(code),
+        charCodes: Array.from(code).map((c, i) => `${i}:"${c}"(${c.charCodeAt(0)})`),
+        isString: typeof code === 'string',
+        constructor: code.constructor.name
+      });
+    }
     
     // Get all activation codes for comparison
     const { data: allCodes, error: allError } = await supabaseAdmin
