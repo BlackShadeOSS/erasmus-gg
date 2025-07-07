@@ -1,14 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
-import { hashPassword, createToken, setAuthCookie } from '@/lib/auth'
+import { registerUser, verifyTurnstileToken, createToken, setAuthCookie } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
-    const { username, password, confirmPassword, activationCode, turnstileToken } = await request.json()
+    console.log('=== REGISTRATION REQUEST START ===')
+    const body = await request.json()
+    console.log('Raw request body:', body)
+    
+    const { username, email, password, confirmPassword, activationCode, turnstileToken } = body
 
-    if (!username || !password || !confirmPassword || !activationCode || !turnstileToken) {
+    // Debug logging with detailed character analysis
+    console.log('Parsed registration data:', {
+      username: username || 'MISSING',
+      email: email || 'MISSING',
+      activationCode: activationCode ? {
+        value: `"${activationCode}"`,
+        length: activationCode.length,
+        type: typeof activationCode,
+        chars: activationCode.split('').map((c: string, i: number) => `${i}:"${c}"(${c.charCodeAt(0)})`),
+        trimmed: `"${activationCode.trim()}"`,
+        upperCase: `"${activationCode.toUpperCase()}"`,
+        hasWhitespace: /\s/.test(activationCode)
+      } : 'MISSING',
+      turnstileToken: turnstileToken ? 'PROVIDED' : 'MISSING',
+      allBodyKeys: Object.keys(body)
+    })
+
+    if (!username || !email || !password || !confirmPassword || !activationCode || !turnstileToken) {
+      const missing = []
+      if (!username) missing.push('username')
+      if (!email) missing.push('email')
+      if (!password) missing.push('password')
+      if (!confirmPassword) missing.push('confirmPassword')
+      if (!activationCode) missing.push('activationCode')
+      if (!turnstileToken) missing.push('turnstileToken')
+      
+      console.log('Missing fields:', missing)
       return NextResponse.json(
-        { error: 'All fields are required' },
+        { error: `Missing required fields: ${missing.join(', ')}` },
         { status: 400 }
       )
     }
@@ -20,142 +49,87 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    if (password.length < 8) {
+      return NextResponse.json(
+        { error: 'Password must be at least 8 characters long' },
+        { status: 400 }
+      )
+    }
+
     // Verify Turnstile token
-    const turnstileResponse = await fetch(
-      'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          secret: process.env.TURNSTILE_SECRET_KEY!,
-          response: turnstileToken,
-        }),
-      }
-    )
-
-    const turnstileData = await turnstileResponse.json()
+    console.log('=== TURNSTILE VERIFICATION ===')
+    console.log('Turnstile token provided:', turnstileToken ? 'YES' : 'NO')
+    console.log('About to verify Turnstile token...')
     
-    if (!turnstileData.success) {
+    const isTurnstileValid = await verifyTurnstileToken(turnstileToken)
+    console.log('Turnstile verification result:', isTurnstileValid)
+    
+    if (!isTurnstileValid) {
+      console.log('FAILURE: CAPTCHA verification failed')
       return NextResponse.json(
-        { error: 'CAPTCHA verification failed' },
+        { error: 'Captcha verification failed' },
         { status: 400 }
       )
     }
 
-    // Validate activation code
-    const { data: activationCodeData, error: activationError } = await supabase
-      .from('activation_codes')
-      .select('*')
-      .eq('code', activationCode)
-      .eq('status', 'active')
-      .single()
+    console.log('SUCCESS: CAPTCHA verification passed')
 
-    if (activationError || !activationCodeData) {
+    // Register user
+    console.log('=== USER REGISTRATION START ===')
+    console.log('About to call registerUser with activation code:', `"${activationCode}"`)
+    console.log('Activation code character analysis:', {
+      raw: activationCode,
+      quoted: `"${activationCode}"`,
+      length: activationCode.length,
+      trimmed: activationCode.trim(),
+      chars: activationCode.split('').map((c: string, i: number) => `${i}:"${c}"(${c.charCodeAt(0)})`)
+    })
+    
+    const registerResult = await registerUser(username, email, password, activationCode)
+    
+    console.log('=== REGISTRATION RESULT ===')
+    console.log('Registration result:', {
+      success: registerResult.success,
+      error: registerResult.error,
+      user: registerResult.success ? 'USER_CREATED' : 'NO_USER'
+    })
+    
+    if (!registerResult.success) {
+      console.log('FAILURE: Registration failed with error:', registerResult.error)
       return NextResponse.json(
-        { error: 'Invalid activation code' },
+        { error: registerResult.error },
         { status: 400 }
       )
     }
 
-    // Check if activation code has expired
-    if (activationCodeData.expires_at && new Date(activationCodeData.expires_at) < new Date()) {
-      await supabase
-        .from('activation_codes')
-        .update({ status: 'expired' })
-        .eq('id', activationCodeData.id)
-      
-      return NextResponse.json(
-        { error: 'Activation code has expired' },
-        { status: 400 }
-      )
-    }
-
-    // Check if activation code has reached max uses
-    if (activationCodeData.used_count >= activationCodeData.max_uses) {
-      await supabase
-        .from('activation_codes')
-        .update({ status: 'used' })
-        .eq('id', activationCodeData.id)
-      
-      return NextResponse.json(
-        { error: 'Activation code has been used' },
-        { status: 400 }
-      )
-    }
-
-    // Check if username already exists
-    const { data: existingUser } = await supabase
-      .from('users')
-      .select('id')
-      .eq('username', username)
-      .single()
-
-    if (existingUser) {
-      return NextResponse.json(
-        { error: 'Username already exists' },
-        { status: 400 }
-      )
-    }
-
-    // Hash password
-    const hashedPassword = await hashPassword(password)
-
-    // Create user
-    const { data: newUser, error: userError } = await supabase
-      .from('users')
-      .insert({
-        username,
-        email: username + '@vocenglish.com', // Temporary email
-        password_hash: hashedPassword,
-        activation_code_id: activationCodeData.id,
-        role: 'student'
-      })
-      .select()
-      .single()
-
-    if (userError) {
-      return NextResponse.json(
-        { error: 'Failed to create user' },
-        { status: 500 }
-      )
-    }
-
-    // Update activation code usage
-    await supabase
-      .from('activation_codes')
-      .update({ 
-        used_count: activationCodeData.used_count + 1,
-        ...(activationCodeData.used_count + 1 >= activationCodeData.max_uses && { status: 'used' })
-      })
-      .eq('id', activationCodeData.id)
+    console.log('SUCCESS: User registration completed')
 
     // Create JWT token
+    console.log('=== TOKEN CREATION ===')
+    console.log('Creating JWT token for user:', registerResult.user.username)
+    
     const token = await createToken({
-      id: newUser.id,
-      username: newUser.username,
-      email: newUser.email,
-      role: newUser.role,
-      fullName: newUser.full_name,
-      selectedProfessionId: newUser.selected_profession_id
+      id: registerResult.user.id,
+      username: registerResult.user.username,
+      email: registerResult.user.email,
+      role: registerResult.user.role,
+      fullName: registerResult.user.full_name,
+      selectedProfessionId: registerResult.user.selected_profession_id
     })
-
-    // Set cookie
+    
+    console.log('JWT token created:', token ? 'YES' : 'NO')
+    
+    // Set auth cookie using the same method as login
     await setAuthCookie(token)
+    
+    console.log('=== REGISTRATION COMPLETE SUCCESS ===')
+    console.log('Redirecting to:', '/dashboard')
 
-    return NextResponse.json({
-      success: true,
-      user: {
-        id: newUser.id,
-        username: newUser.username,
-        email: newUser.email,
-        role: newUser.role,
-        fullName: newUser.full_name,
-        selectedProfessionId: newUser.selected_profession_id
-      }
+    return NextResponse.json({ 
+      success: true, 
+      user: registerResult.user,
+      redirectTo: '/dashboard'
     })
-
   } catch (error) {
     console.error('Registration error:', error)
     return NextResponse.json(

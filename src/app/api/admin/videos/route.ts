@@ -17,44 +17,47 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '10')
     const search = searchParams.get('search') || ''
-    const status = searchParams.get('status') || ''
+    const professionId = searchParams.get('professionId') || ''
 
     const offset = (page - 1) * limit
 
     // Build query
     let query = supabaseAdmin
-      .from('activation_codes')
-      .select('*')
+      .from('videos')
+      .select(`
+        *,
+        profession:professions(id, name, name_en)
+      `)
       .order('created_at', { ascending: false })
 
     // Apply filters
     if (search) {
-      query = query.or(`code.ilike.%${search}%,description.ilike.%${search}%`)
+      query = query.or(`title_en.ilike.%${search}%,title_pl.ilike.%${search}%,description_en.ilike.%${search}%,description_pl.ilike.%${search}%`)
     }
 
-    if (status) {
-      query = query.eq('status', status)
+    if (professionId) {
+      query = query.eq('profession_id', professionId)
     }
 
     // Get total count for pagination
     const { count } = await supabaseAdmin
-      .from('activation_codes')
+      .from('videos')
       .select('*', { count: 'exact', head: true })
 
     // Get paginated data
-    const { data: codes, error } = await query
+    const { data: videos, error } = await query
       .range(offset, offset + limit - 1)
 
     if (error) {
       return NextResponse.json(
-        { error: 'Failed to fetch activation codes' },
+        { error: 'Failed to fetch videos' },
         { status: 500 }
       )
     }
 
     return NextResponse.json({
       success: true,
-      codes,
+      videos,
       pagination: {
         page,
         limit,
@@ -64,7 +67,7 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Admin activation codes error:', error)
+    console.error('Admin videos error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -83,37 +86,59 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { description, maxUses, expiresAt } = await request.json()
+    const {
+      profession_id,
+      title_en,
+      title_pl,
+      description_en,
+      description_pl,
+      video_url,
+      thumbnail_url,
+      duration,
+      difficulty_level
+    } = await request.json()
 
-    // Generate a random 8-character code
-    const code = Math.random().toString(36).substring(2, 10).toUpperCase()
+    if (!profession_id || !title_en || !title_pl || !video_url) {
+      return NextResponse.json(
+        { error: 'Required fields: profession_id, title_en, title_pl, video_url' },
+        { status: 400 }
+      )
+    }
 
-    const { data: newCode, error } = await supabaseAdmin
-      .from('activation_codes')
+    const { data: newVideo, error } = await supabaseAdmin
+      .from('videos')
       .insert({
-        code,
-        description,
-        max_uses: maxUses,
-        expires_at: expiresAt || null,
-        created_by: user.id
+        profession_id,
+        title_en,
+        title_pl,
+        description_en,
+        description_pl,
+        video_url,
+        thumbnail_url,
+        duration,
+        difficulty_level: difficulty_level || 1,
+        is_active: true
       })
-      .select()
+      .select(`
+        *,
+        profession:professions(id, name, name_en)
+      `)
       .single()
 
     if (error) {
       return NextResponse.json(
-        { error: 'Failed to create activation code' },
+        { error: 'Failed to create video' },
         { status: 500 }
       )
     }
 
     return NextResponse.json({
       success: true,
-      code: newCode
+      video: newVideo
     })
 
   } catch (error) {
-    console.error('Admin create activation code error:', error)
+    console.error('Admin create video error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -132,41 +157,62 @@ export async function PUT(request: NextRequest) {
       )
     }
 
-    const { id, description, maxUses, expiresAt, status } = await request.json()
+    const {
+      id,
+      profession_id,
+      title_en,
+      title_pl,
+      description_en,
+      description_pl,
+      video_url,
+      thumbnail_url,
+      duration,
+      difficulty_level,
+      is_active
+    } = await request.json()
 
     if (!id) {
       return NextResponse.json(
-        { error: 'Code ID is required' },
+        { error: 'Video ID is required' },
         { status: 400 }
       )
     }
 
-    const { data: updatedCode, error } = await supabaseAdmin
-      .from('activation_codes')
+    const { data: updatedVideo, error } = await supabaseAdmin
+      .from('videos')
       .update({
-        description,
-        max_uses: maxUses,
-        expires_at: expiresAt || null,
-        status: status || 'active'
+        profession_id,
+        title_en,
+        title_pl,
+        description_en,
+        description_pl,
+        video_url,
+        thumbnail_url,
+        duration,
+        difficulty_level: difficulty_level || 1,
+        is_active
       })
       .eq('id', id)
-      .select()
+      .select(`
+        *,
+        profession:professions(id, name, name_en)
+      `)
       .single()
 
     if (error) {
       return NextResponse.json(
-        { error: 'Failed to update activation code' },
+        { error: 'Failed to update video' },
         { status: 500 }
       )
     }
 
     return NextResponse.json({
       success: true,
-      code: updatedCode
+      video: updatedVideo
     })
 
   } catch (error) {
-    console.error('Admin update activation code error:', error)
+    console.error('Admin update video error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -190,30 +236,30 @@ export async function DELETE(request: NextRequest) {
 
     if (!id) {
       return NextResponse.json(
-        { error: 'Code ID is required' },
+        { error: 'Video ID is required' },
         { status: 400 }
       )
     }
 
     const { error } = await supabaseAdmin
-      .from('activation_codes')
+      .from('videos')
       .delete()
       .eq('id', id)
 
     if (error) {
       return NextResponse.json(
-        { error: 'Failed to delete activation code' },
+        { error: 'Failed to delete video' },
         { status: 500 }
       )
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Activation code deleted successfully'
+      message: 'Video deleted successfully'
     })
 
   } catch (error) {
-    console.error('Admin delete activation code error:', error)
+    console.error('Admin delete video error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

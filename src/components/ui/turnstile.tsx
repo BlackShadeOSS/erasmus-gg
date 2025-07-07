@@ -1,11 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+    useEffect,
+    useRef,
+    useState,
+    forwardRef,
+    useImperativeHandle,
+} from "react";
 
 interface TurnstileProps {
     onVerify: (token: string) => void;
     onError?: () => void;
     onExpire?: () => void;
+}
+
+export interface TurnstileRef {
+    reset: () => void;
 }
 
 declare global {
@@ -33,16 +43,28 @@ let scriptLoaded = false;
 let scriptLoading = false;
 const scriptLoadCallbacks: (() => void)[] = [];
 
-export default function Turnstile({
-    onVerify,
-    onError,
-    onExpire,
-}: TurnstileProps) {
+const Turnstile = forwardRef<TurnstileRef, TurnstileProps>(function Turnstile(
+    { onVerify, onError, onExpire },
+    ref
+) {
     const containerRef = useRef<HTMLDivElement>(null);
     const widgetIdRef = useRef<string | undefined>(undefined);
     const callbacksRef = useRef({ onVerify, onError, onExpire });
     const mountedRef = useRef(true);
     const [isReady, setIsReady] = useState(false);
+
+    // Expose reset method to parent
+    useImperativeHandle(ref, () => ({
+        reset: () => {
+            if (widgetIdRef.current && window.turnstile) {
+                try {
+                    window.turnstile.reset(widgetIdRef.current);
+                } catch (error) {
+                    console.error("Failed to reset Turnstile:", error);
+                }
+            }
+        },
+    }));
 
     // Update callbacks ref when props change
     callbacksRef.current = { onVerify, onError, onExpire };
@@ -204,4 +226,6 @@ export default function Turnstile({
             )}
         </div>
     );
-}
+});
+
+export default Turnstile;

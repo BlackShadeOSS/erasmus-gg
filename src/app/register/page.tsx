@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import Turnstile from "@/components/ui/turnstile";
+import Turnstile, { TurnstileRef } from "@/components/ui/turnstile";
 import { LineShadowText } from "@/components/ui/line-shadow-text";
 import NoiseFilter from "@/components/NoiseFilter";
 
@@ -24,6 +24,7 @@ import Link from "next/link";
 export default function RegisterPage() {
     const [formData, setFormData] = useState({
         username: "",
+        email: "",
         password: "",
         confirmPassword: "",
         activationCode: "",
@@ -32,6 +33,7 @@ export default function RegisterPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const router = useRouter();
+    const turnstileRef = useRef<TurnstileRef>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -51,6 +53,16 @@ export default function RegisterPage() {
         }
 
         try {
+            console.log("Submitting registration with data:", {
+                username: formData.username,
+                email: formData.email,
+                activationCode: formData.activationCode,
+                activationCodeLength: formData.activationCode.length,
+                turnstileToken: formData.turnstileToken
+                    ? "PROVIDED"
+                    : "MISSING",
+            });
+
             const response = await fetch("/api/auth/register", {
                 method: "POST",
                 headers: {
@@ -65,10 +77,16 @@ export default function RegisterPage() {
                 router.push(data.redirectTo);
             } else {
                 setError(data.error || "Registration failed");
+                // Reset Turnstile on error so user can try again
+                turnstileRef.current?.reset();
+                setFormData((prev) => ({ ...prev, turnstileToken: "" }));
             }
         } catch (error) {
             console.error("Registration error:", error);
             setError("An error occurred. Please try again.");
+            // Reset Turnstile on error so user can try again
+            turnstileRef.current?.reset();
+            setFormData((prev) => ({ ...prev, turnstileToken: "" }));
         } finally {
             setIsLoading(false);
         }
@@ -81,6 +99,7 @@ export default function RegisterPage() {
     const handleTurnstileError = () => {
         setError("Captcha verification failed");
         setFormData((prev) => ({ ...prev, turnstileToken: "" }));
+        // Reset will be handled automatically by Turnstile on error
     };
 
     return (
@@ -131,6 +150,22 @@ export default function RegisterPage() {
                                 />
                             </div>
                             <div className="space-y-2">
+                                <Label htmlFor="email">Email</Label>
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    value={formData.email}
+                                    onChange={(e) =>
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            email: e.target.value,
+                                        }))
+                                    }
+                                    required
+                                    disabled={isLoading}
+                                />
+                            </div>
+                            <div className="space-y-2">
                                 <Label htmlFor="password">Hasło</Label>
                                 <Input
                                     id="password"
@@ -174,12 +209,30 @@ export default function RegisterPage() {
                                     id="activationCode"
                                     type="text"
                                     value={formData.activationCode}
-                                    onChange={(e) =>
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        console.log(
+                                            "Activation code input changed:",
+                                            {
+                                                value: value,
+                                                rawValue: `"${value}"`,
+                                                length: value.length,
+                                                hasWhitespace: /\s/.test(value),
+                                                charCodes: value
+                                                    .split("")
+                                                    .map(
+                                                        (c, i) =>
+                                                            `${i}:"${c}"(${c.charCodeAt(
+                                                                0
+                                                            )})`
+                                                    ),
+                                            }
+                                        );
                                         setFormData((prev) => ({
                                             ...prev,
-                                            activationCode: e.target.value,
-                                        }))
-                                    }
+                                            activationCode: value,
+                                        }));
+                                    }}
                                     required
                                     disabled={isLoading}
                                 />
@@ -187,6 +240,7 @@ export default function RegisterPage() {
 
                             <div className="space-y-2">
                                 <Turnstile
+                                    ref={turnstileRef}
                                     onVerify={handleTurnstileVerify}
                                     onError={handleTurnstileError}
                                 />

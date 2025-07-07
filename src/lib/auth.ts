@@ -133,28 +133,102 @@ export async function authenticateUser(username: string, password: string) {
 
 export async function validateActivationCode(code: string) {
   try {
-    const { data: activationCode, error } = await supabaseAdmin
+    console.log('=== ACTIVATION CODE VALIDATION START ===')
+    console.log('Input code analysis:', {
+      original: `"${code}"`,
+      length: code.length,
+      type: typeof code,
+      trimmed: `"${code.trim()}"`,
+      upperCase: `"${code.toUpperCase()}"`,
+      lowerCase: `"${code.toLowerCase()}"`,
+      hasWhitespace: /\s/.test(code),
+      charCodes: Array.from(code).map((c, i) => `${i}:"${c}"(${c.charCodeAt(0)})`),
+      isString: typeof code === 'string',
+      constructor: code.constructor.name
+    })
+    
+    // Get all activation codes for comparison
+    const { data: allCodes, error: allError } = await supabaseAdmin
+      .from('activation_codes')
+      .select('code, status, id')
+      .eq('status', 'active')
+    
+    console.log('All active codes in database:', allCodes?.map(c => ({
+      id: c.id,
+      code: `"${c.code}"`,
+      length: c.code.length,
+      charCodes: c.code.split('').map((char: string, i: number) => `${i}:"${char}"(${char.charCodeAt(0)})`)
+    })))
+    
+    // Try exact match
+    console.log('Attempting exact match query...')
+    const { data: exactMatch, error: exactError } = await supabaseAdmin
       .from('activation_codes')
       .select('*')
       .eq('code', code)
       .eq('status', 'active')
       .single()
 
-    if (error || !activationCode) {
-      return { success: false, error: 'Invalid activation code' }
+    console.log('Exact match result:', { 
+      found: !!exactMatch,
+      data: exactMatch,
+      error: exactError ? { 
+        message: exactError.message, 
+        code: exactError.code, 
+        details: exactError.details 
+      } : null 
+    })
+
+    // Try trimmed version
+    const trimmedCode = code.trim()
+    if (trimmedCode !== code) {
+      console.log('Trying trimmed version:', `"${trimmedCode}"`)
+      const { data: trimmedMatch, error: trimmedError } = await supabaseAdmin
+        .from('activation_codes')
+        .select('*')
+        .eq('code', trimmedCode)
+        .eq('status', 'active')
+        .single()
+      
+      console.log('Trimmed match result:', { found: !!trimmedMatch, error: trimmedError })
+      
+      if (trimmedMatch) {
+        console.log('SUCCESS: Found match with trimmed code')
+        return { success: true, activationCode: trimmedMatch }
+      }
     }
 
-    // Check if code has expired
-    if (activationCode.expires_at && new Date(activationCode.expires_at) < new Date()) {
-      return { success: false, error: 'Activation code has expired' }
+    // Try case-insensitive search
+    console.log('Trying case-insensitive search...')
+    const { data: caseInsensitive, error: caseError } = await supabaseAdmin
+      .from('activation_codes')
+      .select('*')
+      .ilike('code', code)
+      .eq('status', 'active')
+    
+    console.log('Case-insensitive search result:', caseInsensitive)
+
+    if (exactMatch) {
+      console.log('SUCCESS: Found exact match, checking additional constraints...')
+      
+      // Check if code has expired
+      if (exactMatch.expires_at && new Date(exactMatch.expires_at) < new Date()) {
+        console.log('FAILURE: Activation code has expired')
+        return { success: false, error: 'Activation code has expired' }
+      }
+
+      // Check if code has reached max uses
+      if (exactMatch.used_count >= exactMatch.max_uses) {
+        console.log('FAILURE: Activation code has reached maximum uses')
+        return { success: false, error: 'Activation code has reached maximum uses' }
+      }
+
+      console.log('SUCCESS: All validation checks passed')
+      return { success: true, activationCode: exactMatch }
     }
 
-    // Check if code has reached max uses
-    if (activationCode.used_count >= activationCode.max_uses) {
-      return { success: false, error: 'Activation code has reached maximum uses' }
-    }
-
-    return { success: true, activationCode }
+    console.log('FAILURE: No matching activation code found')
+    return { success: false, error: 'Invalid activation code' }
   } catch (error) {
     console.error('Activation code validation error:', error)
     return { success: false, error: 'Validation failed' }
@@ -168,9 +242,20 @@ export async function registerUser(
   activationCode: string
 ) {
   try {
+    console.log('registerUser called with:', {
+      username,
+      email,
+      activationCode: `"${activationCode}"`,
+      activationCodeLength: activationCode.length
+    })
+    
     // Validate activation code
+    console.log('Validating activation code...')
     const codeValidation = await validateActivationCode(activationCode)
+    console.log('Code validation result:', codeValidation)
+    
     if (!codeValidation.success) {
+      console.log('Code validation failed:', codeValidation.error)
       return { success: false, error: codeValidation.error }
     }
 
@@ -239,5 +324,29 @@ export async function verifyTurnstileToken(token: string): Promise<boolean> {
   } catch (error) {
     console.error('Turnstile verification error:', error)
     return false
+  }
+}
+
+export async function verifyAdminAuth(request: NextRequest): Promise<{
+  isValid: boolean;
+  user: UserSession | null;
+}> {
+  try {
+    const token = request.cookies.get('auth-token')?.value;
+    
+    if (!token) {
+      return { isValid: false, user: null };
+    }
+
+    const user = await verifyToken(token);
+    
+    if (!user || user.role !== 'admin') {
+      return { isValid: false, user: null };
+    }
+
+    return { isValid: true, user };
+  } catch (error) {
+    console.error('Admin auth verification error:', error);
+    return { isValid: false, user: null };
   }
 }
