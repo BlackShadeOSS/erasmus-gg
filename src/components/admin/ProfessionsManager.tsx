@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +15,8 @@ import {
     TableCell,
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/toast";
+import { adminCache, generateCacheKey } from "@/lib/admin-cache";
+import { DataStatusIndicator, type DataStatus } from "@/components/ui/data-status-indicator";
 
 interface Profession {
     id: string;
@@ -42,6 +44,8 @@ const initialFormData: ProfessionFormData = {
 export default function ProfessionsManager() {
     const [professions, setProfessions] = useState<Profession[]>([]);
     const [loading, setLoading] = useState(true);
+    const [backgroundLoading, setBackgroundLoading] = useState(false);
+    const [hasError, setHasError] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedStatus, setSelectedStatus] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -60,41 +64,109 @@ export default function ProfessionsManager() {
     });
     const { showToast, ToastComponent } = useToast();
 
+    // Refs for tracking ongoing requests to prevent race conditions
+    const abortControllerRef = useRef<AbortController | null>(null);
+
     const limit = 10;
 
-    // Fetch professions data
-    const fetchProfessions = async () => {
-        try {
-            setLoading(true);
-            const params = new URLSearchParams({
-                page: currentPage.toString(),
-                limit: limit.toString(),
-                ...(searchTerm && { search: searchTerm }),
-                ...(selectedStatus && { status: selectedStatus }),
-            });
+    // Fetch professions data with caching
+    const fetchProfessions = useCallback(
+        async (forceRefresh = false) => {
+            const params = {
+                page: currentPage,
+                limit,
+                search: searchTerm,
+                status: selectedStatus,
+            };
 
-            const response = await fetch(`/api/admin/professions?${params}`);
-            const data = await response.json();
+            const cacheKey = generateCacheKey("professions", params);
 
-            if (response.ok && data.success) {
-                setProfessions(data.professions);
-                setTotalPages(data.pagination?.totalPages || 1);
-            } else {
-                showToast(
-                    data.error || "Błąd podczas pobierania zawodów",
-                    "error"
-                );
+            // Check cache first
+            if (!forceRefresh) {
+                const cachedData = adminCache.get<{
+                    professions: Profession[];
+                    pagination: any;
+                }>(cacheKey);
+                if (cachedData) {
+                    setProfessions(cachedData.professions);
+                    setTotalPages(cachedData.pagination?.totalPages || 1);
+                    setLoading(false);
+
+                    // Schedule background refresh if stale
+                    if (adminCache.isStale(cacheKey)) {
+                        setBackgroundLoading(true);
+                        setTimeout(() => fetchProfessions(true), 100);
+                    }
+                    return;
+                }
             }
-        } catch (error) {
-            showToast("Błąd połączenia z serwerem", "error");
-        } finally {
-            setLoading(false);
-        }
-    };
 
+            try {
+                // Cancel previous request
+                if (abortControllerRef.current) {
+                    abortControllerRef.current.abort();
+                }
+                abortControllerRef.current = new AbortController();
+
+                if (!forceRefresh) setLoading(true);
+
+                const urlParams = new URLSearchParams();
+                Object.entries(params).forEach(([key, value]) => {
+                    if (value) urlParams.append(key, value.toString());
+                });
+
+                const response = await fetch(
+                    `/api/admin/professions?${urlParams}`,
+                    {
+                        signal: abortControllerRef.current.signal,
+                    }
+                );
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    setProfessions(data.professions);
+                    setTotalPages(data.pagination?.totalPages || 1);
+
+                    // Cache the result
+                    adminCache.set(cacheKey, {
+                        professions: data.professions,
+                        pagination: data.pagination,
+                    });
+                } else {
+                    showToast(
+                        data.error || "Błąd podczas pobierania zawodów",
+                        "error"
+                    );
+                }
+            } catch (error: any) {
+                if (error.name !== "AbortError") {
+                    showToast("Błąd połączenia z serwerem", "error");
+                }
+            } finally {
+                setLoading(false);
+                setBackgroundLoading(false);
+            }
+        },
+        [currentPage, searchTerm, selectedStatus, showToast]
+    );
+
+    // Debounced effect for data fetching
     useEffect(() => {
-        fetchProfessions();
-    }, [currentPage, searchTerm, selectedStatus]);
+        const timeoutId = setTimeout(() => {
+            fetchProfessions();
+        }, 300); // 300ms debounce
+
+        return () => clearTimeout(timeoutId);
+    }, [fetchProfessions]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+        };
+    }, []);
 
     // Handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
@@ -133,7 +205,10 @@ export default function ProfessionsManager() {
                 setIsModalOpen(false);
                 setEditingProfession(null);
                 setFormData(initialFormData);
-                fetchProfessions();
+
+                // Invalidate cache and refresh data
+                adminCache.invalidate("professions");
+                fetchProfessions(true);
             } else {
                 showToast(data.error || "Błąd podczas zapisywania", "error");
             }
@@ -156,7 +231,10 @@ export default function ProfessionsManager() {
 
             if (response.ok) {
                 showToast("Zawód został usunięty", "success");
-                fetchProfessions();
+
+                // Invalidate cache and refresh data
+                adminCache.invalidate("professions");
+                fetchProfessions(true);
             } else {
                 showToast(data.error || "Błąd podczas usuwania", "error");
             }
@@ -188,11 +266,28 @@ export default function ProfessionsManager() {
         <div className="space-y-6">
             {ToastComponent}
 
-            <div>
-                <h2 className="text-2xl font-bold text-neutral-100">Zawody</h2>
-                <p className="text-neutral-400 mt-2">
-                    Zarządzaj kategoriami zawodowymi
-                </p>
+            <div className="flex items-center justify-between">
+                <div>
+                    <h2 className="text-2xl font-bold text-neutral-100">
+                        Zawody
+                    </h2>
+                    <p className="text-neutral-400 mt-2">
+                        Zarządzaj kategoriami zawodowymi
+                    </p>
+                </div>
+                <div className="flex items-center space-x-4">
+                    <DataStatusIndicator 
+                        status={
+                            hasError 
+                                ? "error" 
+                                : backgroundLoading 
+                                    ? "refreshing" 
+                                    : loading 
+                                        ? "loading" 
+                                        : "current"
+                        } 
+                    />
+                </div>
             </div>
 
             {/* Filters and Search */}

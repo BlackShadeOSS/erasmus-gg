@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
         const limit = parseInt(searchParams.get("limit") || "10");
         const search = searchParams.get("search") || "";
         const categoryId = searchParams.get("categoryId") || "";
+        const professionId = searchParams.get("professionId") || "";
         const difficultyLevel = searchParams.get("difficultyLevel") || "";
 
         const offset = (page - 1) * limit;
@@ -43,14 +44,60 @@ export async function GET(request: NextRequest) {
             query = query.eq("category_id", categoryId);
         }
 
+        if (professionId) {
+            // Filter by profession through category relationship
+            // First get category IDs for the profession
+            const { data: professionCategories } = await supabaseAdmin
+                .from("vocabulary_categories")
+                .select("id")
+                .eq("profession_id", professionId);
+            
+            if (professionCategories && professionCategories.length > 0) {
+                const categoryIds = professionCategories.map(cat => cat.id);
+                query = query.in("category_id", categoryIds);
+            } else {
+                // No categories for this profession, return empty result
+                query = query.eq("category_id", "00000000-0000-0000-0000-000000000000"); // impossible UUID
+            }
+        }
+
         if (difficultyLevel) {
             query = query.eq("difficulty_level", parseInt(difficultyLevel));
         }
 
-        // Get total count for pagination
-        const { count } = await supabaseAdmin
+        // Get total count for pagination (with same filters)
+        let countQuery = supabaseAdmin
             .from("vocabulary")
             .select("*", { count: "exact", head: true });
+
+        if (search) {
+            countQuery = countQuery.or(`term_en.ilike.%${search}%,term_pl.ilike.%${search}%,definition_en.ilike.%${search}%,definition_pl.ilike.%${search}%`);
+        }
+
+        if (categoryId) {
+            countQuery = countQuery.eq("category_id", categoryId);
+        }
+
+        if (professionId) {
+            // Apply same profession filter for count
+            const { data: professionCategories } = await supabaseAdmin
+                .from("vocabulary_categories")
+                .select("id")
+                .eq("profession_id", professionId);
+            
+            if (professionCategories && professionCategories.length > 0) {
+                const categoryIds = professionCategories.map(cat => cat.id);
+                countQuery = countQuery.in("category_id", categoryIds);
+            } else {
+                countQuery = countQuery.eq("category_id", "00000000-0000-0000-0000-000000000000");
+            }
+        }
+
+        if (difficultyLevel) {
+            countQuery = countQuery.eq("difficulty_level", parseInt(difficultyLevel));
+        }
+
+        const { count } = await countQuery;
 
         // Get paginated data
         const { data: vocabulary, error } = await query
