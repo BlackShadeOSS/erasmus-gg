@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -21,7 +21,8 @@ import VideosManager from "./VideosManager";
 import GamesManager from "./GamesManager";
 import UsersManager from "./UsersManager";
 import ActivationCodesManager from "./ActivationCodesManager";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { BarChart, DonutChart } from "@/components/ui/charts";
 
 interface AdminDashboardProps {
     user: UserSession;
@@ -36,10 +37,48 @@ type AdminSection =
     | "videos"
     | "games";
 
+// Create context for section change handler
+const SectionChangeContext = createContext<
+    ((section: AdminSection) => void) | null
+>(null);
+
 export default function AdminDashboard({ user }: AdminDashboardProps) {
-    const [activeSection, setActiveSection] =
-        useState<AdminSection>("overview");
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    // Get section from URL params, default to "overview"
+    const sectionFromUrl = searchParams.get("section") as AdminSection;
+    const validSections: AdminSection[] = [
+        "overview",
+        "users",
+        "activation-codes",
+        "professions",
+        "vocabulary",
+        "videos",
+        "games",
+    ];
+    const [activeSection, setActiveSection] = useState<AdminSection>(
+        validSections.includes(sectionFromUrl) ? sectionFromUrl : "overview"
+    );
+
+    // Update URL when section changes
+    const handleSectionChange = (section: AdminSection) => {
+        setActiveSection(section);
+        const url = new URL(window.location.href);
+        url.searchParams.set("section", section);
+        router.replace(url.pathname + url.search);
+    };
+
+    // Sync activeSection with URL params on mount and when URL changes
+    useEffect(() => {
+        const urlSection = searchParams.get("section") as AdminSection;
+        if (
+            validSections.includes(urlSection) &&
+            urlSection !== activeSection
+        ) {
+            setActiveSection(urlSection);
+        }
+    }, [searchParams, activeSection]);
 
     const handleLogout = async () => {
         try {
@@ -65,7 +104,11 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
     const renderContent = () => {
         switch (activeSection) {
             case "overview":
-                return <AdminOverview />;
+                return (
+                    <SectionChangeContext.Provider value={handleSectionChange}>
+                        <AdminOverview />
+                    </SectionChangeContext.Provider>
+                );
             case "users":
                 return <UsersManager />;
             case "activation-codes":
@@ -79,7 +122,11 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
             case "games":
                 return <GamesManager />;
             default:
-                return <AdminOverview />;
+                return (
+                    <SectionChangeContext.Provider value={handleSectionChange}>
+                        <AdminOverview />
+                    </SectionChangeContext.Provider>
+                );
         }
     };
 
@@ -124,7 +171,7 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
                                         : "text-stone-300 hover:text-white hover:bg-neutral-800"
                                 )}
                                 onClick={() =>
-                                    setActiveSection(item.id as AdminSection)
+                                    handleSectionChange(item.id as AdminSection)
                                 }
                             >
                                 <span className="mr-2">{item.icon}</span>
@@ -165,6 +212,92 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
 }
 
 function AdminOverview() {
+    const [stats, setStats] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    const handleSectionChange = useContext(SectionChangeContext);
+
+    useEffect(() => {
+        fetchStats();
+    }, []);
+
+    const fetchStats = async () => {
+        try {
+            const response = await fetch("/api/admin/stats");
+            const data = await response.json();
+            if (data.success) {
+                setStats(data.stats);
+            }
+        } catch (error) {
+            console.error("Failed to fetch stats:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const overviewCards = [
+        {
+            id: "users",
+            icon: "👥",
+            title: "Użytkownicy",
+            description: "Zarządzaj kontami użytkowników i uprawnieniami",
+            section: "users" as AdminSection,
+        },
+        {
+            id: "activation-codes",
+            icon: "🔑",
+            title: "Kody Aktywacyjne",
+            description: "Generuj i zarządzaj kodami aktywacyjnymi",
+            section: "activation-codes" as AdminSection,
+        },
+        {
+            id: "professions",
+            icon: "💼",
+            title: "Zawody",
+            description: "Zarządzaj kategoriami zawodowymi",
+            section: "professions" as AdminSection,
+        },
+        {
+            id: "vocabulary",
+            icon: "📚",
+            title: "Słownictwo",
+            description: "Dodawaj i edytuj słownictwo",
+            section: "vocabulary" as AdminSection,
+        },
+        {
+            id: "videos",
+            icon: "🎥",
+            title: "Filmy",
+            description: "Zarządzaj filmami edukacyjnymi",
+            section: "videos" as AdminSection,
+        },
+        {
+            id: "games",
+            icon: "🎮",
+            title: "Gry",
+            description: "Twórz i zarządzaj grami edukacyjnymi",
+            section: "games" as AdminSection,
+        },
+    ];
+
+    if (loading) {
+        return (
+            <div className="space-y-6">
+                <div>
+                    <h1 className="text-3xl font-bold text-neutral-100">
+                        Panel Administratora
+                    </h1>
+                    <p className="text-neutral-400 mt-2">
+                        Zarządzaj platformą VocEnglish
+                    </p>
+                </div>
+                <div className="text-center py-8 text-neutral-400">
+                    Ładowanie statystyk...
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-6">
             <div>
@@ -176,79 +309,401 @@ function AdminOverview() {
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <Card className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80">
-                    <CardHeader>
-                        <CardTitle className="text-neutral-100 flex items-center">
-                            <span className="mr-2">👥</span>
+            {/* Quick Stats */}
+            {stats && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    <div className="bg-neutral-800/90 backdrop-blur-md border border-neutral-600/80 rounded-lg p-4">
+                        <div className="text-2xl font-bold text-amber-400">
+                            {stats.users?.total || 0}
+                        </div>
+                        <div className="text-sm text-neutral-400">
                             Użytkownicy
-                        </CardTitle>
-                        <CardDescription className="text-neutral-300">
-                            Zarządzaj kontami użytkowników i uprawnieniami
-                        </CardDescription>
-                    </CardHeader>
-                </Card>
+                        </div>
+                        <div className="text-xs text-neutral-500 mt-1">
+                            {stats.users?.newThisMonth || 0} nowych w tym
+                            miesiącu
+                        </div>
+                    </div>
+                    <div className="bg-neutral-800/90 backdrop-blur-md border border-neutral-600/80 rounded-lg p-4">
+                        <div className="text-2xl font-bold text-green-400">
+                            {stats.activationCodes?.unused || 0}
+                        </div>
+                        <div className="text-sm text-neutral-400">
+                            Kody dostępne
+                        </div>
+                        <div className="text-xs text-neutral-500 mt-1">
+                            {stats.activationCodes?.used || 0} używanych
+                        </div>
+                    </div>
+                    <div className="bg-neutral-800/90 backdrop-blur-md border border-neutral-600/80 rounded-lg p-4">
+                        <div className="text-2xl font-bold text-blue-400">
+                            {stats.vocabulary?.total || 0}
+                        </div>
+                        <div className="text-sm text-neutral-400">Słówka</div>
+                        <div className="text-xs text-neutral-500 mt-1">
+                            {stats.vocabulary?.active || 0} aktywnych
+                        </div>
+                    </div>
+                    <div className="bg-neutral-800/90 backdrop-blur-md border border-neutral-600/80 rounded-lg p-4">
+                        <div className="text-2xl font-bold text-purple-400">
+                            {(stats.videos?.total || 0) +
+                                (stats.games?.total || 0)}
+                        </div>
+                        <div className="text-sm text-neutral-400">
+                            Materiały
+                        </div>
+                        <div className="text-xs text-neutral-500 mt-1">
+                            {stats.videos?.total || 0} filmów,{" "}
+                            {stats.games?.total || 0} gier
+                        </div>
+                    </div>
+                </div>
+            )}
 
-                <Card className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80">
-                    <CardHeader>
-                        <CardTitle className="text-neutral-100 flex items-center">
-                            <span className="mr-2">🔑</span>
-                            Kody Aktywacyjne
-                        </CardTitle>
-                        <CardDescription className="text-neutral-300">
-                            Generuj i zarządzaj kodami aktywacyjnymi
-                        </CardDescription>
-                    </CardHeader>
-                </Card>
-
-                <Card className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80">
-                    <CardHeader>
-                        <CardTitle className="text-neutral-100 flex items-center">
-                            <span className="mr-2">💼</span>
-                            Zawody
-                        </CardTitle>
-                        <CardDescription className="text-neutral-300">
-                            Zarządzaj kategoriami zawodowymi
-                        </CardDescription>
-                    </CardHeader>
-                </Card>
-
-                <Card className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80">
-                    <CardHeader>
-                        <CardTitle className="text-neutral-100 flex items-center">
-                            <span className="mr-2">📚</span>
-                            Słownictwo
-                        </CardTitle>
-                        <CardDescription className="text-neutral-300">
-                            Dodawaj i edytuj słownictwo
-                        </CardDescription>
-                    </CardHeader>
-                </Card>
-
-                <Card className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80">
-                    <CardHeader>
-                        <CardTitle className="text-neutral-100 flex items-center">
-                            <span className="mr-2">🎥</span>
-                            Filmy
-                        </CardTitle>
-                        <CardDescription className="text-neutral-300">
-                            Zarządzaj filmami edukacyjnymi
-                        </CardDescription>
-                    </CardHeader>
-                </Card>
-
-                <Card className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80">
-                    <CardHeader>
-                        <CardTitle className="text-neutral-100 flex items-center">
-                            <span className="mr-2">🎮</span>
-                            Gry
-                        </CardTitle>
-                        <CardDescription className="text-neutral-300">
-                            Twórz i zarządzaj grami edukacyjnymi
-                        </CardDescription>
-                    </CardHeader>
-                </Card>
+            {/* Navigation Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {overviewCards.map((card) => (
+                    <Card
+                        key={card.id}
+                        className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80 hover:border-amber-500/50 transition-all cursor-pointer group"
+                        onClick={() =>
+                            handleSectionChange &&
+                            handleSectionChange(card.section)
+                        }
+                    >
+                        <CardHeader>
+                            <CardTitle className="text-neutral-100 flex items-center group-hover:text-amber-200 transition-colors">
+                                <span className="mr-2">{card.icon}</span>
+                                {card.title}
+                            </CardTitle>
+                            <CardDescription className="text-neutral-300">
+                                {card.description}
+                            </CardDescription>
+                        </CardHeader>
+                        {stats && (
+                            <CardContent>
+                                <div className="space-y-2">
+                                    {card.id === "users" && (
+                                        <>
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-neutral-400">
+                                                    Razem:
+                                                </span>
+                                                <span className="text-neutral-200">
+                                                    {stats.users?.total || 0}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-neutral-400">
+                                                    Administratorzy:
+                                                </span>
+                                                <span className="text-neutral-200">
+                                                    {stats.users?.admins || 0}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-neutral-400">
+                                                    Aktywni (7 dni):
+                                                </span>
+                                                <span className="text-green-400">
+                                                    {stats.users
+                                                        ?.recentLogins || 0}
+                                                </span>
+                                            </div>
+                                        </>
+                                    )}
+                                    {card.id === "activation-codes" && (
+                                        <>
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-neutral-400">
+                                                    Razem:
+                                                </span>
+                                                <span className="text-neutral-200">
+                                                    {stats.activationCodes
+                                                        ?.total || 0}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-neutral-400">
+                                                    Używane:
+                                                </span>
+                                                <span className="text-amber-400">
+                                                    {stats.activationCodes
+                                                        ?.used || 0}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-neutral-400">
+                                                    Dostępne:
+                                                </span>
+                                                <span className="text-green-400">
+                                                    {stats.activationCodes
+                                                        ?.unused || 0}
+                                                </span>
+                                            </div>
+                                        </>
+                                    )}
+                                    {card.id === "professions" && (
+                                        <>
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-neutral-400">
+                                                    Razem:
+                                                </span>
+                                                <span className="text-neutral-200">
+                                                    {stats.professions?.total ||
+                                                        0}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-neutral-400">
+                                                    Aktywne:
+                                                </span>
+                                                <span className="text-green-400">
+                                                    {stats.professions
+                                                        ?.active || 0}
+                                                </span>
+                                            </div>
+                                        </>
+                                    )}
+                                    {card.id === "vocabulary" && (
+                                        <>
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-neutral-400">
+                                                    Razem:
+                                                </span>
+                                                <span className="text-neutral-200">
+                                                    {stats.vocabulary?.total ||
+                                                        0}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-neutral-400">
+                                                    Aktywne:
+                                                </span>
+                                                <span className="text-green-400">
+                                                    {stats.vocabulary?.active ||
+                                                        0}
+                                                </span>
+                                            </div>
+                                            <div className="text-xs text-neutral-500 mt-2">
+                                                Poziomy: 1-5 (max:{" "}
+                                                {Math.max(
+                                                    ...Object.values(
+                                                        stats.vocabulary
+                                                            ?.byLevel || {}
+                                                    ).map(
+                                                        (v: any) =>
+                                                            Number(v) || 0
+                                                    )
+                                                )}
+                                                )
+                                            </div>
+                                        </>
+                                    )}
+                                    {card.id === "videos" && (
+                                        <>
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-neutral-400">
+                                                    Razem:
+                                                </span>
+                                                <span className="text-neutral-200">
+                                                    {stats.videos?.total || 0}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-neutral-400">
+                                                    Aktywne:
+                                                </span>
+                                                <span className="text-green-400">
+                                                    {stats.videos?.active || 0}
+                                                </span>
+                                            </div>
+                                        </>
+                                    )}
+                                    {card.id === "games" && (
+                                        <>
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-neutral-400">
+                                                    Razem:
+                                                </span>
+                                                <span className="text-neutral-200">
+                                                    {stats.games?.total || 0}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-neutral-400">
+                                                    Aktywne:
+                                                </span>
+                                                <span className="text-green-400">
+                                                    {stats.games?.active || 0}
+                                                </span>
+                                            </div>
+                                            <div className="text-xs text-neutral-500 mt-2">
+                                                Typy: Quiz, Fiszki, Dopasowanie
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                            </CardContent>
+                        )}
+                    </Card>
+                ))}
             </div>
+
+            {/* Charts Section */}
+            {stats && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+                    {/* Vocabulary by Level Chart */}
+                    <Card className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80">
+                        <CardHeader>
+                            <CardTitle className="text-neutral-100">
+                                Słownictwo według poziomów
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <BarChart
+                                data={[
+                                    {
+                                        label: "Poziom 1",
+                                        value:
+                                            stats.vocabulary?.byLevel?.level1 ||
+                                            0,
+                                        color: "bg-green-500",
+                                    },
+                                    {
+                                        label: "Poziom 2",
+                                        value:
+                                            stats.vocabulary?.byLevel?.level2 ||
+                                            0,
+                                        color: "bg-blue-500",
+                                    },
+                                    {
+                                        label: "Poziom 3",
+                                        value:
+                                            stats.vocabulary?.byLevel?.level3 ||
+                                            0,
+                                        color: "bg-yellow-500",
+                                    },
+                                    {
+                                        label: "Poziom 4",
+                                        value:
+                                            stats.vocabulary?.byLevel?.level4 ||
+                                            0,
+                                        color: "bg-orange-500",
+                                    },
+                                    {
+                                        label: "Poziom 5",
+                                        value:
+                                            stats.vocabulary?.byLevel?.level5 ||
+                                            0,
+                                        color: "bg-red-500",
+                                    },
+                                ]}
+                                maxHeight={60}
+                            />
+                        </CardContent>
+                    </Card>
+
+                    {/* Game Types Chart */}
+                    <Card className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80">
+                        <CardHeader>
+                            <CardTitle className="text-neutral-100">
+                                Gry według typów
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <DonutChart
+                                data={[
+                                    {
+                                        label: "Fiszki",
+                                        value:
+                                            stats.games?.byType?.flashcards ||
+                                            0,
+                                        color: "#10b981",
+                                    },
+                                    {
+                                        label: "Quiz",
+                                        value: stats.games?.byType?.quiz || 0,
+                                        color: "#3b82f6",
+                                    },
+                                    {
+                                        label: "Dopasowanie",
+                                        value:
+                                            stats.games?.byType?.matching || 0,
+                                        color: "#f59e0b",
+                                    },
+                                    {
+                                        label: "Przeciągnij",
+                                        value:
+                                            stats.games?.byType?.dragdrop || 0,
+                                        color: "#ef4444",
+                                    },
+                                ]}
+                                size={120}
+                            />
+                        </CardContent>
+                    </Card>
+
+                    {/* User Types Chart */}
+                    <Card className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80">
+                        <CardHeader>
+                            <CardTitle className="text-neutral-100">
+                                Użytkownicy według ról
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <DonutChart
+                                data={[
+                                    {
+                                        label: "Uczniowie",
+                                        value: stats.users?.regular || 0,
+                                        color: "#10b981",
+                                    },
+                                    {
+                                        label: "Administratorzy",
+                                        value: stats.users?.admins || 0,
+                                        color: "#f59e0b",
+                                    },
+                                ]}
+                                size={120}
+                            />
+                        </CardContent>
+                    </Card>
+
+                    {/* Activation Codes Status */}
+                    <Card className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80">
+                        <CardHeader>
+                            <CardTitle className="text-neutral-100">
+                                Status kodów aktywacyjnych
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <DonutChart
+                                data={[
+                                    {
+                                        label: "Dostępne",
+                                        value:
+                                            stats.activationCodes?.unused || 0,
+                                        color: "#10b981",
+                                    },
+                                    {
+                                        label: "Używane",
+                                        value: stats.activationCodes?.used || 0,
+                                        color: "#f59e0b",
+                                    },
+                                    {
+                                        label: "Wygasłe",
+                                        value:
+                                            stats.activationCodes?.expired || 0,
+                                        color: "#ef4444",
+                                    },
+                                ]}
+                                size={120}
+                            />
+                        </CardContent>
+                    </Card>
+                </div>
+            )}
         </div>
     );
 }
