@@ -6,9 +6,13 @@ import { cn } from "@/lib/utils";
 import GlowingCircle from "@/components/ui/glowing-circle";
 import { HomeContent } from "@/data/HomeContent";
 import Footer from "@/components/Footer";
+import ImageComponent from "@/components/ImageComponent";
 
 export default function Home() {
   const { hero, secondSection } = HomeContent;
+
+  // Create an array to loop through for our images
+  const imageCount = 6; // Number of images to display
 
   return (
     <div>
@@ -20,7 +24,7 @@ export default function Home() {
       </div>
 
       <main>
-        <section className="h-screen flex flex-col items-center justify-center">
+        <section className="h-screen flex flex-col items-center justify-center ">
           <h1 className="text-3xl w-full font-bold text-center text-stone-200">
             {hero.title} <br />
             <LineShadowText
@@ -31,9 +35,7 @@ export default function Home() {
             </LineShadowText>
           </h1>
           <h2 className="text-lg text-stone-200/60 mt-4 w-xl text-center">
-            VocEnglish to szkolna platforma do nauki angielskiego dla uczniów.
-            Oferuje quizy, gry logiczne i edukacyjne, które pomagają rozwijać
-            słownictwo i gramatykę w ciekawy i przyjazny sposób.
+            {hero.heroDescription}
           </h2>
           <div className="-z-10">
             <DotPattern
@@ -45,13 +47,24 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="bg-neutral-950/20 text-stone-300 p-10 h-[30vh] flex items-center">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-semibold mb-4">
+        <section className="bg-neutral-900/40 text-stone-300 p-10 flex flex-col items-center">
+          <div className="max-w-4xl text-center h-20 my-10">
+            <h2 className="text-5xl font-semibold mb-4">
               {secondSection.title}
             </h2>
-            <p className="mb-4">{secondSection.paragraphs[0]}</p>
-            <p>{secondSection.paragraphs[1]}</p>
+          </div>
+          <div className="w-full">
+            {Array.from({ length: imageCount }).map((_, index) => (
+              <ImageComponent
+                key={index}
+                header={secondSection.images.programista.header}
+                src={secondSection.images.programista.image}
+                alt={secondSection.images.programista.alt}
+                width={800}
+                height={800}
+                position={index % 2 === 0 ? "left" : "right"}
+              />
+            ))}
           </div>
         </section>
       </main>

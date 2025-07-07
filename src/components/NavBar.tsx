@@ -7,10 +7,10 @@ import { NavBarContent } from "@/data/NavBarContent";
 
 const NavBar = () => {
   const linkClass: string =
-    "border-2 border-neutral-700 text-center w-[19.5%] py-1.5 rounded-md text-stone-200 cursor-pointer text-base hover:bg-neutral-800/70 hover:text-white transition-all duration-200";
+    "border-2 border-neutral-700 text-center w-[24%] py-1.5 rounded-md text-stone-200 cursor-pointer text-base hover:bg-neutral-800/70 hover:text-white transition-all duration-200";
   return (
     <header className="flex justify-center relative top-5 z-50">
-      <div className="fixed w-1/2 h-13 bg-neutral-700/30 border-2 border-neutral-800 backdrop-blur-md rounded-lg flex justify-end items-center">
+      <div className="fixed w-1/3 h-13 bg-neutral-700/30 border-2 border-neutral-800 backdrop-blur-md rounded-lg flex justify-end items-center">
         <div className="bg-neutral-700/20 rounded-md w-12 h-11 mx-1 backdrop-blur-md">
           <Image
             src={icon}
