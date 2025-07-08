@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,6 +16,11 @@ import {
     TableCell,
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/toast";
+import { adminCache, generateCacheKey } from "@/lib/admin-cache";
+import {
+    DataStatusIndicator,
+    type DataStatus,
+} from "@/components/ui/data-status-indicator";
 
 interface ActivationCode {
     id: string;
@@ -45,6 +50,8 @@ const initialFormData: ActivationCodeFormData = {
 export default function ActivationCodesManager() {
     const [codes, setCodes] = useState<ActivationCode[]>([]);
     const [loading, setLoading] = useState(true);
+    const [backgroundLoading, setBackgroundLoading] = useState(false);
+    const [hasError, setHasError] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedStatus, setSelectedStatus] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -62,43 +69,126 @@ export default function ActivationCodesManager() {
     });
     const { showToast, ToastComponent } = useToast();
 
+    // Refs for tracking ongoing requests to prevent race conditions
+    const abortControllerRef = useRef<AbortController | null>(null);
+
     const limit = 10;
 
-    // Fetch activation codes data
-    const fetchCodes = async () => {
-        try {
-            setLoading(true);
-            const params = new URLSearchParams({
-                page: currentPage.toString(),
-                limit: limit.toString(),
-                ...(searchTerm && { search: searchTerm }),
-                ...(selectedStatus && { status: selectedStatus }),
-            });
+    // Fetch activation codes data with caching
+    const fetchCodes = useCallback(
+        async (forceRefresh = false) => {
+            const params = {
+                page: currentPage,
+                limit,
+                search: searchTerm,
+                status: selectedStatus,
+            };
 
-            const response = await fetch(
-                `/api/admin/activation-codes?${params}`
-            );
-            const data = await response.json();
+            const cacheKey = generateCacheKey("activation-codes", params);
 
-            if (response.ok && data.success) {
-                setCodes(data.codes);
-                setTotalPages(data.pagination?.totalPages || 1);
-            } else {
-                showToast(
-                    data.error || "Błąd podczas pobierania kodów aktywacyjnych",
-                    "error"
-                );
+            // Check cache first
+            if (!forceRefresh) {
+                const cachedData = adminCache.get<{
+                    codes: ActivationCode[];
+                    pagination: any;
+                }>(cacheKey);
+                if (cachedData) {
+                    setCodes(cachedData.codes);
+                    setTotalPages(cachedData.pagination?.totalPages || 1);
+                    setLoading(false);
+                    setHasError(false);
+
+                    // Schedule background refresh if stale
+                    if (adminCache.isStale(cacheKey)) {
+                        setBackgroundLoading(true);
+                        setTimeout(() => fetchCodes(true), 100);
+                    }
+                    return;
+                }
             }
-        } catch (error) {
-            showToast("Błąd połączenia z serwerem", "error");
-        } finally {
-            setLoading(false);
-        }
-    };
 
+            try {
+                // Cancel previous request
+                if (abortControllerRef.current) {
+                    abortControllerRef.current.abort();
+                }
+                abortControllerRef.current = new AbortController();
+
+                if (!forceRefresh) setLoading(true);
+                else setBackgroundLoading(true);
+                setHasError(false);
+
+                const urlParams = new URLSearchParams();
+                Object.entries(params).forEach(([key, value]) => {
+                    if (value) urlParams.append(key, value.toString());
+                });
+
+                // For manual refresh, ensure minimum visual feedback time
+                const fetchPromise = fetch(
+                    `/api/admin/activation-codes?${urlParams}`,
+                    {
+                        signal: abortControllerRef.current.signal,
+                    }
+                );
+                const minTimePromise = forceRefresh
+                    ? new Promise((resolve) => setTimeout(resolve, 1500))
+                    : Promise.resolve();
+
+                const [response] = await Promise.all([
+                    fetchPromise,
+                    minTimePromise,
+                ]);
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    setCodes(data.codes);
+                    setTotalPages(data.pagination?.totalPages || 1);
+                    setHasError(false);
+
+                    // Cache the result
+                    adminCache.set(cacheKey, {
+                        codes: data.codes,
+                        pagination: data.pagination,
+                    });
+                } else {
+                    setHasError(true);
+                    showToast(
+                        data.error ||
+                            "Błąd podczas pobierania kodów aktywacyjnych",
+                        "error"
+                    );
+                }
+            } catch (error: any) {
+                if (error.name !== "AbortError") {
+                    setHasError(true);
+                    showToast("Błąd połączenia z serwerem", "error");
+                }
+            } finally {
+                setLoading(false);
+                setBackgroundLoading(false);
+            }
+        },
+        [currentPage, searchTerm, selectedStatus, showToast]
+    );
+
+    // Debounced effect for data fetching
     useEffect(() => {
-        fetchCodes();
-    }, [currentPage, searchTerm, selectedStatus]);
+        const timeoutId = setTimeout(() => {
+            adminCache.invalidate("activation-codes");
+            fetchCodes(true);
+        }, 300); // 300ms debounce
+
+        return () => clearTimeout(timeoutId);
+    }, [fetchCodes]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+        };
+    }, []);
 
     // Handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
@@ -134,7 +224,10 @@ export default function ActivationCodesManager() {
                 setIsModalOpen(false);
                 setEditingCode(null);
                 setFormData(initialFormData);
-                fetchCodes();
+
+                // Invalidate cache and refresh data
+                adminCache.invalidate("activation-codes");
+                fetchCodes(true);
             } else {
                 showToast(data.error || "Błąd podczas zapisywania", "error");
             }
@@ -157,7 +250,10 @@ export default function ActivationCodesManager() {
 
             if (response.ok) {
                 showToast("Kod aktywacyjny został usunięty", "success");
-                fetchCodes();
+
+                // Invalidate cache and refresh data
+                adminCache.invalidate("activation-codes");
+                fetchCodes(true);
             } else {
                 showToast(data.error || "Błąd podczas usuwania", "error");
             }
@@ -217,13 +313,37 @@ export default function ActivationCodesManager() {
         <div className="space-y-6">
             {ToastComponent}
 
-            <div>
-                <h2 className="text-2xl font-bold text-neutral-100">
-                    Kody Aktywacyjne
-                </h2>
-                <p className="text-neutral-400 mt-2">
-                    Generuj i zarządzaj kodami aktywacyjnymi
-                </p>
+            <div className="flex items-center justify-between">
+                <div>
+                    <h2 className="text-2xl font-bold text-neutral-100">
+                        Kody Aktywacyjne
+                    </h2>
+                    <p className="text-neutral-400 mt-2">
+                        Generuj i zarządzaj kodami aktywacyjnymi
+                    </p>
+                </div>
+                <div className="flex items-center space-x-4">
+                    <DataStatusIndicator
+                        status={
+                            hasError
+                                ? "error"
+                                : backgroundLoading
+                                ? "refreshing"
+                                : loading
+                                ? "loading"
+                                : "current"
+                        }
+                    />
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => fetchCodes(true)}
+                        disabled={loading || backgroundLoading}
+                        className="text-xs"
+                    >
+                        Odśwież
+                    </Button>
+                </div>
             </div>
 
             {/* Filters and Search */}

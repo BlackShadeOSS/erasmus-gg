@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,6 +16,11 @@ import {
     TableCell,
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/toast";
+import { adminCache, generateCacheKey } from "@/lib/admin-cache";
+import {
+    DataStatusIndicator,
+    type DataStatus,
+} from "@/components/ui/data-status-indicator";
 
 interface Profession {
     id: string;
@@ -69,6 +74,8 @@ export default function VideosManager() {
     const [videos, setVideos] = useState<Video[]>([]);
     const [professions, setProfessions] = useState<Profession[]>([]);
     const [loading, setLoading] = useState(true);
+    const [backgroundLoading, setBackgroundLoading] = useState(false);
+    const [hasError, setHasError] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedProfession, setSelectedProfession] = useState("");
     const [selectedDifficulty, setSelectedDifficulty] = useState("");
@@ -89,9 +96,12 @@ export default function VideosManager() {
     const limit = 10;
 
     // Fetch videos data
-    const fetchVideos = async () => {
+    const fetchVideos = async (forceRefresh = false) => {
         try {
-            setLoading(true);
+            if (!forceRefresh) setLoading(true);
+            else setBackgroundLoading(true);
+            setHasError(false);
+
             const params = new URLSearchParams({
                 page: currentPage.toString(),
                 limit: limit.toString(),
@@ -102,22 +112,35 @@ export default function VideosManager() {
                 }),
             });
 
-            const response = await fetch(`/api/admin/videos?${params}`);
+            // For manual refresh, ensure minimum visual feedback time
+            const fetchPromise = fetch(`/api/admin/videos?${params}`);
+            const minTimePromise = forceRefresh
+                ? new Promise((resolve) => setTimeout(resolve, 1500))
+                : Promise.resolve();
+
+            const [response] = await Promise.all([
+                fetchPromise,
+                minTimePromise,
+            ]);
             const data = await response.json();
 
             if (response.ok) {
                 setVideos(data.videos);
                 setTotalPages(data.pagination.totalPages);
+                setHasError(false);
             } else {
+                setHasError(true);
                 showToast(
                     data.error || "Błąd podczas pobierania filmów",
                     "error"
                 );
             }
         } catch (error) {
+            setHasError(true);
             showToast("Błąd połączenia z serwerem", "error");
         } finally {
             setLoading(false);
+            setBackgroundLoading(false);
         }
     };
 
@@ -130,9 +153,11 @@ export default function VideosManager() {
             if (response.ok) {
                 setProfessions(data.professions);
             } else {
+                setHasError(true);
                 showToast("Błąd podczas pobierania zawodów", "error");
             }
         } catch (error) {
+            setHasError(true);
             showToast("Błąd połączenia z serwerem", "error");
         }
     };
@@ -252,13 +277,40 @@ export default function VideosManager() {
         <div className="space-y-6">
             {ToastComponent}
 
-            <div>
-                <h2 className="text-2xl font-bold text-neutral-100">
-                    Menedżer Filmów
-                </h2>
-                <p className="text-neutral-400 mt-2">
-                    Zarządzaj filmami edukacyjnymi
-                </p>
+            <div className="flex items-center justify-between">
+                <div>
+                    <h2 className="text-2xl font-bold text-neutral-100">
+                        Menedżer Filmów
+                    </h2>
+                    <p className="text-neutral-400 mt-2">
+                        Zarządzaj filmami edukacyjnymi
+                    </p>
+                </div>
+                <div className="flex items-center space-x-4">
+                    <DataStatusIndicator
+                        status={
+                            hasError
+                                ? "error"
+                                : backgroundLoading
+                                ? "refreshing"
+                                : loading
+                                ? "loading"
+                                : "current"
+                        }
+                    />
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                            fetchVideos(true);
+                            fetchProfessions();
+                        }}
+                        disabled={loading || backgroundLoading}
+                        className="text-xs"
+                    >
+                        Odśwież
+                    </Button>
+                </div>
             </div>
 
             {/* Filters and Search */}

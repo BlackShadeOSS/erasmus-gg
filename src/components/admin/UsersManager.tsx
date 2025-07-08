@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,6 +16,11 @@ import {
     TableCell,
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/toast";
+import { adminCache, generateCacheKey } from "@/lib/admin-cache";
+import {
+    DataStatusIndicator,
+    type DataStatus,
+} from "@/components/ui/data-status-indicator";
 
 interface User {
     id: string;
@@ -49,6 +54,8 @@ const initialFormData: UserFormData = {
 export default function UsersManager() {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
+    const [backgroundLoading, setBackgroundLoading] = useState(false);
+    const [hasError, setHasError] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedRole, setSelectedRole] = useState("");
     const [selectedStatus, setSelectedStatus] = useState("");
@@ -66,42 +73,123 @@ export default function UsersManager() {
     });
     const { showToast, ToastComponent } = useToast();
 
+    // Refs for tracking ongoing requests to prevent race conditions
+    const abortControllerRef = useRef<AbortController | null>(null);
+
     const limit = 10;
 
-    // Fetch users data
-    const fetchUsers = async () => {
-        try {
-            setLoading(true);
-            const params = new URLSearchParams({
-                page: currentPage.toString(),
-                limit: limit.toString(),
-                ...(searchTerm && { search: searchTerm }),
-                ...(selectedRole && { role: selectedRole }),
-                ...(selectedStatus && { status: selectedStatus }),
-            });
+    // Fetch users data with caching
+    const fetchUsers = useCallback(
+        async (forceRefresh = false) => {
+            const params = {
+                page: currentPage,
+                limit,
+                search: searchTerm,
+                role: selectedRole,
+                status: selectedStatus,
+            };
 
-            const response = await fetch(`/api/admin/users?${params}`);
-            const data = await response.json();
+            const cacheKey = generateCacheKey("users", params);
 
-            if (response.ok && data.success) {
-                setUsers(data.users);
-                setTotalPages(data.pagination?.totalPages || 1);
-            } else {
-                showToast(
-                    data.error || "Błąd podczas pobierania użytkowników",
-                    "error"
-                );
+            // Check cache first
+            if (!forceRefresh) {
+                const cachedData = adminCache.get<{
+                    users: User[];
+                    pagination: any;
+                }>(cacheKey);
+                if (cachedData) {
+                    setUsers(cachedData.users);
+                    setTotalPages(cachedData.pagination?.totalPages || 1);
+                    setLoading(false);
+                    setHasError(false);
+
+                    // Schedule background refresh if stale
+                    if (adminCache.isStale(cacheKey)) {
+                        setBackgroundLoading(true);
+                        setTimeout(() => fetchUsers(true), 100);
+                    }
+                    return;
+                }
             }
-        } catch (error) {
-            showToast("Błąd połączenia z serwerem", "error");
-        } finally {
-            setLoading(false);
-        }
-    };
 
+            try {
+                // Cancel previous request
+                if (abortControllerRef.current) {
+                    abortControllerRef.current.abort();
+                }
+                abortControllerRef.current = new AbortController();
+
+                if (!forceRefresh) setLoading(true);
+                else setBackgroundLoading(true);
+                setHasError(false);
+
+                const urlParams = new URLSearchParams();
+                Object.entries(params).forEach(([key, value]) => {
+                    if (value) urlParams.append(key, value.toString());
+                });
+
+                // For manual refresh, ensure minimum visual feedback time
+                const fetchPromise = fetch(`/api/admin/users?${urlParams}`, {
+                    signal: abortControllerRef.current.signal,
+                });
+                const minTimePromise = forceRefresh
+                    ? new Promise((resolve) => setTimeout(resolve, 1500))
+                    : Promise.resolve();
+
+                const [response] = await Promise.all([
+                    fetchPromise,
+                    minTimePromise,
+                ]);
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    setUsers(data.users);
+                    setTotalPages(data.pagination?.totalPages || 1);
+                    setHasError(false);
+
+                    // Cache the result
+                    adminCache.set(cacheKey, {
+                        users: data.users,
+                        pagination: data.pagination,
+                    });
+                } else {
+                    setHasError(true);
+                    showToast(
+                        data.error || "Błąd podczas pobierania użytkowników",
+                        "error"
+                    );
+                }
+            } catch (error: any) {
+                if (error.name !== "AbortError") {
+                    setHasError(true);
+                    showToast("Błąd połączenia z serwerem", "error");
+                }
+            } finally {
+                setLoading(false);
+                setBackgroundLoading(false);
+            }
+        },
+        [currentPage, searchTerm, selectedRole, selectedStatus, showToast]
+    );
+
+    // Debounced effect for data fetching
     useEffect(() => {
-        fetchUsers();
-    }, [currentPage, searchTerm, selectedRole, selectedStatus]);
+        const timeoutId = setTimeout(() => {
+            adminCache.invalidate("users");
+            fetchUsers(true);
+        }, 300); // 300ms debounce
+
+        return () => clearTimeout(timeoutId);
+    }, [fetchUsers]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+        };
+    }, []);
 
     // Handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
@@ -145,7 +233,10 @@ export default function UsersManager() {
                 setIsModalOpen(false);
                 setEditingUser(null);
                 setFormData(initialFormData);
-                fetchUsers();
+
+                // Invalidate cache and refresh data
+                adminCache.invalidate("users");
+                fetchUsers(true);
             } else {
                 showToast(data.error || "Błąd podczas zapisywania", "error");
             }
@@ -165,7 +256,8 @@ export default function UsersManager() {
 
             if (response.ok) {
                 showToast("Użytkownik został usunięty", "success");
-                fetchUsers();
+                adminCache.invalidate("users");
+                fetchUsers(true);
             } else {
                 showToast(data.error || "Błąd podczas usuwania", "error");
             }
@@ -199,7 +291,8 @@ export default function UsersManager() {
                     }`,
                     "success"
                 );
-                fetchUsers();
+                adminCache.invalidate("users");
+                fetchUsers(true);
             } else {
                 showToast(data.error || "Błąd podczas zmiany statusu", "error");
             }
@@ -245,13 +338,37 @@ export default function UsersManager() {
         <div className="space-y-6">
             {ToastComponent}
 
-            <div>
-                <h2 className="text-2xl font-bold text-neutral-100">
-                    Zarządzanie Użytkownikami
-                </h2>
-                <p className="text-neutral-400 mt-2">
-                    Zarządzaj kontami użytkowników i uprawnieniami
-                </p>
+            <div className="flex items-center justify-between">
+                <div>
+                    <h2 className="text-2xl font-bold text-neutral-100">
+                        Zarządzanie Użytkownikami
+                    </h2>
+                    <p className="text-neutral-400 mt-2">
+                        Zarządzaj kontami użytkowników i uprawnieniami
+                    </p>
+                </div>
+                <div className="flex items-center space-x-4">
+                    <DataStatusIndicator
+                        status={
+                            hasError
+                                ? "error"
+                                : backgroundLoading
+                                ? "refreshing"
+                                : loading
+                                ? "loading"
+                                : "current"
+                        }
+                    />
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => fetchUsers(true)}
+                        disabled={loading || backgroundLoading}
+                        className="text-xs"
+                    >
+                        Odśwież
+                    </Button>
+                </div>
             </div>
 
             {/* Filters and Search */}
