@@ -1,14 +1,7 @@
 "use client";
 
-import React, {
-    useState,
-    useEffect,
-    createContext,
-    useContext,
-    useMemo,
-    useCallback,
-} from "react";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import {
     Card,
     CardContent,
@@ -16,262 +9,99 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { LineShadowText } from "@/components/ui/line-shadow-text";
-import { DotPattern } from "@/components/ui/dot-pattern";
-import { cn } from "@/lib/utils";
-import GlowingCircle from "@/components/ui/glowing-circle";
-import NoiseFilter from "@/components/NoiseFilter";
-import { UserSession } from "@/lib/auth";
-import ProfessionsManager from "./ProfessionsManager";
-import VocabularyManager from "./VocabularyManager";
-import VideosManager from "./VideosManager";
-import GamesManager from "./GamesManager";
-import UsersManager from "./UsersManager";
-import ActivationCodesManager from "./ActivationCodesManager";
-import { useRouter, useSearchParams } from "next/navigation";
 import { BarChart, DonutChart } from "@/components/ui/charts";
+import { adminCache, generateCacheKey } from "@/lib/admin-cache";
+import {
+    DataStatusIndicator,
+    type DataStatus,
+} from "@/components/ui/data-status-indicator";
+import { Button } from "@/components/ui/button";
+import { useManualRefresh } from "@/hooks/useManualRefresh";
 
-interface AdminDashboardProps {
-    user: UserSession;
-}
-
-type AdminSection =
-    | "overview"
-    | "users"
-    | "activation-codes"
-    | "professions"
-    | "vocabulary"
-    | "videos"
-    | "games";
-
-// Create context for section change handler
-const SectionChangeContext = createContext<
-    ((section: AdminSection) => void) | null
->(null);
-
-export default function AdminDashboard({ user }: AdminDashboardProps) {
+export default function AdminOverview() {
     const router = useRouter();
-    const searchParams = useSearchParams();
-
-    // Get section from URL params, default to "overview"
-    const sectionFromUrl = searchParams.get("section") as AdminSection;
-    const validSections: AdminSection[] = [
-        "overview",
-        "users",
-        "activation-codes",
-        "professions",
-        "vocabulary",
-        "videos",
-        "games",
-    ];
-    const [activeSection, setActiveSection] = useState<AdminSection>(
-        validSections.includes(sectionFromUrl) ? sectionFromUrl : "overview"
-    );
-    const [isTransitioning, setIsTransitioning] = useState(false);
-
-    // Memoize menu items to prevent re-creation
-    const menuItems = useMemo(
-        () => [
-            { id: "overview", label: "Przegląd", icon: "📊" },
-            { id: "users", label: "Użytkownicy", icon: "👥" },
-            { id: "activation-codes", label: "Kody Aktywacyjne", icon: "🔑" },
-            { id: "professions", label: "Zawody", icon: "💼" },
-            { id: "vocabulary", label: "Słownictwo", icon: "📚" },
-            { id: "videos", label: "Filmy", icon: "🎥" },
-            { id: "games", label: "Gry", icon: "🎮" },
-        ],
-        []
-    );
-
-    // Optimized section change handler with debouncing
-    const handleSectionChange = useCallback(
-        (section: AdminSection) => {
-            if (section === activeSection) return; // Prevent unnecessary updates
-
-            setIsTransitioning(true);
-            setActiveSection(section);
-
-            // Use setTimeout to make URL update non-blocking
-            setTimeout(() => {
-                const url = new URL(window.location.href);
-                url.searchParams.set("section", section);
-                router.replace(url.pathname + url.search);
-                setIsTransitioning(false);
-            }, 0);
-        },
-        [activeSection, router]
-    );
-
-    // Optimized URL sync with reduced re-renders
-    useEffect(() => {
-        const urlSection = searchParams.get("section") as AdminSection;
-        if (
-            validSections.includes(urlSection) &&
-            urlSection !== activeSection &&
-            !isTransitioning
-        ) {
-            setActiveSection(urlSection);
-        }
-    }, [searchParams]); // Removed activeSection from deps to prevent loops
-
-    const handleLogout = useCallback(async () => {
-        try {
-            await fetch("/api/auth/logout", {
-                method: "POST",
-            });
-            router.push("/login");
-        } catch (error) {
-            console.error("Logout error:", error);
-        }
-    }, [router]);
-
-    // Memoized content renderer to prevent unnecessary re-renders
-    const renderContent = useCallback(() => {
-        // Show loading state during transitions
-        if (isTransitioning) {
-            return (
-                <div className="flex items-center justify-center h-64">
-                    <div className="text-neutral-400">Ładowanie...</div>
-                </div>
-            );
-        }
-
-        switch (activeSection) {
-            case "overview":
-                return (
-                    <SectionChangeContext.Provider value={handleSectionChange}>
-                        <AdminOverview />
-                    </SectionChangeContext.Provider>
-                );
-            case "users":
-                return <UsersManager />;
-            case "activation-codes":
-                return <ActivationCodesManager />;
-            case "professions":
-                return <ProfessionsManager />;
-            case "vocabulary":
-                return <VocabularyManager />;
-            case "videos":
-                return <VideosManager />;
-            case "games":
-                return <GamesManager />;
-            default:
-                return (
-                    <SectionChangeContext.Provider value={handleSectionChange}>
-                        <AdminOverview />
-                    </SectionChangeContext.Provider>
-                );
-        }
-    }, [activeSection, isTransitioning, handleSectionChange]);
-
-    return (
-        <div className="min-h-screen bg-neutral-900 relative">
-            <div>
-                <GlowingCircle />
-                <GlowingCircle isRight={true} />
-            </div>
-
-            <div className="flex">
-                {/* Sidebar */}
-                <div className="w-64 bg-neutral-900/50 backdrop-blur-md border-r border-neutral-800 min-h-screen p-4">
-                    <div className="mb-8">
-                        <LineShadowText
-                            className="text-amber-200 text-2xl font-bold"
-                            shadowColor="#fdef7b"
-                        >
-                            VocEnglish
-                        </LineShadowText>
-                        <p className="text-stone-400 text-sm mt-2">
-                            Panel Administratora
-                        </p>
-                        <p className="text-stone-300 text-sm">
-                            Witaj, {user.username}
-                        </p>
-                    </div>
-
-                    <nav className="space-y-2">
-                        {menuItems.map((item) => (
-                            <Button
-                                key={item.id}
-                                variant={
-                                    activeSection === item.id
-                                        ? "default"
-                                        : "secondary"
-                                }
-                                className={cn(
-                                    "w-full justify-start text-left",
-                                    activeSection === item.id
-                                        ? "bg-amber-600 hover:bg-amber-700 text-white"
-                                        : "text-stone-300 hover:text-white hover:bg-neutral-800"
-                                )}
-                                onClick={() =>
-                                    handleSectionChange(item.id as AdminSection)
-                                }
-                            >
-                                <span className="mr-2">{item.icon}</span>
-                                {item.label}
-                            </Button>
-                        ))}
-                    </nav>
-
-                    <div className="mt-auto pt-8">
-                        <Button
-                            variant="secondary"
-                            className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-red-900/20"
-                            onClick={handleLogout}
-                        >
-                            🚪 Wyloguj
-                        </Button>
-                    </div>
-                </div>
-
-                {/* Main Content */}
-                <div className="flex-1 p-8 bg-neutral-900/20 backdrop-blur-sm">
-                    {renderContent()}
-                </div>
-            </div>
-
-            <div className="-z-10">
-                <DotPattern
-                    glow={false}
-                    className={cn(
-                        "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)] opacity-20"
-                    )}
-                />
-            </div>
-
-            <NoiseFilter className="-z-10" />
-        </div>
-    );
-}
-
-// Memoized AdminOverview component to prevent unnecessary re-renders
-const AdminOverview = React.memo(function AdminOverview() {
     const [stats, setStats] = useState<any>(null);
     const [loading, setLoading] = useState(true);
-
-    const handleSectionChange = useContext(SectionChangeContext);
+    const [backgroundLoading, setBackgroundLoading] = useState(false);
+    const [hasError, setHasError] = useState(false);
+    const { isManualRefreshing, triggerManualRefresh } = useManualRefresh();
 
     // Memoized fetch function
-    const fetchStats = useCallback(async () => {
+    const fetchStats = useCallback(async (forceRefresh = false) => {
+        const cacheKey = generateCacheKey("admin-stats", {});
+
+        // Check cache first
+        if (!forceRefresh) {
+            const cachedData = adminCache.get<any>(cacheKey);
+            if (cachedData) {
+                setStats(cachedData);
+                setLoading(false);
+                setHasError(false);
+
+                // Schedule background refresh if stale
+                if (adminCache.isStale(cacheKey)) {
+                    setBackgroundLoading(true);
+                    setTimeout(() => fetchStats(true), 100);
+                }
+                return;
+            }
+        }
+
         try {
-            const response = await fetch("/api/admin/stats");
+            if (!forceRefresh) setLoading(true);
+            else setBackgroundLoading(true);
+            setHasError(false);
+
+            // For manual refresh, ensure minimum visual feedback time
+            const fetchPromise = fetch("/api/admin/stats");
+            const minTimePromise = forceRefresh
+                ? new Promise((resolve) => setTimeout(resolve, 1500))
+                : Promise.resolve();
+
+            const [response] = await Promise.all([
+                fetchPromise,
+                minTimePromise,
+            ]);
             const data = await response.json();
+
             if (data.success) {
                 setStats(data.stats);
+                setHasError(false);
+
+                // Cache the data
+                adminCache.set(cacheKey, data.stats);
+            } else {
+                setHasError(true);
+                console.error("Failed to fetch stats:", data.error);
             }
         } catch (error) {
+            setHasError(true);
             console.error("Failed to fetch stats:", error);
         } finally {
             setLoading(false);
+            setBackgroundLoading(false);
         }
     }, []);
+
+    // Manual refresh with forced visual feedback
+    const handleManualRefresh = useCallback(async () => {
+        await fetchStats(true);
+    }, [fetchStats]);
 
     useEffect(() => {
         fetchStats();
     }, [fetchStats]);
 
-    // Memoized overview cards to prevent re-creation
+    // Auto-refresh every 5 minutes
+    useEffect(() => {
+        const interval = setInterval(() => {
+            fetchStats(true);
+        }, 5 * 60 * 1000);
+
+        return () => clearInterval(interval);
+    }, [fetchStats]);
+
+    // Memoized overview cards with proper routing
     const overviewCards = useMemo(
         () => [
             {
@@ -279,42 +109,42 @@ const AdminOverview = React.memo(function AdminOverview() {
                 icon: "👥",
                 title: "Użytkownicy",
                 description: "Zarządzaj kontami użytkowników i uprawnieniami",
-                section: "users" as AdminSection,
+                path: "/admin-panel/users",
             },
             {
                 id: "activation-codes",
                 icon: "🔑",
                 title: "Kody Aktywacyjne",
                 description: "Generuj i zarządzaj kodami aktywacyjnymi",
-                section: "activation-codes" as AdminSection,
+                path: "/admin-panel/activation-codes",
             },
             {
                 id: "professions",
                 icon: "💼",
                 title: "Zawody",
                 description: "Zarządzaj kategoriami zawodowymi",
-                section: "professions" as AdminSection,
+                path: "/admin-panel/professions",
             },
             {
                 id: "vocabulary",
                 icon: "📚",
                 title: "Słownictwo",
                 description: "Dodawaj i edytuj słownictwo oraz kategorie",
-                section: "vocabulary" as AdminSection,
+                path: "/admin-panel/vocabulary",
             },
             {
                 id: "videos",
                 icon: "🎥",
                 title: "Filmy",
                 description: "Zarządzaj filmami edukacyjnymi",
-                section: "videos" as AdminSection,
+                path: "/admin-panel/videos",
             },
             {
                 id: "games",
                 icon: "🎮",
                 title: "Gry",
                 description: "Twórz i zarządzaj grami edukacyjnymi",
-                section: "games" as AdminSection,
+                path: "/admin-panel/games",
             },
         ],
         []
@@ -323,13 +153,29 @@ const AdminOverview = React.memo(function AdminOverview() {
     if (loading) {
         return (
             <div className="space-y-6">
-                <div>
-                    <h1 className="text-3xl font-bold text-neutral-100">
-                        Panel Administratora
-                    </h1>
-                    <p className="text-neutral-400 mt-2">
-                        Zarządzaj platformą VocEnglish
-                    </p>
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="text-3xl font-bold text-neutral-100">
+                            Panel Administratora
+                        </h1>
+                        <p className="text-neutral-400 mt-2">
+                            Zarządzaj platformą VocEnglish
+                        </p>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                        <DataStatusIndicator
+                            status="loading"
+                            forceRefreshing={isManualRefreshing}
+                        />
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={true}
+                            className="text-xs"
+                        >
+                            Odśwież
+                        </Button>
+                    </div>
                 </div>
                 <div className="text-center py-8 text-neutral-400">
                     Ładowanie statystyk...
@@ -340,13 +186,40 @@ const AdminOverview = React.memo(function AdminOverview() {
 
     return (
         <div className="space-y-6">
-            <div>
-                <h1 className="text-3xl font-bold text-neutral-100">
-                    Panel Administratora
-                </h1>
-                <p className="text-neutral-400 mt-2">
-                    Zarządzaj platformą VocEnglish
-                </p>
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-3xl font-bold text-neutral-100">
+                        Panel Administratora
+                    </h1>
+                    <p className="text-neutral-400 mt-2">
+                        Zarządzaj platformą VocEnglish
+                    </p>
+                </div>
+                <div className="flex items-center space-x-4">
+                    <DataStatusIndicator
+                        status={
+                            hasError
+                                ? "error"
+                                : backgroundLoading
+                                ? "refreshing"
+                                : loading
+                                ? "loading"
+                                : "current"
+                        }
+                        forceRefreshing={isManualRefreshing}
+                    />
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleManualRefresh}
+                        disabled={
+                            loading || backgroundLoading || isManualRefreshing
+                        }
+                        className="text-xs"
+                    >
+                        Odśwież
+                    </Button>
+                </div>
             </div>
 
             {/* Quick Stats */}
@@ -406,10 +279,7 @@ const AdminOverview = React.memo(function AdminOverview() {
                     <Card
                         key={card.id}
                         className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80 hover:border-amber-500/50 transition-all cursor-pointer group"
-                        onClick={() =>
-                            handleSectionChange &&
-                            handleSectionChange(card.section)
-                        }
+                        onClick={() => router.push(card.path)}
                     >
                         <CardHeader>
                             <CardTitle className="text-neutral-100 flex items-center group-hover:text-amber-200 transition-colors">
@@ -746,4 +616,4 @@ const AdminOverview = React.memo(function AdminOverview() {
             )}
         </div>
     );
-});
+}
