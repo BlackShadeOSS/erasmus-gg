@@ -9,8 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.2.3",
+    "@supabase/supabase-js": "^2.50.3",
+    "@types/bcryptjs": "^3.0.0",
+    "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cookies": "^0.9.1",
+    "jose": "^6.0.11",
     "lucide-react": "^0.514.0",
     "motion": "^12.16.0",
     "next": "15.3.3",
