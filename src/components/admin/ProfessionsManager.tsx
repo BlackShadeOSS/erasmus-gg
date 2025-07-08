@@ -16,7 +16,10 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/toast";
 import { adminCache, generateCacheKey } from "@/lib/admin-cache";
-import { DataStatusIndicator, type DataStatus } from "@/components/ui/data-status-indicator";
+import {
+    DataStatusIndicator,
+    type DataStatus,
+} from "@/components/ui/data-status-indicator";
 
 interface Profession {
     id: string;
@@ -91,6 +94,7 @@ export default function ProfessionsManager() {
                     setProfessions(cachedData.professions);
                     setTotalPages(cachedData.pagination?.totalPages || 1);
                     setLoading(false);
+                    setHasError(false);
 
                     // Schedule background refresh if stale
                     if (adminCache.isStale(cacheKey)) {
@@ -109,23 +113,35 @@ export default function ProfessionsManager() {
                 abortControllerRef.current = new AbortController();
 
                 if (!forceRefresh) setLoading(true);
+                else setBackgroundLoading(true);
+                setHasError(false);
 
                 const urlParams = new URLSearchParams();
                 Object.entries(params).forEach(([key, value]) => {
                     if (value) urlParams.append(key, value.toString());
                 });
 
-                const response = await fetch(
+                // For manual refresh, ensure minimum visual feedback time
+                const fetchPromise = fetch(
                     `/api/admin/professions?${urlParams}`,
                     {
                         signal: abortControllerRef.current.signal,
                     }
                 );
+                const minTimePromise = forceRefresh
+                    ? new Promise((resolve) => setTimeout(resolve, 1500))
+                    : Promise.resolve();
+
+                const [response] = await Promise.all([
+                    fetchPromise,
+                    minTimePromise,
+                ]);
                 const data = await response.json();
 
                 if (response.ok && data.success) {
                     setProfessions(data.professions);
                     setTotalPages(data.pagination?.totalPages || 1);
+                    setHasError(false);
 
                     // Cache the result
                     adminCache.set(cacheKey, {
@@ -133,6 +149,7 @@ export default function ProfessionsManager() {
                         pagination: data.pagination,
                     });
                 } else {
+                    setHasError(true);
                     showToast(
                         data.error || "Błąd podczas pobierania zawodów",
                         "error"
@@ -140,6 +157,7 @@ export default function ProfessionsManager() {
                 }
             } catch (error: any) {
                 if (error.name !== "AbortError") {
+                    setHasError(true);
                     showToast("Błąd połączenia z serwerem", "error");
                 }
             } finally {
@@ -276,17 +294,26 @@ export default function ProfessionsManager() {
                     </p>
                 </div>
                 <div className="flex items-center space-x-4">
-                    <DataStatusIndicator 
+                    <DataStatusIndicator
                         status={
-                            hasError 
-                                ? "error" 
-                                : backgroundLoading 
-                                    ? "refreshing" 
-                                    : loading 
-                                        ? "loading" 
-                                        : "current"
-                        } 
+                            hasError
+                                ? "error"
+                                : backgroundLoading
+                                ? "refreshing"
+                                : loading
+                                ? "loading"
+                                : "current"
+                        }
                     />
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => fetchProfessions(true)}
+                        disabled={loading || backgroundLoading}
+                        className="text-xs"
+                    >
+                        Odśwież
+                    </Button>
                 </div>
             </div>
 

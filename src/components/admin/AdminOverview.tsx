@@ -11,8 +11,12 @@ import {
 } from "@/components/ui/card";
 import { BarChart, DonutChart } from "@/components/ui/charts";
 import { adminCache, generateCacheKey } from "@/lib/admin-cache";
-import { DataStatusIndicator, type DataStatus } from "@/components/ui/data-status-indicator";
+import {
+    DataStatusIndicator,
+    type DataStatus,
+} from "@/components/ui/data-status-indicator";
 import { Button } from "@/components/ui/button";
+import { useManualRefresh } from "@/hooks/useManualRefresh";
 
 export default function AdminOverview() {
     const router = useRouter();
@@ -20,6 +24,7 @@ export default function AdminOverview() {
     const [loading, setLoading] = useState(true);
     const [backgroundLoading, setBackgroundLoading] = useState(false);
     const [hasError, setHasError] = useState(false);
+    const { isManualRefreshing, triggerManualRefresh } = useManualRefresh();
 
     // Memoized fetch function
     const fetchStats = useCallback(async (forceRefresh = false) => {
@@ -44,15 +49,25 @@ export default function AdminOverview() {
 
         try {
             if (!forceRefresh) setLoading(true);
+            else setBackgroundLoading(true);
             setHasError(false);
 
-            const response = await fetch("/api/admin/stats");
+            // For manual refresh, ensure minimum visual feedback time
+            const fetchPromise = fetch("/api/admin/stats");
+            const minTimePromise = forceRefresh
+                ? new Promise((resolve) => setTimeout(resolve, 1500))
+                : Promise.resolve();
+
+            const [response] = await Promise.all([
+                fetchPromise,
+                minTimePromise,
+            ]);
             const data = await response.json();
-            
+
             if (data.success) {
                 setStats(data.stats);
                 setHasError(false);
-                
+
                 // Cache the data
                 adminCache.set(cacheKey, data.stats);
             } else {
@@ -67,6 +82,11 @@ export default function AdminOverview() {
             setBackgroundLoading(false);
         }
     }, []);
+
+    // Manual refresh with forced visual feedback
+    const handleManualRefresh = useCallback(async () => {
+        await fetchStats(true);
+    }, [fetchStats]);
 
     useEffect(() => {
         fetchStats();
@@ -143,7 +163,10 @@ export default function AdminOverview() {
                         </p>
                     </div>
                     <div className="flex items-center space-x-4">
-                        <DataStatusIndicator status="loading" />
+                        <DataStatusIndicator
+                            status="loading"
+                            forceRefreshing={isManualRefreshing}
+                        />
                         <Button
                             variant="outline"
                             size="sm"
@@ -173,22 +196,25 @@ export default function AdminOverview() {
                     </p>
                 </div>
                 <div className="flex items-center space-x-4">
-                    <DataStatusIndicator 
+                    <DataStatusIndicator
                         status={
-                            hasError 
-                                ? "error" 
-                                : backgroundLoading 
-                                    ? "refreshing" 
-                                    : loading 
-                                        ? "loading" 
-                                        : "current"
-                        } 
+                            hasError
+                                ? "error"
+                                : backgroundLoading
+                                ? "refreshing"
+                                : loading
+                                ? "loading"
+                                : "current"
+                        }
+                        forceRefreshing={isManualRefreshing}
                     />
                     <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => fetchStats(true)}
-                        disabled={loading || backgroundLoading}
+                        onClick={handleManualRefresh}
+                        disabled={
+                            loading || backgroundLoading || isManualRefreshing
+                        }
                         className="text-xs"
                     >
                         Odśwież
