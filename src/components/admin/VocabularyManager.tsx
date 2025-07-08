@@ -151,7 +151,15 @@ export default function VocabularyManager() {
 
     // Refs for tracking ongoing requests to prevent race conditions
     const abortControllerRef = useRef<AbortController | null>(null);
-    const backgroundRefreshRef = useRef<NodeJS.Timeout | null>(null);
+    const backgroundRefreshRef = useRef<{
+        vocabulary: NodeJS.Timeout | null;
+        categories: NodeJS.Timeout | null;
+        professions: NodeJS.Timeout | null;
+    }>({
+        vocabulary: null,
+        categories: null,
+        professions: null,
+    });
 
     const limit = 10;
 
@@ -183,7 +191,10 @@ export default function VocabularyManager() {
                     // Schedule background refresh if stale
                     if (adminCache.isStale(cacheKey)) {
                         setBackgroundLoading(true);
-                        setTimeout(() => fetchVocabulary(true), 100);
+                        backgroundRefreshRef.current.vocabulary = setTimeout(
+                            () => fetchVocabulary(true),
+                            100
+                        );
                     }
                     return;
                 }
@@ -195,6 +206,12 @@ export default function VocabularyManager() {
                     abortControllerRef.current.abort();
                 }
                 abortControllerRef.current = new AbortController();
+
+                // Clear any pending background refresh
+                if (backgroundRefreshRef.current.vocabulary) {
+                    clearTimeout(backgroundRefreshRef.current.vocabulary);
+                    backgroundRefreshRef.current.vocabulary = null;
+                }
 
                 if (!forceRefresh) setLoading(true);
                 else setBackgroundLoading(true);
@@ -289,7 +306,10 @@ export default function VocabularyManager() {
                     // Schedule background refresh if stale
                     if (adminCache.isStale(cacheKey)) {
                         setBackgroundLoading(true);
-                        setTimeout(() => fetchCategories(true), 100);
+                        backgroundRefreshRef.current.categories = setTimeout(
+                            () => fetchCategories(true),
+                            100
+                        );
                     }
                     return;
                 }
@@ -300,6 +320,12 @@ export default function VocabularyManager() {
                     abortControllerRef.current.abort();
                 }
                 abortControllerRef.current = new AbortController();
+
+                // Clear any pending background refresh
+                if (backgroundRefreshRef.current.categories) {
+                    clearTimeout(backgroundRefreshRef.current.categories);
+                    backgroundRefreshRef.current.categories = null;
+                }
 
                 if (!forceRefresh) setLoading(true);
                 else setBackgroundLoading(true);
@@ -375,13 +401,22 @@ export default function VocabularyManager() {
 
                     // Schedule background refresh if stale
                     if (adminCache.isStale(cacheKey)) {
-                        setTimeout(() => fetchProfessions(true), 100);
+                        backgroundRefreshRef.current.professions = setTimeout(
+                            () => fetchProfessions(true),
+                            100
+                        );
                     }
                     return;
                 }
             }
 
             try {
+                // Clear any pending background refresh
+                if (backgroundRefreshRef.current.professions) {
+                    clearTimeout(backgroundRefreshRef.current.professions);
+                    backgroundRefreshRef.current.professions = null;
+                }
+
                 const response = await fetch("/api/admin/professions");
                 const data = await response.json();
 
@@ -419,20 +454,6 @@ export default function VocabularyManager() {
         fetchProfessions();
     }, [fetchCategories, fetchProfessions]);
 
-    // Preload data for tab switching
-    const preloadTabData = useCallback(
-        (tab: "vocabulary" | "categories") => {
-            if (tab === "vocabulary") {
-                // Preload vocabulary data in background
-                setTimeout(() => fetchVocabulary(), 50);
-            } else {
-                // Preload categories data in background
-                setTimeout(() => fetchCategories(), 50);
-            }
-        },
-        [fetchVocabulary, fetchCategories]
-    );
-
     // Optimized tab switching with preloading
     const handleTabSwitch = useCallback((tab: "vocabulary" | "categories") => {
         setActiveTab(tab);
@@ -449,8 +470,15 @@ export default function VocabularyManager() {
             if (abortControllerRef.current) {
                 abortControllerRef.current.abort();
             }
-            if (backgroundRefreshRef.current) {
-                clearTimeout(backgroundRefreshRef.current);
+            // Clear all background refresh timeouts
+            if (backgroundRefreshRef.current.vocabulary) {
+                clearTimeout(backgroundRefreshRef.current.vocabulary);
+            }
+            if (backgroundRefreshRef.current.categories) {
+                clearTimeout(backgroundRefreshRef.current.categories);
+            }
+            if (backgroundRefreshRef.current.professions) {
+                clearTimeout(backgroundRefreshRef.current.professions);
             }
         };
     }, []);
