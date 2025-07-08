@@ -11,8 +11,7 @@ import ImageComponent from "@/components/ImageComponent";
 export default function Home() {
   const { hero, secondSection } = HomeContent;
 
-  // Create an array to loop through for our images
-  const imageCount = 6; // Number of images to display
+  const educationTracks = Object.values(secondSection.images);
 
   return (
     <div>
@@ -24,7 +23,7 @@ export default function Home() {
       </div>
 
       <main>
-        <section className="h-screen flex flex-col items-center justify-center ">
+        <section className="h-screen flex flex-col items-center justify-center border-b-2 border-neutral-800">
           <h1 className="text-3xl w-full font-bold text-center text-stone-200">
             {hero.title} <br />
             <LineShadowText
@@ -54,12 +53,12 @@ export default function Home() {
             </h2>
           </div>
           <div className="w-full">
-            {Array.from({ length: imageCount }).map((_, index) => (
+            {educationTracks.map((track, index) => (
               <ImageComponent
                 key={index}
-                header={secondSection.images.programista.header}
-                src={secondSection.images.programista.image}
-                alt={secondSection.images.programista.alt}
+                header={track.header}
+                src={track.image}
+                alt={track.alt}
                 width={800}
                 height={800}
                 position={index % 2 === 0 ? "left" : "right"}
