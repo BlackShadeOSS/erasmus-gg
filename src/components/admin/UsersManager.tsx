@@ -209,10 +209,19 @@ export default function UsersManager() {
         }
 
         try {
-            const url = "/api/admin/users";
+            const url = editingUser
+                ? `/api/admin/users?id=${editingUser.id}`
+                : "/api/admin/users";
             const method = editingUser ? "PUT" : "POST";
             const payload = editingUser
-                ? { ...formData, id: editingUser.id }
+                ? {
+                      username: formData.username,
+                      email: formData.email,
+                      fullName: formData.full_name,
+                      role: formData.role,
+                      isActive: formData.is_active,
+                      ...(formData.password && { password: formData.password }),
+                  }
                 : formData;
 
             const response = await fetch(url, {
@@ -269,16 +278,15 @@ export default function UsersManager() {
     // Toggle user status
     const toggleUserStatus = async (user: User) => {
         try {
-            const response = await fetch("/api/admin/users", {
+            const response = await fetch(`/api/admin/users?id=${user.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    id: user.id,
-                    is_active: !user.is_active,
                     username: user.username,
                     email: user.email,
-                    full_name: user.full_name || "",
+                    fullName: user.full_name || "",
                     role: user.role,
+                    isActive: !user.is_active,
                 }),
             });
 

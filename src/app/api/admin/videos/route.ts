@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
 
     // Apply filters
     if (search) {
-      query = query.or(`title_en.ilike.%${search}%,title_pl.ilike.%${search}%,description_en.ilike.%${search}%,description_pl.ilike.%${search}%`)
+      query = query.or(`title_en.ilike.%${search}%,title.ilike.%${search}%,description_en.ilike.%${search}%,description.ilike.%${search}%`)
     }
 
     if (professionId) {
@@ -55,9 +55,16 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Map database columns to frontend interface
+    const mappedVideos = videos?.map(video => ({
+      ...video,
+      title_pl: video.title, // Map title to title_pl for frontend
+      description_pl: video.description // Map description to description_pl for frontend
+    })) || []
+
     return NextResponse.json({
       success: true,
-      videos,
+      videos: mappedVideos,
       pagination: {
         page,
         limit,
@@ -109,10 +116,10 @@ export async function POST(request: NextRequest) {
       .from('videos')
       .insert({
         profession_id,
+        title: title_pl, // Map title_pl to title column
         title_en,
-        title_pl,
+        description: description_pl, // Map description_pl to description column
         description_en,
-        description_pl,
         video_url,
         thumbnail_url,
         duration,
@@ -126,15 +133,23 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (error) {
+      console.error('Database error creating video:', error)
       return NextResponse.json(
         { error: 'Failed to create video' },
         { status: 500 }
       )
     }
 
+    // Map database columns to frontend interface
+    const mappedVideo = {
+      ...newVideo,
+      title_pl: newVideo.title, // Map title to title_pl for frontend
+      description_pl: newVideo.description // Map description to description_pl for frontend
+    }
+
     return NextResponse.json({
       success: true,
-      video: newVideo
+      video: mappedVideo
     })
 
   } catch (error) {
@@ -182,10 +197,10 @@ export async function PUT(request: NextRequest) {
       .from('videos')
       .update({
         profession_id,
+        title: title_pl, // Map title_pl to title column
         title_en,
-        title_pl,
+        description: description_pl, // Map description_pl to description column
         description_en,
-        description_pl,
         video_url,
         thumbnail_url,
         duration,
@@ -200,15 +215,23 @@ export async function PUT(request: NextRequest) {
       .single()
 
     if (error) {
+      console.error('Database error updating video:', error)
       return NextResponse.json(
         { error: 'Failed to update video' },
         { status: 500 }
       )
     }
 
+    // Map database columns to frontend interface
+    const mappedVideo = {
+      ...updatedVideo,
+      title_pl: updatedVideo.title, // Map title to title_pl for frontend
+      description_pl: updatedVideo.description // Map description to description_pl for frontend
+    }
+
     return NextResponse.json({
       success: true,
-      video: updatedVideo
+      video: mappedVideo
     })
 
   } catch (error) {

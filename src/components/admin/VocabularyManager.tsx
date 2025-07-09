@@ -521,8 +521,9 @@ export default function VocabularyManager() {
                 setEditingEntry(null);
                 setFormData(initialVocabularyFormData);
 
-                // Invalidate vocabulary cache
+                // Invalidate vocabulary and stats cache
                 adminCache.invalidate("vocabulary");
+                adminCache.invalidate("admin-stats");
                 // Refresh data
                 fetchVocabulary(true);
             } else {
@@ -548,8 +549,9 @@ export default function VocabularyManager() {
             if (response.ok) {
                 showToast("Wpis słownictwa został usunięty", "success");
 
-                // Invalidate vocabulary cache
+                // Invalidate vocabulary and stats cache
                 adminCache.invalidate("vocabulary");
+                adminCache.invalidate("admin-stats");
                 // Refresh data
                 fetchVocabulary(true);
             } else {
@@ -583,17 +585,17 @@ export default function VocabularyManager() {
                 ? {
                       id: editingCategory.id,
                       name: categoryFormData.name,
-                      name_en: categoryFormData.nameEn,
+                      nameEn: categoryFormData.nameEn,
                       description: categoryFormData.description,
-                      profession_id: categoryFormData.professionId,
-                      order_index: categoryFormData.orderIndex,
+                      professionId: categoryFormData.professionId,
+                      orderIndex: categoryFormData.orderIndex,
                   }
                 : {
                       name: categoryFormData.name,
-                      name_en: categoryFormData.nameEn,
+                      nameEn: categoryFormData.nameEn,
                       description: categoryFormData.description,
-                      profession_id: categoryFormData.professionId,
-                      order_index: categoryFormData.orderIndex,
+                      professionId: categoryFormData.professionId,
+                      orderIndex: categoryFormData.orderIndex,
                   };
 
             const response = await fetch(url, {
@@ -615,9 +617,10 @@ export default function VocabularyManager() {
                 setEditingCategory(null);
                 setCategoryFormData(initialCategoryFormData);
 
-                // Invalidate both categories and vocabulary cache
+                // Invalidate both categories, vocabulary, and stats cache
                 adminCache.invalidate("categories");
                 adminCache.invalidate("vocabulary");
+                adminCache.invalidate("admin-stats");
                 // Refresh data
                 fetchCategories(true);
             } else {
@@ -642,9 +645,10 @@ export default function VocabularyManager() {
             if (response.ok) {
                 showToast("Kategoria została usunięta", "success");
 
-                // Invalidate both categories and vocabulary cache
+                // Invalidate both categories, vocabulary, and stats cache
                 adminCache.invalidate("categories");
                 adminCache.invalidate("vocabulary");
+                adminCache.invalidate("admin-stats");
                 // Refresh data
                 fetchCategories(true);
             } else {
