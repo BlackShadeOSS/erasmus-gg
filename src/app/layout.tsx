@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vocaba",
-  description: "Vocaba",
+  title: "VocEnglish",
+  description: "VocEnglish",
 };
 
 export default function RootLayout({
