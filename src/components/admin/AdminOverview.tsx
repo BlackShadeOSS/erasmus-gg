@@ -253,9 +253,6 @@ export default function AdminOverview() {
                             {stats.vocabulary?.total || 0}
                         </div>
                         <div className="text-sm text-neutral-400">Słówka</div>
-                        <div className="text-xs text-neutral-500 mt-1">
-                            {stats.vocabulary?.active || 0} aktywnych
-                        </div>
                     </div>
                     <div className="bg-neutral-800/90 backdrop-blur-md border border-neutral-600/80 rounded-lg p-4">
                         <div className="text-2xl font-bold text-purple-400">
@@ -383,15 +380,6 @@ export default function AdminOverview() {
                                                 </span>
                                                 <span className="text-neutral-200">
                                                     {stats.vocabulary?.total ||
-                                                        0}
-                                                </span>
-                                            </div>
-                                            <div className="flex justify-between text-sm">
-                                                <span className="text-neutral-400">
-                                                    Aktywne:
-                                                </span>
-                                                <span className="text-green-400">
-                                                    {stats.vocabulary?.active ||
                                                         0}
                                                 </span>
                                             </div>
