@@ -1,23 +1,19 @@
 export const NavBarContent = {
   navItems: [
     {
-      label: "Home",
+      label: "Strona główna",
       href: "/"
     },
     {
-      label: "About",
+      label: "Szkoła",
       href: "/about"
     },
     {
-      label: "Services",
-      href: "/services"
-    },
-    {
-      label: "Login",
+      label: "Logowanie",
       href: "/login"
     },
     {
-      label: "Register",
+      label: "Rejestracja",
       href: "/register",
       highlight: true
     }
