@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
       // Vocabulary stats
       supabaseAdmin
         .from('vocabulary')
-        .select('difficulty_level, is_active', { count: 'exact' }),
+        .select('difficulty_level', { count: 'exact' }),
       
       // Videos stats
       supabaseAdmin
@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
       },
       vocabulary: {
         total: vocabularyRes.count || 0,
-        active: vocabularyRes.data?.filter((v: any) => v.is_active).length || 0,
+        active: vocabularyRes.count || 0, // All vocabulary entries are considered active since there's no is_active column
         byLevel: {
           level1: vocabularyRes.data?.filter((v: any) => v.difficulty_level === 1).length || 0,
           level2: vocabularyRes.data?.filter((v: any) => v.difficulty_level === 2).length || 0,
