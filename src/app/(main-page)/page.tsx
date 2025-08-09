@@ -7,6 +7,8 @@ import GlowingCircle from "@/components/ui/glowing-circle";
 import { HomeContent } from "@/data/HomeContent";
 import Footer from "@/components/Footer";
 import ImageComponent from "@/components/ImageComponent";
+import icon from "@/lib/NavIcon.svg";
+import Image from "next/image";
 
 export default function Home() {
   const { hero, secondSection } = HomeContent;
@@ -22,33 +24,36 @@ export default function Home() {
         <GlowingCircle isRight={true} />
       </div>
 
-      <main>
-        <section className="h-screen flex flex-col items-center justify-center border-b-2 border-neutral-800">
-          <h1 className="text-3xl w-full font-bold text-center text-stone-200">
+      <main className="pt-20">
+        <section className="min-h-[100svh] flex flex-col items-center justify-center border-b-2 border-neutral-800 px-4 text-center">
+          <div className="bg-neutral-700/50 rounded-md w-12 h-11 mx-1 backdrop-blur-md flex items-center justify-center m-2">
+            <Image src={icon} width={45} alt={hero.iconAlt} />
+          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl w-full font-bold text-stone-200">
             {hero.title} <br />
             <LineShadowText
-              className="mx-2 italic text-amber-200 text-8xl"
+              className="mx-2 italic text-amber-200 text-5xl sm:text-6xl md:text-7xl lg:text-8xl"
               shadowColor="#fdef7b"
             >
               {hero.highlightedText}
             </LineShadowText>
           </h1>
-          <h2 className="text-lg text-stone-200/60 mt-4 w-xl text-center">
+          <h2 className="text-base sm:text-lg text-stone-200/70 mt-4 max-w-2xl mx-auto px-2">
             {hero.heroDescription}
           </h2>
           <div className="-z-10">
             <DotPattern
               glow={false}
               className={cn(
-                "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)] opacity-50 -translate-y-1/40"
+                "[mask-image:radial-gradient(300px_circle_at_center,white,transparent)] sm:[mask-image:radial-gradient(450px_circle_at_center,white,transparent)] md:[mask-image:radial-gradient(500px_circle_at_center,white,transparent)] opacity-50 -translate-y-1/40"
               )}
             />
           </div>
         </section>
 
-        <section className="bg-neutral-900/40 text-stone-300 p-10 flex flex-col items-center">
-          <div className="max-w-4xl text-center h-20 my-10">
-            <h2 className="text-5xl font-semibold mb-4">
+        <section className="bg-neutral-900/40 text-stone-300 px-4 sm:px-6 lg:px-10 py-10 flex flex-col items-center">
+          <div className="max-w-4xl text-center min-h-12 my-6 sm:my-10">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-2 sm:mb-4">
               {secondSection.title}
             </h2>
           </div>
