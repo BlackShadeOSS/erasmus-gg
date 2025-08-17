@@ -3,14 +3,13 @@ import Plansza from "@/components/pamiec/plansza";
 import { createRoot } from 'react-dom/client';
 import { ReactElement } from "react";
 import "./styles.css";
-import { log } from "node:console";
 
 //globals
 let planszaPojemnikNode:any;
 let planszaEl:any;
-let listaSlowek: any;
-let pobranoSlowka: boolean = false;
-let zapytSkon: boolean = false;
+// let listaSlowek: any;
+// let pobranoSlowka: boolean = false;
+// let zapytSkon: boolean = false;
 
 // async function zapytanieApi(url: string, opts?: RequestInit) {
 //         const res = await fetch(url, {
@@ -23,10 +22,8 @@ let zapytSkon: boolean = false;
 //         return { ok: res.ok, json };
 
 //     }
-// //
 
 // try {
-//     // const v = await zapytanieApi("/api/user/vocabulary");
 //     const v = await zapytanieApi("https://erasmus-gg.vercel.app/api/user/vocabulary");
 
 //     if (v.ok) {console.log("ok")} else {
@@ -48,7 +45,7 @@ enum Trudnosc {
     ekspert
 }
 
-let trudnosci: {
+const trudnosci: {
     key: number,
     nazwa: string,
     rozmiarPlanszy: { // x * y
@@ -59,35 +56,34 @@ let trudnosci: {
 }[] = [];
 
 
-function zapytanieFetch(method:string, url:string, data:any = null) {
-    return fetch(url, {
-        method: method,
-        cache: "no-cache",
-        headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: data ? JSON.stringify(data) : undefined
-    });
-}
+// function zapytanieFetch(method:string, url:string, data:any = null) {
+//     return fetch(url, {
+//         method: method,
+//         cache: "no-cache",
+//         headers: {
+//             'Access-Control-Allow-Origin': '*',
+//             'Content-Type': 'application/json',
+//             'Accept': 'application/json'
+//         },
+//         body: data ? JSON.stringify(data) : undefined
+//     });
+// }
 
 function zacznijGre(e: any) {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
     const formJson = Object.fromEntries(formData.entries());
-    let a = (formJson.trudnosc) as string;
-    let numTrudnosc = parseInt(a);
+    const a = (formJson.trudnosc) as string;
+    const numTrudnosc = parseInt(a);
     document.getElementById("gameSetUp")!.style.display = "none";
     rysujPlansze(numTrudnosc);
 }
 
 function rysujPlansze(trudnosc: number) {
-    let nazwaTrudnosci:string = Trudnosc[trudnosc];
-    let idTrudnosci = trudnosc;
-    let wysokoscPlanszy = trudnosci[idTrudnosci].rozmiarPlanszy.y;
-    let szerokoscPlanszy = trudnosci[idTrudnosci].rozmiarPlanszy.x;
+    const idTrudnosci = trudnosc;
+    const wysokoscPlanszy = trudnosci[idTrudnosci].rozmiarPlanszy.y;
+    const szerokoscPlanszy = trudnosci[idTrudnosci].rozmiarPlanszy.x;
     rysujxyKart(wysokoscPlanszy, szerokoscPlanszy);
     
 }

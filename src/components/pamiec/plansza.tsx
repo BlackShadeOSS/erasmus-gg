@@ -1,19 +1,13 @@
 'use client'
-import Karta from "@/components/pamiec/karta";
-import { log } from "node:console";
-import { ReactElement, ReactHTMLElement } from "react";
-import { useRef } from 'react';
+import { ReactElement } from "react";
 import "@/app/(games)/pamiec/styles.css"
 import { Root } from "react-dom/client";
-import { Elsie } from "next/font/google";
-
 
 //TODO remove all debug comments at the end
 //TODO get all todo comments done
 
-
 ///TODO mieszany tryb wszyśćko
-let listaSlowek = [//powinno byc pobierane ze słownika, i zależne od wybreanego zawodu
+const listaSlowek = [//powinno byc pobierane ze słownika, i zależne od wybreanego zawodu
     //w db - id, category_id, term_en, term_pl, definition_en, definition_pl, difficulty_level
    {
         pol: "język programowania",
@@ -110,14 +104,14 @@ let listaSlowek = [//powinno byc pobierane ze słownika, i zależne od wybreaneg
 ];
 
 //global var
-let terazOdkryte: ReactElement[] = [];
+const terazOdkryte: HTMLElement[] = [];
 let liczbaUsunietychKart = 0;//
 let proby:number = 7;// proby = ilosckart/2 +1
-let punktyUzytkownika:number = 0; //powinno być pobierane jeśli cos takiego ma być
-let punkty:number = 0;
+// let punktyUzytkownika:number = 0; //powinno być pobierane jeśli cos takiego ma być
+// let punkty:number = 0;
 let licznik:number = 0;//zlicza karty
 let licznikPar: number = -1;
-let jezyk = {
+const jezyk = {
     ang:"ang",
     pol:"pol"
 };
@@ -135,11 +129,9 @@ const kartaCSS: string = " inline-flex items-center justify-center select-none r
 // const kartaCSS: string = "inline-flex items-center justify-center select-none rounded-2xl m-8 ease-in-out text-white border-white/5 backdrop-blur-[25px] bg-origin-border  shadow-sm not-disabled:hover:bg-white/90 not-disabled:hover:text-black not-disabled:hover:shadow-button transition-all duration-200 focus-visible:ring-4 focus-visible:ring-white/30 focus-visible:outline-hidden focus-visible:bg-white/90 focus-visible:text-black after:absolute  after:top-[-2px] after:left-[-2px] after:rounded-[1rem] after:bg-repeat after:pointer-events-none text-base h-12 gap-0 font-semibold size-1/8 max-w-1/4 cursor-pointer max-w-full rounded-lg min-w-fit ";//old
 const nazwaKlasyKartyPol: string = "karta pol " + kartaCSS + rozmiarKartyCSS;
 const nazwaKlasyKartyAng: string = "karta ang " + kartaCSS + rozmiarKartyCSS;
-let karty: any[] = [];
 //TODO adjust card size
 //w-300px h-300px bg-red when this is set it makes a rectangle instaed of a square
 function stworzKarte(id: number, slowko:string, nazwaKlasy:string, jezyk:string = "null", idPary:number = -1) {
-    let rozmiarKartyCSS: string = "";
     licznik ++;
     return (
         <div key={id} data-para={idPary} data-odkryta={false} className={flipCardCSS + nazwaKlasy + " flip-card"} onClick={odkryjKarte} data-jezyk={jezyk}>
@@ -174,7 +166,6 @@ function stworzPareKart(slowka:{pol:string, ang:string}) {
 
 function losujMiejscaKart(karty: any[], sila:number = 1) {
     for (let i = 0; i < (karty.length*sila); i++) {
-        let temp: ReactElement;
         let losowyElement = losowaLiczbaCalkowita(0, karty.length-1);
         let losowaPozycja = losowaLiczbaCalkowita(0, karty.length-1);
 
@@ -183,7 +174,7 @@ function losujMiejscaKart(karty: any[], sila:number = 1) {
             losowaPozycja = losowaLiczbaCalkowita(0, karty.length-1);
         }
 
-        temp = karty[losowaPozycja];
+        const temp: ReactElement = karty[losowaPozycja];
         karty[losowaPozycja] = karty[losowyElement];
         karty[losowyElement] = temp;
 
@@ -195,10 +186,10 @@ function losowaLiczbaCalkowita(min:number, max:number) {//inclusive
   const maxFloored = Math.floor(max);
   return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); // The maximum is inclusive and the minimum is inclusive
 }
+//TODO
+// function sprawdzOdkryteKarty() {
 
-function sprawdzOdkryteKarty() {
-
-}
+// }
 
 /**
  * Uruchamiane przy kliknięciu karty
@@ -211,7 +202,7 @@ function odkryjKarte(e: any) {
     if (e.ctrlKey) {
        koniecGry(false)//debug; 
     }
-    let element = e.target;
+    const element = e.target;
 
     if (ostatniaKarta && ostatniaKarta.parentElement.parentElement == element.parentElement.parentElement) {
         // console.log("! ta sama karta pod rząd");
@@ -231,9 +222,9 @@ function odkryjKarte(e: any) {
 
     ostatniaKarta = element;
 
-    let jezykKarty = element.getAttribute("data-jezyk");
-    let idPary = element.parentElement.parentElement.getAttribute("data-para");
-    let kartaOdkryta: boolean = element.getAttribute("data-odkryta") == "true" ? true : false;
+    // const jezykKarty = element.getAttribute("data-jezyk");
+    const idPary:string = element.parentElement.parentElement.getAttribute("data-para");
+    const kartaOdkryta: boolean = element.getAttribute("data-odkryta") == "true" ? true : false;
     const rot180 = "rotateY(180deg)";
     const rot0 = "rotateY(0deg)";
 
@@ -263,7 +254,7 @@ function odkryjKarte(e: any) {
     } else {
          if (element.classList[0].includes("flip-card")) {
             
-            let transform = element.parentElement.style;
+            const transform = element.parentElement.style;
   
         if (transform.transform == rot180) {
             
@@ -281,10 +272,10 @@ function odkryjKarte(e: any) {
 
             setTimeout(()=>{
                  
-        
-        let idPary_teraz = terazOdkryte[1].parentElement.parentElement.getAttribute("data-para");
-        idPary_teraz = idPary;
-        let idPary_poprzednie = terazOdkryte[0].parentElement.parentElement.getAttribute("data-para");
+
+        // let idPary_teraz: string = idPary;
+        const idPary_teraz: string = idPary;
+        const idPary_poprzednie: string | null = terazOdkryte[0]!.parentElement!.parentElement!.getAttribute("data-para");
         
         
         if (idPary_teraz != null && idPary_teraz == idPary_poprzednie) {//są parą
@@ -292,10 +283,10 @@ function odkryjKarte(e: any) {
             console.log("ids : " );
             console.log(idPary_teraz);
             console.log(idPary_poprzednie);
-            let kartaEl = terazOdkryte[0].parentElement.parentElement;
+            // const kartaEl = terazOdkryte[0]!.parentElement!.parentElement;
 
-            terazOdkryte[0].parentElement.parentElement.style.visibility = "hidden";
-            terazOdkryte[1].parentElement.parentElement.style.visibility = "hidden";
+            terazOdkryte[0]!.parentElement!.parentElement!.style.visibility = "hidden";
+            terazOdkryte[1]!.parentElement!.parentElement!.style.visibility = "hidden";
             liczbaUsunietychKart += 2;
             let zostalo = (document.getElementById("zostaloKart")?.innerText) as unknown as number;
             zostalo -= 2;
@@ -305,20 +296,18 @@ function odkryjKarte(e: any) {
             }
             
                while (terazOdkryte.length > 0) {
-                terazOdkryte.pop().setAttribute("data-odkryta", "false");
+                terazOdkryte!.pop()!.setAttribute("data-odkryta", "false");
             }
             
-            if (liczbaUsunietychKart == licznik) {//??does not trigger
-        console.log("koniecGry()");
-        
-        koniecGry();
-        return 0;
-    }
+            if (liczbaUsunietychKart == licznik) {
+                koniecGry();
+                return 0;
+            }
         
         } else {
             console.log("odwracam");
-            terazOdkryte[1].parentElement.style.transform = rot0;
-            terazOdkryte[0].parentElement.style.transform = rot0;
+            terazOdkryte[1]!.parentElement!.style.transform = rot0;
+            terazOdkryte[0]!.parentElement!.style.transform = rot0;
             proby --;// one func
 
             if (proby <= 0) {
@@ -330,7 +319,7 @@ function odkryjKarte(e: any) {
             document.getElementById("zostaloProb")!.innerText = (proby) as unknown as string;         //
 
             while (terazOdkryte.length > 0) {
-                terazOdkryte.pop().setAttribute("data-odkryta", "false");
+                terazOdkryte!.pop()!.setAttribute("data-odkryta", "false");
 
             }
 
@@ -356,16 +345,15 @@ function sprawdzStanPlanszy() {
 }
 
 export default function Plansza({ szerokosc, wysokosc, root}: {szerokosc: number, wysokosc: number, root:Root}) {
-let karty: any[] = [];
+const karty: any[] = [];
 planszaRoot = root;
-let szerokoscCSS: string = "w-full";//w-screen
+const szerokoscCSS: string = "w-full";//w-screen
 iloscKart = szerokosc * wysokosc;//docelowa ilość kart
 proby = (Math.ceil(iloscKart/2)) + 1;
 
 
-let i = 0;//debug
 let losowaParaSlowek: number = losowaLiczbaCalkowita(0, listaSlowek.length-1);
-let listaUżytychPar: number[] = [];
+const listaUżytychPar: number[] = [];
 while (licznik < iloscKart) {//nie ma znaczenia czy tworzymy pojedyńczo czy podwójną funkcją
 
     if (listaSlowek.length*2 >= iloscKart) {//mamy wystarczająco słówek
@@ -374,7 +362,7 @@ while (licznik < iloscKart) {//nie ma znaczenia czy tworzymy pojedyńczo czy pod
         }
     }
 
-    let noweKarty = stworzPareKart(listaSlowek[losowaParaSlowek]);
+    const noweKarty = stworzPareKart(listaSlowek[losowaParaSlowek]);
     listaUżytychPar.push(losowaParaSlowek);
     losowaParaSlowek = losowaLiczbaCalkowita(0, listaSlowek.length-1);
     karty.push(noweKarty[0]);
@@ -382,7 +370,6 @@ while (licznik < iloscKart) {//nie ma znaczenia czy tworzymy pojedyńczo czy pod
     if (licznik == 0) {
         break;
     }
-    i++;
 }
 
 
@@ -412,7 +399,7 @@ function koniecGry(wygrana: boolean = true) {
             p-3 px-4 hover:bg-transparent hover:text-green-200 hover:border-green-200
            active:opacity-50`;
     if (wygrana) {
-        let wygranaHTML:string = `<p>Gratulacje!</p>
+        const wygranaHTML:string = `<p>Gratulacje!</p>
                     <p>Udało się tobie odkryć poprawnie wszystkie karty.</p>
                                     <p>Odkryte karty:</p>
                                     <p id="wynikiOdkryteKarty">${liczbaUsunietychKart}/${iloscKart}</p>
@@ -424,7 +411,7 @@ function koniecGry(wygrana: boolean = true) {
         //TODO failsafe jak nie załaduje słówek
         document.getElementById("wynikiPojemnik")!.innerHTML = wygranaHTML;
     } else {
-        let przegranaHTML = `<p>Nie udało się!</p>
+        const przegranaHTML = `<p>Nie udało się!</p>
             <p>Odkryte karty:</p>
             <p id="wynikiOdkryteKarty">${liczbaUsunietychKart}/${iloscKart}</p>
             <p>Spróbuj jeszcze raz, możesz następnym razem wybrać mnijeszą trudność.</p>
