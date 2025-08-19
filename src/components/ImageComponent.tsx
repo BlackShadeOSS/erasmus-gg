@@ -1,13 +1,6 @@
 import Image, { StaticImageData } from "next/image";
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 interface ImageComponentProps {
   header: string;
   src: StaticImageData;
@@ -15,6 +8,7 @@ interface ImageComponentProps {
   width?: number;
   height?: number;
   position?: "left" | "right";
+  sizes?: string;
 }
 
 const ImageComponent: React.FC<ImageComponentProps> = ({
@@ -24,9 +18,10 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
   width,
   height,
   position = "left",
+  sizes = "(min-width: 1024px) 60vw, (min-width: 768px) 80vw, 100vw",
 }) => {
   return (
-    <div className="p-4 md:p-8 flex flex-col gap-8 max-w-6xl mx-auto transition-transform duration-300 ease-in-out hover:scale-102">
+    <div className="p-4 md:p-8 flex flex-col gap-8 max-w-6xl mx-auto transition-transform duration-300 ease-in-out hover:scale-[1.02]">
       <div
         className={`flex ${
           position === "right" ? "justify-end" : "justify-start"
@@ -41,7 +36,7 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
             }`}
           >
             <CardHeader>
-              <h2 className="text-2xl italic">{header}</h2>
+              <h2 className="text-xl sm:text-2xl italic">{header}</h2>
             </CardHeader>
             <CardContent>
               <Image
@@ -49,7 +44,8 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
                 alt={alt}
                 width={width}
                 height={height}
-                className="object-cover w-full h-full rounded-md  shadow-md"
+                sizes={sizes}
+                className="object-cover w-full h-auto rounded-md shadow-md"
               />
             </CardContent>
           </Card>
