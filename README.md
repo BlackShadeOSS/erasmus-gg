@@ -1,3 +1,5 @@
+# Erasmus-GG Project
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
@@ -59,3 +61,17 @@ These endpoints require a logged-in user (auth-token cookie).
 Debug page `/testing/user` now also:
 
 -   Search vocabulary and update mastery inline
+-   Test all user API endpoints including by-category, by-level, recommended
+-   Live refresh functionality with loading states
+-   Profile update testing
+
+## Recent Updates
+
+Fixed vocabulary not refreshing after profession change by:
+
+-   Added DB fallback for `selected_profession_id` in all vocabulary endpoints
+-   Enhanced testing page with comprehensive endpoint testing
+-   Added loading states and refresh functionality
+-   Improved error handling and user feedback
+
+All user API endpoints now properly handle profession changes and provide consistent data.
