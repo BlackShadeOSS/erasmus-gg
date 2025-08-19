@@ -60,14 +60,14 @@ export default function UserApiDebugPage() {
 
             <section>
                 <h2 className="text-xl font-semibold">/api/user/profile</h2>
-                <pre className="bg-gray-100 p-3 rounded text-xs overflow-auto">
+                <pre className="bg-stone-800 p-3 rounded text-xs overflow-auto">
                     {JSON.stringify(profile, null, 2)}
                 </pre>
             </section>
 
             <section>
                 <h2 className="text-xl font-semibold">/api/user/profession</h2>
-                <pre className="bg-gray-100 p-3 rounded text-xs overflow-auto">
+                <pre className="bg-stone-800 p-3 rounded text-xs overflow-auto">
                     {JSON.stringify(profession, null, 2)}
                 </pre>
                 <div className="flex gap-2 flex-wrap mt-2">
@@ -85,7 +85,7 @@ export default function UserApiDebugPage() {
 
             <section>
                 <h2 className="text-xl font-semibold">/api/user/vocabulary</h2>
-                <pre className="bg-gray-100 p-3 rounded text-xs overflow-auto">
+                <pre className="bg-stone-800 p-3 rounded text-xs overflow-auto">
                     {JSON.stringify(vocab, null, 2)}
                 </pre>
             </section>
@@ -94,7 +94,7 @@ export default function UserApiDebugPage() {
                 <h2 className="text-xl font-semibold">
                     /api/user/vocabulary/categories
                 </h2>
-                <pre className="bg-gray-100 p-3 rounded text-xs overflow-auto">
+                <pre className="bg-stone-800 p-3 rounded text-xs overflow-auto">
                     {JSON.stringify(categories, null, 2)}
                 </pre>
             </section>
@@ -103,7 +103,7 @@ export default function UserApiDebugPage() {
                 <h2 className="text-xl font-semibold">
                     /api/user/vocabulary/progress (summary)
                 </h2>
-                <pre className="bg-gray-100 p-3 rounded text-xs overflow-auto">
+                <pre className="bg-stone-800 p-3 rounded text-xs overflow-auto">
                     {JSON.stringify(summary, null, 2)}
                 </pre>
             </section>
@@ -175,7 +175,7 @@ function VideosBlock() {
                     Load
                 </button>
             </div>
-            <pre className="bg-gray-100 p-3 rounded text-xs overflow-auto">
+            <pre className="bg-stone-800 p-3 rounded text-xs overflow-auto">
                 {JSON.stringify(videos, null, 2)}
             </pre>
         </div>
@@ -223,7 +223,7 @@ function SearchAndProgress() {
                     Search
                 </button>
             </div>
-            <pre className="bg-gray-100 p-3 rounded text-xs overflow-auto">
+            <pre className="bg-stone-800 p-3 rounded text-xs overflow-auto">
                 {JSON.stringify(res, null, 2)}
             </pre>
             {res?.items?.length ? (
