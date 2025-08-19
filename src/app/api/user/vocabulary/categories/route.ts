@@ -9,8 +9,9 @@ export async function GET(request: NextRequest) {
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const { searchParams } = new URL(request.url)
-    let professionId = searchParams.get('professionId') || (user as any).selected_profession_id || (user as any).selectedProfessionId || ''
+    let professionId = searchParams.get('professionId') || ''
 
+    // Always fetch from DB to get latest profession
     if (!professionId) {
       const { data: dbUser } = await supabaseAdmin
         .from('users')
