@@ -11,7 +11,15 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const limit = parseInt(searchParams.get('limit') || '20')
-    const professionId = (user as any).selected_profession_id || (user as any).selectedProfessionId
+    let professionId = (user as any).selected_profession_id || (user as any).selectedProfessionId
+
+    // Always fetch from DB to get latest profession
+    const { data: dbUser } = await supabaseAdmin
+      .from('users')
+      .select('selected_profession_id')
+      .eq('id', (user as any).id)
+      .single()
+    professionId = dbUser?.selected_profession_id || ''
 
     if (!professionId) {
       return NextResponse.json({ success: true, items: [], hint: 'Set profession first' })
