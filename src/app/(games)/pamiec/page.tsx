@@ -2,7 +2,6 @@
 import Plansza from "@/components/pamiec/plansza";
 import { createRoot } from 'react-dom/client';
 import { ReactElement } from "react";
-import * as api from "@/app/(games)/pamiec/api-conn";
 import "./styles.css";
 import { log } from "node:console";
 import { importJWK } from "jose";
@@ -11,36 +10,7 @@ import { importJWK } from "jose";
 let planszaPojemnikNode:any;
 let planszaEl:any;
 
-
-// let listaSlowek: any;
-// let pobranoSlowka: boolean = false;
-// let zapytSkon: boolean = false;
-
-// async function zapytanieApi(url: string, opts?: RequestInit) {
-//         const res = await fetch(url, {
-//             ...opts,
-//             headers: { "Content-Type": "application/json" },
-
-//         });
-
-//         const json = await res.json();
-//         return { ok: res.ok, json };
-
-//     }
-
-// try {
-//     const v = await zapytanieApi("https://erasmus-gg.vercel.app/api/user/vocabulary");
-
-//     if (v.ok) {console.log("ok")} else {
-//     console.log("not ok");
-    
-//  }
-// } catch (error) {
-//   console.log("Error");
-    
-// }
  //TODO api not loaded use the default or smth
- //z src/app/testing/user
     async function fetcher(url: string, opts?: RequestInit) {
         const res = await fetch(url, {
             ...opts,
@@ -103,8 +73,6 @@ function zapytanieFetch(method:string, url:string, cookie: boolean = true, data:
     
 }
 
-// console.log(localStorage.getItem('auth-token'));
-
 async function pobierzSlowka(param:string = "") {
     const url: string = "api/user/vocabulary" + param;
     return zapytanieFetch("GET", url)
@@ -138,71 +106,19 @@ function rysujPlansze(trudnosc: number) {
  */
 
 function rysujxyKart(x: number, y: number) {
-
-    // let karty: {
-    //     id:string,
-    //     html:ReactElement,
-    // }[] = [];
-
-
-    // for (let i = 0; i < x; i++) {
-    //     for (let j = 0; j < y; j++) {
-    //         // const element = array[j];
-    //         // karty.push(Plansza());
-    //         let a: ReactElement = <div>amongus {i} and {j}</div>;
-    //         // console.log(a);
-           
-    // document.getElementById("planszaPojemnik")!.innerHTML += a;
-
-    // let iSt:string = i as unknown as string;
-    // let jSt:string = j as unknown as string;
-    // let id:string = iSt.toString() + jSt.toString();
-
-    //         karty.push({
-    //             id: id,
-    //             html: <div id={id}>amongus {i} and {j}</div>});
-            
-    //     }        
-
-
-    // }
-
-// let planszaPojemnikNode:any = document.getElementById('planszaPojemnik');
-// let planszaEl:any = createRoot(planszaPojemnikNode);
 planszaPojemnikNode = document.getElementById('planszaPojemnik');
 
-
-
 planszaEl = createRoot(planszaPojemnikNode);
-   
             planszaEl.render(<Plansza
             szerokosc={x}
             wysokosc={y}
             root={planszaEl}
             pobranaListaSlowek={pobraneSlowka}
             />);
-//TODO wyświetl próby
-            
-    
 }
 
 const isClient = () => typeof window !== 'undefined';
 
-function getCookie(cname: string) {
-  let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(';');
-  for(let i = 0; i <ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-} 
 let pobranoSlowka = false;
 let authCookie: string;
 let pobraneSlowka: {pol: string, ang: string}[] = [];
@@ -219,12 +135,9 @@ export default function pamiec() {
     })
     .then((a)=>{
         a.items.forEach((slowko: any) => {
-            console.log(slowko);
-            
             pobraneSlowka.push({
                 pol: slowko.term_pl,
                 ang: slowko.term_en
-                
             })            
         });
         
