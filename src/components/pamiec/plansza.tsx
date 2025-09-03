@@ -8,7 +8,6 @@ import { Root } from "react-dom/client";
 
 ///TODO mieszany tryb wszyśćko
 let listaSlowek = [//powinno byc pobierane ze słownika, i zależne od wybreanego zawodu
-    //w db - id, category_id, term_en, term_pl, definition_en, definition_pl, difficulty_level
     {
         pol: "testy jednostkowe",
         ang: "unit tests"
