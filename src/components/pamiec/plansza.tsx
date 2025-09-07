@@ -41,9 +41,7 @@ function stworzKarte(id: number, slowko:string, nazwaKlasy:string, jezyk:string 
         <div key={id} data-id-w-liscie={idwLiscie} data-para={idPary} data-odkryta={false} className={flipCardCSS + nazwaKlasy + " flip-card"} onClick={odkryjKarte} data-jezyk={jezyk}>
             <div className="flip-card-inner">
                  <div className={"flip-card-front " + " select-none rounded-2xl ease-in-out border-white/5 backdrop-blur-[25px] bg-origin-border bg-[linear-gradient(104deg,rgba(253,253,253,0.05)_5%,rgba(240,240,228,0.1)_100%)] shadow-sm not-disabled:hover:bg-white/90 not-disabled:hover:text-black not-disabled:hover:shadow-button transition-all duration-200 after:absolute  after:top-[-2px] after:left-[-2px] after:rounded-[1rem] font-semibold   cursor-pointer rounded-lg min-w-fit"}>
-
-                 {slowko}
-                 </div>
+                     </div>
 
                 <div className="flex flex-col flip-card-back  tekstKarty bg-green-900" >
                 <p className="w-[100%] h-fit">{slowko}</p>
