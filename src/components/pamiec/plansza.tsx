@@ -7,98 +7,8 @@ import { Root } from "react-dom/client";
 //TODO get all todo comments done
 
 ///TODO mieszany tryb wszyśćko
-let listaSlowek = [//powinno byc pobierane ze słownika, i zależne od wybreanego zawodu
-    {
-        pol: "testy jednostkowe",
-        ang: "unit tests"
-    },
-    {
-        pol: "klawiatura",
-        ang: "keyboard"
-    },
-    {
-        pol: "kabel",
-        ang: "cable"
-    },
-    {
-        pol: "gra",
-        ang: "game"
-    },
-    {
-        pol: "konflikt",
-        ang: "conflict"
-    },
-    {
-        pol: "algorytm",
-        ang: "algorithm"
-    },
-    {
-        pol: "zmienna",
-        ang: "variable"
-    },
-    {
-        pol: "pętla",
-        ang: "loop"
-    },
-    {
-        pol: "warunki",
-        ang: "conditions"
-    },
-    {
-        pol: "funkcja",
-        ang: "function"
-    },
-    {
-        pol: "klasa",
-        ang: "class"
-    },
-    {
-        pol: "obiekt",
-        ang: "object"
-    },
-    {
-        pol: "interfejs",
-        ang: "interface"
-    },
-    {
-        pol: "biblioteka",
-        ang: "library"
-    },
-    {
-        pol: "stała",
-        ang: "constant"
-    },
-    {
-        pol: "debugowanie",
-        ang: "debugging"
-    },
-    {
-        pol: "komunikacja",
-        ang: "communication"
-    },
-    {
-        pol: "protokół",
-        ang: "protocol"
-    },
-    {
-        pol: "serwer",
-        ang: "server"
-    },
-    {
-        pol: "klient",
-        ang: "client"
-    },
-    {
-        pol: "baza danych",
-        ang: "database"
-    },
-    {
-        pol: "struktura danych",
-        ang: "data structure"
-    }
-];
+let listaSlowek: {pol:string, ang: string}[] = [];
 
-//?? sotre in localstorage?? so that when they play again they dont have to wait for the api call again?
 //komunikat że nie ma wystarczająco słówek np na poziom trudny ale dalej można zagrac
 //
 //global var
@@ -131,10 +41,13 @@ function stworzKarte(id: number, slowko:string, nazwaKlasy:string, jezyk:string 
         <div key={id} data-id-w-liscie={idwLiscie} data-para={idPary} data-odkryta={false} className={flipCardCSS + nazwaKlasy + " flip-card"} onClick={odkryjKarte} data-jezyk={jezyk}>
             <div className="flip-card-inner">
                  <div className={"flip-card-front " + " select-none rounded-2xl ease-in-out border-white/5 backdrop-blur-[25px] bg-origin-border bg-[linear-gradient(104deg,rgba(253,253,253,0.05)_5%,rgba(240,240,228,0.1)_100%)] shadow-sm not-disabled:hover:bg-white/90 not-disabled:hover:text-black not-disabled:hover:shadow-button transition-all duration-200 after:absolute  after:top-[-2px] after:left-[-2px] after:rounded-[1rem] font-semibold   cursor-pointer rounded-lg min-w-fit"}>
+
+                 {slowko}
                  </div>
 
-                <div className="flip-card-back  tekstKarty bg-green-900" >
-                <p className="w-fit h-fit">{slowko}</p>
+                <div className="flex flex-col flip-card-back  tekstKarty bg-green-900" >
+                <p className="w-[100%] h-fit">{slowko}</p>
+                <div className="w-[100%] h-fit">({jezyk})</div>
                 </div>
 
             </div>
@@ -183,8 +96,7 @@ function losowaLiczbaCalkowita(min:number, max:number) {//inclusive
 
 function sprawdzJezykKarty(karta: any) {
     return karta.getAttribute("data-jezyk");
-}//TODO ! implement
-
+}
 
 function usunPareKart(karta1: any, karta2: any) {
     karta1.parentElement!.parentElement!.style.visibility = "hidden";
@@ -241,7 +153,7 @@ function odkryjKarte(e: any) {
     const rot180 = "rotateY(180deg)";
     const rot0 = "rotateY(0deg)";
 
-    console.log(jezykKarty);
+    // console.log(jezykKarty);
     
     if (element == terazOdkryte[0]) {
         return -1;
@@ -252,8 +164,8 @@ function odkryjKarte(e: any) {
         
         return -1;
     }
-    console.log("id Pary tej KARTY:", idPary);
-    console.log("id w liscie tej KARTY:", idWliscieTeraz);
+    // console.log("id Pary tej KARTY:", idPary);
+    // console.log("id w liscie tej KARTY:", idWliscieTeraz);
     
     if (!kartaOdkryta) {
         terazOdkryte.push(element);
@@ -289,20 +201,14 @@ function odkryjKarte(e: any) {
             const idWlisciePoprzednie:string | null = terazOdkryte[0]!.parentElement!.parentElement!.getAttribute("data-id-w-liscie");
         
             if (idPary_teraz != null && idPary_teraz == idPary_poprzednie) {//są parą
-                // usunKarte(element);
-                // usunKarte(terazOdkryte[0]);
                 usunPareKart(element, terazOdkryte[0]);
                 
             } else if ((powtarzamySlowka && jezykKarty != terazOdkryte[0]!.parentElement!.parentElement!.getAttribute("data-jezyk")) && (idWliscieTeraz == idWlisciePoprzednie)) {//zatwierdzanie par między różnymi parami
-                //function for deleting cards
-                // console.log("usunąłbym karty gdyby była funkcja");
-                // usunKarte(element);
-                // usunKarte(terazOdkryte[0]);
+                
                 usunPareKart(element, terazOdkryte[0]);
-
                 
             } else {
-            console.log("odwracam");
+            // console.log("odwracam");
             terazOdkryte[1]!.parentElement!.style.transform = rot0;
             terazOdkryte[0]!.parentElement!.style.transform = rot0;
             proby --;// one func
@@ -347,16 +253,16 @@ const szerokoscCSS: string = "w-full";//w-screen
 iloscKart = szerokosc * wysokosc;//docelowa ilość kart
 proby = (Math.ceil(iloscKart/2)) + 1;
 
-if (pobranaListaSlowek.length > 0) { 
+// if (pobranaListaSlowek.length > 0) { 
     listaSlowek = pobranaListaSlowek;
     //test this - i have done the powtarzaəce sie slowka check now and check if everything is loaded properly
-}
+// }
 
 
 let losowaParaSlowek: number = losowaLiczbaCalkowita(0, listaSlowek.length-1);
 const listaUżytychPar: number[] = [];
 while (licznik < iloscKart) {//nie ma znaczenia czy tworzymy pojedyńczo czy podwójną funkcją
-
+    
     if (listaSlowek.length*2 >= iloscKart) {//mamy wystarczająco słówek
         while (listaUżytychPar.includes(losowaParaSlowek)) {//nie powtarzamy ich
             losowaParaSlowek = losowaLiczbaCalkowita(0, listaSlowek.length-1)
@@ -380,8 +286,8 @@ listaUżytychPar.sort((a,b)=>{
     return a-b
 });
 
-console.log("licznik:" + licznik);
-console.log("karrty length:" + karty.length);
+// console.log("licznik:" + licznik);
+// console.log("karrty length:" + karty.length);
 
 losujMiejscaKart(karty);
 
