@@ -9,11 +9,11 @@ import Footer from "@/components/Footer";
 import ImageComponent from "@/components/ImageComponent";
 import icon from "@/lib/NavIcon.svg";
 import Image from "next/image";
+import { AnimatedBeamMultipleOutputDemo } from "@/components/UserBeam";
+import { Particles } from "@/components/ui/particles";
 
 export default function Home() {
   const { hero, secondSection } = HomeContent;
-
-  const educationTracks = Object.values(secondSection.images);
 
   return (
     <div>
@@ -24,7 +24,7 @@ export default function Home() {
         <GlowingCircle isRight={true} />
       </div>
 
-      <main className="pt-20">
+      <main className="pt-10">
         <section className="min-h-[100svh] flex flex-col items-center justify-center border-b-2 border-neutral-800 px-4 text-center">
           <div className="bg-neutral-700/50 rounded-md w-12 h-11 mx-1 backdrop-blur-md flex items-center justify-center m-2">
             <Image src={icon} width={45} alt={hero.iconAlt} />
@@ -57,18 +57,9 @@ export default function Home() {
               {secondSection.title}
             </h2>
           </div>
-          <div className="w-full">
-            {educationTracks.map((track, index) => (
-              <ImageComponent
-                key={index}
-                header={track.header}
-                src={track.image}
-                alt={track.alt}
-                width={800}
-                height={800}
-                position={index % 2 === 0 ? "left" : "right"}
-              />
-            ))}
+          <div className="relative w-full overflow-hidden">
+            <Particles className="absolute inset-0 -z-10" size={0.2} />
+            <AnimatedBeamMultipleOutputDemo />
           </div>
         </section>
       </main>

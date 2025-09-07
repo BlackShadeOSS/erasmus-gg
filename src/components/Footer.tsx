@@ -15,35 +15,42 @@ const Footer = () => {
     <footer className="w-full bg-neutral-900/70 border-t-2 border-neutral-800 flex flex-col">
       <div className="flex flex-col sm:flex-row items-center sm:items-stretch gap-6 sm:gap-0 py-8 sm:py-10 text-neutral-300">
         <div className="flex justify-center items-center w-full sm:w-1/4">
-          <Image
-            src={zs1}
-            alt="ZS1 Logo"
-            width={100}
-            height={100}
-            className="object-contain mx-8"
-          />
+          <Link
+            href={"https://zs1.nowotarski.edu.pl/"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="curson-pointer"
+          >
+            <Image
+              src={zs1}
+              alt="ZS1 Logo"
+              width={100}
+              height={100}
+              className="object-contain mx-8"
+            />
+          </Link>
           <div className="flex flex-col items-center justify-center">
             <SocialCircle
-              url="https://www.instagram.com/"
-              altText="Instagram"
+              url="https://www.facebook.com/sokol.nowytarg/"
+              altText="Facebook"
               icon={facebook}
             />
             <SocialCircle
-              url="https://www.tiktok.com/"
-              altText="TikTok"
+              url="https://www.instagram.com/zs1nowytarg/"
+              altText="Instagram"
               icon={ig}
             />
             <SocialCircle
-              url="https://www.facebook.com/"
-              altText="Facebook"
+              url="https://www.tiktok.com/@zs1.sokol"
+              altText="TikTok"
               icon={tiktok}
             />
           </div>
         </div>
         <div className="w-full sm:w-2/4 flex flex-col items-center justify-center px-4 text-center">
           <p className="text-sm sm:text-base">
-            &copy; 2025-{new Date().getFullYear()} Tu jakiees info o szkole i
-            odnosnik do niej i jeszcze ig tiktok i facerbook
+            &copy; 2025-{new Date().getFullYear()} Zespół Szkół nr 1 im.
+            Władysława Orkana
           </p>
         </div>
         <div className="flex flex-col items-center w-full sm:w-1/4">
