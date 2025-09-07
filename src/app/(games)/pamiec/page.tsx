@@ -1,28 +1,13 @@
 'use client'
 import Plansza from "@/components/pamiec/plansza";
 import { createRoot } from 'react-dom/client';
-import { ReactElement } from "react";
+import { ButtonHTMLAttributes, ReactElement } from "react";
 import "./styles.css";
-import { log } from "node:console";
-import { importJWK } from "jose";
 
 //globals
 let planszaPojemnikNode:any;
 let planszaEl:any;
-
  //TODO api not loaded use the default or smth
-    async function fetcher(url: string, opts?: RequestInit) {
-        const res = await fetch(url, {
-            ...opts,
-            headers: { "Content-Type": "application/json",
-                
-             },
-             credentials: "include"
-        });
-        const json = await res.json();
-        return { ok: res.ok, json };
-    }
-
 
 enum Trudnosc {
     latwa = 1,
@@ -76,7 +61,6 @@ function zapytanieFetch(method:string, url:string, cookie: boolean = true, data:
 async function pobierzSlowka(param:string = "") {
     const url: string = "api/user/vocabulary" + param;
     return zapytanieFetch("GET", url)
-    // return fetcher(url)
 }
 
 function zacznijGre(e: any) {
@@ -119,21 +103,26 @@ planszaEl = createRoot(planszaPojemnikNode);
 
 const isClient = () => typeof window !== 'undefined';
 
-let pobranoSlowka = false;
+let czekaNaSlowka = true;
 let authCookie: string;
-let pobraneSlowka: {pol: string, ang: string}[] = [];
+const pobraneSlowka: {pol: string, ang: string}[] = [];
 
 export default function pamiec() {
 
     //?is it better to pass this to the func or let it get it itself?
     if (isClient()) {
 //TODO WAIT FOR THIS TO LOAD
-    if (!pobranoSlowka) {
+
+    if (czekaNaSlowka) {
         
     pobierzSlowka().then((res)=> {
         return res.json();
     })
     .then((a)=>{
+        if (pobraneSlowka.length > 0) {
+            return;
+        }
+        
         a.items.forEach((slowko: any) => {
             pobraneSlowka.push({
                 pol: slowko.term_pl,
@@ -142,8 +131,14 @@ export default function pamiec() {
         });
         
     }).finally(()=>{
-    
-    pobranoSlowka = true;
+        if (pobraneSlowka.length <= 0) {
+            czekaNaSlowka = true;
+        } else {
+            czekaNaSlowka = false;
+        (document.getElementById("start")! as HTMLButtonElement).disabled = false;
+        (document.getElementById("startInfo")!).innerText = "";
+
+        }
         
     }).catch((error)=>{
         console.log("Error fetching :" + error);
@@ -186,11 +181,12 @@ export default function pamiec() {
                     <select className="text-center max-w-fit m-auto bg-green-900 " name="trudnosc" id="trudnoscSelect">
                         {listaTrudnosci}
                     </select>
-                    <button disabled={pobranoSlowka} className="disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 mt-4 max-w-fit m-auto bg-green-200 border border-green-900 rounded-[6px] shadow-sm 
+                    <button id="start" disabled={czekaNaSlowka} className="disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 mt-4 max-w-fit m-auto bg-green-200 border border-green-900 rounded-[6px] shadow-sm 
            box-border text-black text-[16px] font-bold
             p-3 px-4 hover:bg-transparent hover:text-green-200 hover:border-green-200
            active:opacity-50
            " type="submit"  >start</button>
+           <p className="text-center" id="startInfo">Ładuję dane... Proszę czekać.</p>
                 </form>
 
                 <h3 className="text-green-200 text-center">Jak grać?</h3>
