@@ -26,6 +26,7 @@ const SocialCircle: React.FC<SocialCircleProps> = ({
 
   return (
     <a
+      target="_blank"
       href={url}
       aria-label={altText}
       title={altText}
