@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import GlowingCircle from "@/components/ui/glowing-circle";
 import { HomeContent } from "@/data/HomeContent";
 import Footer from "@/components/Footer";
-import ImageComponent from "@/components/ImageComponent";
 import icon from "@/lib/NavIcon.svg";
 import Image from "next/image";
 import { AnimatedBeamMultipleOutputDemo } from "@/components/UserBeam";
