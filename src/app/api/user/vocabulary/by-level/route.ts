@@ -13,9 +13,16 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '20')
     const offset = (page - 1) * limit
-    const professionId = searchParams.get('professionId') || (user as any).selected_profession_id || (user as any).selectedProfessionId
+    let professionId = searchParams.get('professionId') || (user as any).selected_profession_id || (user as any).selectedProfessionId
 
-    if (!level || level < 1 || level > 5) return NextResponse.json({ error: 'level must be 1..5' }, { status: 400 })
+    // Always fetch from DB to get latest profession
+    const { data: dbUser } = await supabaseAdmin
+      .from('users')
+      .select('selected_profession_id')
+      .eq('id', (user as any).id)
+      .single()
+    professionId = professionId || dbUser?.selected_profession_id || ''
+
     if (!professionId) return NextResponse.json({ success: true, items: [], hint: 'Set profession first', pagination: { page, limit, total: 0, totalPages: 0 } })
 
     // categories for profession

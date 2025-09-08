@@ -15,14 +15,13 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '20')
     const offset = (page - 1) * limit
 
-    if (!professionId) {
-      const { data: dbUser } = await supabaseAdmin
-        .from('users')
-        .select('selected_profession_id')
-        .eq('id', (user as any).id)
-        .single()
-      professionId = dbUser?.selected_profession_id || ''
-    }
+    // Always fetch from DB to get latest profession
+    const { data: dbUser } = await supabaseAdmin
+      .from('users')
+      .select('selected_profession_id')
+      .eq('id', (user as any).id)
+      .single()
+    professionId = professionId || dbUser?.selected_profession_id || ''
 
     if (!professionId) return NextResponse.json({ success: true, items: [], hint: 'Set profession first', pagination: { page, limit, total: 0, totalPages: 0 } })
     if (!q) return NextResponse.json({ success: true, items: [], pagination: { page, limit, total: 0, totalPages: 0 } })
