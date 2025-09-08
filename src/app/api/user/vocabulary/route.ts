@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url)
-    let professionId = searchParams.get('professionId') || (user as any).selectedProfessionId || (user as any).selected_profession_id || ''
+    let professionId = searchParams.get('professionId') || ''
     const categoryId = searchParams.get('categoryId')
     const level = searchParams.get('level')
     const search = searchParams.get('search') || ''
@@ -21,6 +21,8 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '20')
     const offset = (page - 1) * limit
 
+    // Always fetch profession from DB to ensure we have the latest value
+    // Don't rely on JWT token as it may be stale after profession changes
     if (!professionId) {
       const { data: dbUser } = await supabaseAdmin
         .from('users')
@@ -29,6 +31,14 @@ export async function GET(request: NextRequest) {
         .single()
       professionId = dbUser?.selected_profession_id || ''
     }
+
+    // Debug logging to track profession resolution
+    console.log('Debug - profession resolution:', {
+      userId: (user as any).id,
+      professionFromToken: (user as any).selectedProfessionId || (user as any).selected_profession_id,
+      professionFromDB: professionId,
+      finalProfessionId: professionId
+    })
 
     // If still no profession, return empty list with hint
     if (!professionId) {
@@ -41,6 +51,15 @@ export async function GET(request: NextRequest) {
       .select('id, name, name_en')
       .eq('profession_id', professionId)
 
+    // Debug logging to understand the issue
+    console.log('Debug - vocabulary categories query:', {
+      professionId,
+      query: `profession_id = ${professionId}`,
+      categoriesFound: categories?.length || 0,
+      categories: categories?.map(c => ({ id: c.id, name: c.name })) || [],
+      error: catErr?.message
+    })
+
     if (catErr) {
       console.error('Fetch categories error:', catErr)
       return NextResponse.json({ error: 'Failed to load categories' }, { status: 500 })
@@ -48,7 +67,7 @@ export async function GET(request: NextRequest) {
 
     const categoryIds = (categories || []).map(c => c.id)
     if (categoryIds.length === 0) {
-      return NextResponse.json({ success: true, items: [], pagination: { page, limit, total: 0, totalPages: 0 } })
+      return NextResponse.json({ success: true, items: [], hint: 'No vocabulary categories found for this profession - try seeding test data', pagination: { page, limit, total: 0, totalPages: 0 } })
     }
 
     // Build vocabulary query (without progress join)

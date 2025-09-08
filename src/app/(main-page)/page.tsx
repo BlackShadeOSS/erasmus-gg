@@ -12,16 +12,19 @@ import { AnimatedBeamMultipleOutputDemo } from "@/components/UserBeam";
 import { Particles } from "@/components/ui/particles";
 
 export default function Home() {
-  const { hero, secondSection } = HomeContent;
+    const { hero, secondSection } = HomeContent;
+
 
   return (
     <div>
       <NavBar />
 
-      <div>
-        <GlowingCircle />
-        <GlowingCircle isRight={true} />
-      </div>
+
+            <div>
+                <GlowingCircle />
+                <GlowingCircle isRight={true} />
+            </div>
+
 
       <main className="pt-10">
         <section className="min-h-[100svh] flex flex-col items-center justify-center border-b-2 border-neutral-800 px-4 text-center">
@@ -66,4 +69,5 @@ export default function Home() {
       <NoiseFilter className="-z-10" />
     </div>
   );
+
 }

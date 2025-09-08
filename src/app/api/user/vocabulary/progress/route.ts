@@ -27,14 +27,14 @@ export async function GET(request: NextRequest) {
     }
 
     let professionId = (user as any).selected_profession_id || (user as any).selectedProfessionId || ''
-    if (!professionId) {
-      const { data: dbUser } = await supabaseAdmin
-        .from('users')
-        .select('selected_profession_id')
-        .eq('id', (user as any).id)
-        .single()
-      professionId = dbUser?.selected_profession_id || ''
-    }
+
+    // Always fetch from DB to get latest profession
+    const { data: dbUser } = await supabaseAdmin
+      .from('users')
+      .select('selected_profession_id')
+      .eq('id', (user as any).id)
+      .single()
+    professionId = dbUser?.selected_profession_id || ''
 
     if (!professionId) {
       return NextResponse.json({ success: true, summary: [] })
