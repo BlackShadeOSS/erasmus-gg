@@ -58,9 +58,15 @@ export default function Home() {
           </div>
           <div className="relative w-full overflow-hidden">
             <Particles
-              className="absolute inset-0 z-0  opacity-25"
-              size={0.15}
-              quantity={50}
+              className="absolute inset-0 z-0 opacity-40"
+              color="#fff"
+              size={0.05}
+              quantity={80}
+              staticity={80}
+              ease={20}
+              vx={0.09}
+              vy={-0.15}
+              alphaMultiplier={1.2}
             />
             <AnimatedBeamMultipleOutputDemo />
           </div>
