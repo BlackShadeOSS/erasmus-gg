@@ -18,9 +18,13 @@ export default function Home() {
     <div>
       <NavBar />
 
-      <div>
+      <div className="hidden sm:block">
         <GlowingCircle />
         <GlowingCircle isRight={true} />
+      </div>
+
+      <div className="block sm:hidden">
+        <GlowingCircle mobile />
       </div>
 
       <main className="pt-10">

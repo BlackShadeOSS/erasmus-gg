@@ -7,6 +7,7 @@ import SocialCircle from "./SocialCircle";
 import facebook from "@/lib/facebook-link.svg";
 import ig from "@/lib/ig-link.svg";
 import tiktok from "@/lib/tiktok-link.svg";
+import { NavBarContent as FooterContent } from "@/data/NavBarContent";
 
 const Footer = () => {
   const LinkStyle =
@@ -54,25 +55,18 @@ const Footer = () => {
           </p>
         </div>
         <div className="flex flex-col items-center w-full sm:w-1/4">
-          <Link href={"/"} className={LinkStyle}>
-            Strona Główna
-          </Link>
-          <Link href={"/privacy-policy"} className={LinkStyle}>
-            Szkoła
-          </Link>
-          <Link href={"/privacy-policy"} className={LinkStyle}>
-            Logowanie
-          </Link>
-          <Link href={"/privacy-policy"} className={LinkStyle}>
-            Rejestracja
-          </Link>
+          {FooterContent.navItems.map((item, index) => (
+            <Link key={index} href={item.href} className={LinkStyle}>
+              {item.label}
+            </Link>
+          ))}
         </div>
       </div>
       <div className="py-3 bg-neutral-950/20 flex justify-center items-center gap-2 border-t-2 border-neutral-800">
-        <p className="text-sm sm:text-md text-center text-neutral-500">
+        <p className="text-sm sm:text-md text-center text-neutral-500 flex items-center justify-center">
           Realizacja: TT, KW, ZZ,
+          <Image src={rs} alt="Realizacja" width={80} />
         </p>
-        <Image src={rs} alt="Realizacja" width={80} />
       </div>
     </footer>
   );
