@@ -1,0 +1,343 @@
+﻿term_en,term_pl,definition_en,definition_pl,pronunciation,example_sentence_en,example_sentence_pl,difficulty_level
+algorithm,algorytm,A set of rules to solve a problem in a finite number of steps.,Zbiór reguł do rozwiązania problemu w skończonej liczbie kroków.,,The algorithm sorts data efficiently.,Algorytm sortuje dane efektywnie.,3
+array,tablica,A collection of elements stored in contiguous memory locations.,Zbiór elementów przechowywanych w sąsiadujących lokalizacjach pamięci.,,The array holds multiple values.,Tablica przechowuje wiele wartości.,2
+variable,zmienna,A named storage location for data.,Nazwana lokalizacja przechowywania danych.,,The variable stores user input.,Zmienna przechowuje dane wejściowe użytkownika.,1
+function,funkcja,A block of code that performs a specific task.,Blok kodu wykonujący określone zadanie.,,This function calculates the sum.,Ta funkcja oblicza sumę.,3
+loop,petla,A control structure that repeats a block of code.,Struktura sterująca powtarzająca blok kodu.,,The loop iterates over the list.,Pętla iteruje po liście.,2
+condition,warunek,A statement that controls the flow of execution.,Instrukcja kontrolująca przepływ wykonania.,,The condition checks if the value is valid.,Warunek sprawdza, czy wartość jest poprawna.,2
+object,obiekt,An instance of a class containing data and methods.,Instancja klasy zawierająca dane i metody.,,The object represents a user.,Obiekt reprezentuje użytkownika.,3
+class,klasa,A blueprint for creating objects.,Schemat do tworzenia obiektów.,,The class defines properties and methods.,Klasa definiuje właściwości i metody.,4
+method,metoda,A function associated with an object.,Funkcja powiązana z obiektem.,,The method updates the object’s state.,Metoda aktualizuje stan obiektu.,3
+interface,interfejs,A contract specifying methods a class must implement.,Kontrakt określający metody, które klasa musi zaimplementować.,,The interface ensures consistency.,Interfejs zapewnia spójność.,4
+module,moduł,A self-contained unit of code.,Samodzielna jednostka kodu.,,The module handles database operations.,Moduł obsługuje operacje na bazie danych.,3
+bug,błąd,An error in the code causing unexpected behavior.,Błąd w kodzie powodujący nieoczekiwane zachowanie.,,The bug crashed the application.,Błąd spowodował awarię aplikacji.,2
+debug,debugowanie,The process of finding and fixing errors in code.,Proces znajdowania i naprawy błędów w kodzie.,,I need to debug this function.,Muszę zdebugować tę funkcję.,3
+compile,kompilacja,Translating source code into machine code.,Tłumaczenie kodu źródłowego na kod maszynowy.,,The program failed to compile.,Program nie skompilował się.,4
+runtime,wykonanie,The time during which a program is running.,Czas, w którym program jest uruchomiony.,,A runtime error occurred.,Wystąpił błąd wykonania.,3
+syntax,syntaksa,The set of rules defining code structure.,Zbiór reguł określających strukturę kodu.,,The syntax error was easy to fix.,Błąd składniowy był łatwy do naprawy.,2
+variable,zmienna,A placeholder for storing data values.,Miejsce przechowywania wartości danych.,,This variable holds a number.,Ta zmienna przechowuje liczbę.,1
+constant,stała,A value that cannot be changed.,Wartość, która nie może być zmieniona.,,The constant defines the maximum size.,Stała określa maksymalny rozmiar.,2
+string,ciąg,A sequence of characters.,Sekwencja znaków.,,The string contains the user’s name.,Ciąg zawiera imię użytkownika.,2
+integer,całkowita,A whole number without decimals.,Liczba całkowita bez ułamków.,,The integer represents the count.,Całkowita reprezentuje liczbę elementów.,1
+float,zmiennoprzecinkowa,A number with a decimal point.,Liczba z częścią ułamkową.,,The float stores precise measurements.,Zmiennoprzecinkowa przechowuje dokładne pomiary.,2
+boolean,logiczna,A data type with true or false values.,Typ danych z wartościami prawda lub fałsz.,,The boolean controls the logic.,Logiczna kontroluje logikę.,2
+null,nic,A value representing no data.,Wartość oznaczająca brak danych.,,The variable is set to null.,Zmienna jest ustawiona na nic.,2
+pointer,wskaźnik,A variable storing a memory address.,Zmienna przechowująca adres pamięci.,,The pointer references the object.,Wskaźnik odnosi się do obiektu.,4
+memory,pamięć,The storage area for data and instructions.,Obszar przechowywania danych i instrukcji.,,The program uses too much memory.,Program zużywa za dużo pamięci.,3
+stack,sterta,A memory structure for function calls.,Struktura pamięci dla wywołań funkcji.,,The stack stores local variables.,Sterta przechowuje zmienne lokalne.,4
+queue,kolejka,A data structure for ordered processing.,Struktura danych do uporządkowanego przetwarzania.,,The queue handles tasks sequentially.,Kolejka przetwarza zadania sekwencyjnie.,3
+list,lista,A collection of ordered elements.,Zbiór uporządkowanych elementów.,,The list stores user inputs.,Lista przechowuje dane wejściowe użytkownika.,2
+dictionary,słownik,A collection of key-value pairs.,Zbiór par klucz-wartość.,,The dictionary maps names to IDs.,Słownik mapuje imiona na identyfikatory.,3
+set,zbiór,A collection of unique elements.,Zbiór unikalnych elementów.,,The set removes duplicates.,Zbiór usuwa duplikaty.,3
+tuple,krotka,An immutable sequence of elements.,Niezmienna sekwencja elementów.,,The tuple stores coordinates.,Krotka przechowuje współrzędne.,3
+database,baza danych,A structured collection of data.,Uporządkowany zbiór danych.,,The database stores user records.,Baza danych przechowuje rekordy użytkowników.,4
+query,zapytanie,A request for data from a database.,Żądanie danych z bazy danych.,,The query retrieves specific records.,Zapytanie pobiera określone rekordy.,3
+table,tabela,A structure for organizing data in rows and columns.,Struktura do organizowania danych w wierszach i kolumnach.,,The table displays user information.,Tabela wyświetla informacje o użytkownikach.,2
+index,indeks,A structure to speed up data retrieval.,Struktura przyspieszająca pobieranie danych.,,The index improves query performance.,Indeks poprawia wydajność zapytań.,4
+key,klucz,A field used to identify records.,Pole używane do identyfikacji rekordów.,,The key ensures unique entries.,Klucz zapewnia unikalne wpisy.,3
+record,rekord,A single row in a database table.,Pojedynczy wiersz w tabeli bazy danych.,,The record contains user details.,Rekord zawiera szczegóły użytkownika.,2
+server,serwer,A computer providing services to clients.,Komputer świadczący usługi dla klientów.,,The server hosts the application.,Serwer hostuje aplikację.,4
+client,klient,A system requesting services from a server.,System żądający usług od serwera.,,The client sends a request.,Klient wysyła żądanie.,3
+protocol,protokół,A set of rules for data exchange.,Zbiór reguł dla wymiany danych.,,The protocol ensures secure communication.,Protokół zapewnia bezpieczną komunikację.,4
+network,sieć,A group of interconnected computers.,Grupa połączonych komputerów.,,The network connects all devices.,Sieć łączy wszystkie urządzenia.,3
+router,ruter,A device directing network traffic.,Urządzenie kierujące ruchem sieciowym.,,The router manages data flow.,Ruter zarządza przepływem danych.,3
+firewall,zapora,A security system controlling network access.,System zabezpieczający kontrolujący dostęp do sieci.,,The firewall blocks unauthorized access.,Zapora blokuje nieautoryzowany dostęp.,4
+encryption,szyfrowanie,Converting data into a secure format.,Przekształcanie danych w bezpieczny format.,,Encryption protects sensitive information.,Szyfrowanie chroni poufne informacje.,4
+decryption,deszyfrowanie,Converting encrypted data back to its original form.,Przekształcanie zaszyfrowanych danych z powrotem do oryginalnej formy.,,Decryption reveals the original message.,Deszyfrowanie ujawnia oryginalną wiadomość.,4
+hash,hasz,A fixed-length value representing data.,Wartość o stałej długości reprezentująca dane.,,The hash secures the password.,Hasz zabezpiecza hasło.,3
+token,żeton,A piece of data used for authentication.,Kawałek danych używany do uwierzytelniania.,,The token grants access.,Żeton umożliwia dostęp.,3
+session,sesja,A temporary interaction between user and system.,Tymczasowa interakcja między użytkownikiem a systemem.,,The session tracks user activity.,Sesja śledzi aktywność użytkownika.,3
+cookie,ciasteczko,A small piece of data stored by a browser.,Mały kawałek danych przechowywany przez przeglądarkę.,,The cookie saves user preferences.,Ciasteczko zapisuje preferencje użytkownika.,3
+cache,pamięć podręczna,A storage for frequently accessed data.,Magazyn dla często używanych danych.,,The cache speeds up loading.,Pamięć podręczna przyspiesza ładowanie.,3
+bandwidth,przepustowość,The amount of data transferred per unit time.,Ilość danych przesyłanych w jednostce czasu.,,High bandwidth improves performance.,Wysoka przepustowość poprawia wydajność.,4
+latency,opóźnienie,The delay in data transmission.,Opóźnienie w transmisji danych.,,Low latency ensures fast response.,Niskie opóźnienie zapewnia szybką odpowiedź.,4
+packet,pakiet,A unit of data sent over a network.,Jednostka danych wysyłana przez sieć.,,The packet contains the message.,Pakiet zawiera wiadomość.,3
+port,port,A communication endpoint in networking.,Punkt końcowy komunikacji w sieci.,,The port directs traffic.,Port kieruje ruchem.,3
+address,adres,A unique identifier for a network device.,Unikalny identyfikator urządzenia w sieci.,,The address locates the server.,Adres lokalizuje serwer.,3
+domain,domena,A human-readable network address.,Czytelny dla człowieka adres sieciowy.,,The domain points to the website.,Domena wskazuje na stronę internetową.,3
+url,adres url,A web address specifying a resource location.,Adres internetowy określający lokalizację zasobu.,,The URL opens the webpage.,Adres URL otwiera stronę internetową.,2
+browser,przeglądarka,A software for accessing the web.,Oprogramowanie do przeglądania sieci.,,The browser displays the site.,Przeglądarka wyświetla stronę.,2
+html,html,A markup language for web pages.,Język znaczników dla stron internetowych.,,HTML structures the webpage.,HTML strukturyzuje stronę internetową.,3
+css,css,A language for styling web pages.,Język do stylizowania stron internetowych.,,CSS enhances the design.,CSS poprawia wygląd strony.,3
+javascript,javascript,A programming language for web interactivity.,Język programowania dla interaktywności stron.,,JavaScript adds dynamic features.,JavaScript dodaje dynamiczne funkcje.,4
+api,api,An interface for software communication.,Interfejs dla komunikacji oprogramowania.,,The API connects two systems.,API łączy dwa systemy.,4
+json,json,A format for structured data exchange.,Format do wymiany uporządkowanych danych.,,JSON simplifies data transfer.,JSON upraszcza przesyłanie danych.,3
+xml,xml,A markup language for data storage.,Język znaczników do przechowywania danych.,,XML organizes complex data.,XML organizuje złożone dane.,3
+framework,framework,A pre-built structure for software development.,Gotowa struktura do tworzenia oprogramowania.,,The framework speeds up coding.,Framework przyspiesza kodowanie.,4
+library,biblioteka,A collection of reusable code.,Zbiór wielokrotnie używanego kodu.,,The library simplifies tasks.,Biblioteka upraszcza zadania.,3
+plugin,wtyczka,A component extending software functionality.,Komponent rozszerzający funkcjonalność oprogramowania.,,The plugin adds new features.,Wtyczka dodaje nowe funkcje.,3
+extension,rozszerzenie,A module enhancing browser capabilities.,Moduł rozszerzający możliwości przeglądarki.,,The extension blocks ads.,Rozszerzenie blokuje reklamy.,3
+script,skrypt,A small program for specific tasks.,Mały program do określonych zadań.,,The script automates the process.,Skrypt automatyzuje proces.,2
+code,kod,Instructions written in a programming language.,Instrukcje zapisane w języku programowania.,,The code runs smoothly.,Kod działa płynnie.,1
+repository,repozytorium,A storage for code and project files.,Magazyn dla kodu i plików projektu.,,The repository tracks changes.,Repozytorium śledzi zmiany.,3
+commit,zatwierdzenie,A recorded change in a repository.,Zapisana zmiana w repozytorium.,,The commit fixes a bug.,Zatwierdzenie naprawia błąd.,3
+branch,gałąź,A parallel version of a repository.,Równoległa wersja repozytorium.,,The branch tests new features.,Gałąź testuje nowe funkcje.,3
+merge,scalanie,Combining changes from different branches.,Łączenie zmian z różnych gałęzi.,,The merge integrates updates.,Scalanie integruje aktualizacje.,3
+pull,ściąganie,Fetching and merging changes from a repository.,Pobieranie i scalanie zmian z repozytorium.,,The pull updates the project.,Ściąganie aktualizuje projekt.,3
+push,wysyłanie,Sending changes to a repository.,Wysyłanie zmian do repozytorium.,,The push shares the code.,Wysyłanie udostępnia kod.,3
+fork,rozgałęzienie,A copy of a repository for independent work.,Kopia repozytorium do niezależnej pracy.,,The fork allows experimentation.,Rozgałęzienie umożliwia eksperymenty.,3
+clone,klonowanie,Copying a repository to a local machine.,Kopiowanie repozytorium na lokalny komputer.,,The clone enables offline work.,Klonowanie umożliwia pracę offline.,3
+version,wersja,A specific state of software.,Określony stan oprogramowania.,,The version includes new features.,Wersja zawiera nowe funkcje.,2
+release,wydanie,A stable version of software.,Stabilna wersja oprogramowania.,,The release is ready for users.,Wydanie jest gotowe dla użytkowników.,3
+patch,łata,A small update fixing issues.,Mała aktualizacja naprawiająca problemy.,,The patch resolves security flaws.,Łata naprawia luki w zabezpieczeniach.,3
+update,aktualizacja,An improvement to software.,Ulepszenie oprogramowania.,,The update improves performance.,Aktualizacja poprawia wydajność.,2
+upgrade,ulepszenie,A major software improvement.,Duże ulepszenie oprogramowania.,,The upgrade adds new tools.,Ulepszenie dodaje nowe narzędzia.,3
+deploy,wdróżenie,Releasing software to production.,Wypuszczenie oprogramowania do produkcji.,,The deploy makes it live.,Wdrożenie uruchamia aplikację.,4
+environment,środowisko,A setup for running software.,Konfiguracja do uruchamiania oprogramowania.,,The environment is set for testing.,Środowisko jest skonfigurowane do testów.,3
+production,produkcja,The live environment for software.,Środowisko produkcyjne dla oprogramowania.,,The app runs in production.,Aplikacja działa w środowisku produkcyjnym.,4
+staging,przygotowanie,A pre-production testing environment.,Środowisko testowe przed produkcją.,,The staging environment mimics production.,Środowisko przygotowawcze naśladuje produkcję.,4
+development,rozwojowe,An environment for coding and testing.,Środowisko do kodowania i testowania.,,The development phase is ongoing.,Faza rozwojowa trwa.,3
+test,test,A process to verify software functionality.,Proces weryfikacji funkcjonalności oprogramowania.,,The test ensures reliability.,Test zapewnia niezawodność.,2
+unit,jednostkowy,A test for individual components.,Test pojedynczych komponentów.,,The unit test checks a function.,Test jednostkowy sprawdza funkcję.,3
+integration,integracyjny,A test for combined components.,Test dla połączonych komponentów.,,The integration test verifies interactions.,Test integracyjny weryfikuje interakcje.,4
+regression,regresyjny,A test to ensure old features work.,Test zapewniający działanie starych funkcji.,,The regression test prevents bugs.,Test regresyjny zapobiega błędom.,4
+automation,automatyzacja,Using tools to perform tasks automatically.,Używanie narzędzi do automatycznego wykonywania zadań.,,Automation saves time.,Automatyzacja oszczędza czas.,3
+scripting,skryptowanie,Writing scripts to automate tasks.,Pisanie skryptów do automatyzacji zadań.,,Scripting simplifies repetitive work.,Skryptowanie upraszcza powtarzalną pracę.,3
+debuger,debugger,A tool for finding code errors.,Narzędzie do znajdowania błędów w kodzie.,,The debugger locates the issue.,Debugger lokalizuje problem.,4
+ide,ide,An integrated development environment for coding.,Zintegrowane środowisko programistyczne do kodowania.,,The IDE improves productivity.,IDE zwiększa produktywność.,3
+console,konsola,An interface for interacting with code.,Interfejs do interakcji z kodem.,,The console displays errors.,Konsola wyświetla błędy.,2
+log,dziennik,A record of program events.,Zapis zdarzeń programu.,,The log tracks user actions.,Dziennik śledzi działania użytkownika.,3
+exception,wyjątek,An error disrupting normal execution.,Błąd zakłócający normalne wykonanie.,,The exception halted the program.,Wyjątek zatrzymał program.,3
+try,próbuj,A block to handle potential errors.,Blok do obsługi potencjalnych błędów.,,The try block catches errors.,Blok próbuj wychwytuje błędy.,3
+catch,łap,A block to handle exceptions.,Blok do obsługi wyjątków.,,The catch block manages errors.,Blok łap zarządza błędami.,3
+throw,rzuć,Triggering an exception manually.,Ręczne wyzwalanie wyjątku.,,The throw statement signals an error.,Instrukcja rzuć sygnalizuje błąd.,3
+stacktrace,ślad stosu,A report of function calls leading to an error.,Raport wywołań funkcji prowadzących do błędu.,,The stacktrace helps debugging.,Ślad stosu pomaga w debugowaniu.,4
+thread,wątek,A unit of execution within a program.,Jednostka wykonania w programie.,,The thread runs in parallel.,Wątek działa równolegle.,4
+process,proces,An instance of a running program.,Instancja działającego programu.,,The process consumes resources.,Proces zużywa zasoby.,3
+concurrency,współbieżność,Multiple tasks running simultaneously.,Wiele zadań wykonywanych jednocześnie.,,Concurrency improves performance.,Współbieżność poprawia wydajność.,4
+parallelism,równoległość,Tasks executed at the same time.,Zadania wykonywane w tym samym czasie.,,Parallelism speeds up computations.,Równoległość przyspiesza obliczenia.,4
+mutex,muteks,A lock to prevent concurrent access.,Blokada zapobiegająca współbieżnemu dostępowi.,,The mutex ensures thread safety.,Muteks zapewnia bezpieczeństwo wątków.,4
+semaphore,semafory,A signaling mechanism for concurrency.,Mechanizm sygnalizacyjny dla współbieżności.,,The semaphore controls access.,Semafory kontrolują dostęp.,4
+deadlock,zakleszczenie,A situation where processes block each other.,Sytuacja, w której procesy blokują się nawzajem.,,The deadlock froze the system.,Zakleszczenie zamroziło system.,4
+race,kondycja,A condition where outcome depends on timing.,Stan, w którym wynik zależy od czasu.,,The race condition caused errors.,Kondycja wywołała błędy.,4
+synchronize,synchronizacja,Coordinating tasks to avoid conflicts.,Koordynowanie zadań, aby uniknąć konfliktów.,,Synchronize the threads for safety.,Synchronizuj wątki dla bezpieczeństwa.,4
+queue,kolejka,A structure for task processing order.,Struktura dla porządku przetwarzania zadań.,,The queue manages job order.,Kolejka zarządza kolejnością zadań.,3
+priority,priorytet,A value determining task importance.,Wartość określająca ważność zadania.,,The priority sets task order.,Priorytet określa kolejność zadań.,3
+scheduler,planista,A system to manage task execution.,System do zarządzania wykonywaniem zadań.,,The scheduler assigns resources.,Planista przydziela zasoby.,4
+virtual,wirtualny,Simulated or abstract computing resources.,Symulowane lub abstrakcyjne zasoby komputerowe.,,The virtual machine runs the app.,Maszyna wirtualna uruchamia aplikację.,4
+container,kontener,A lightweight environment for running apps.,Lekkie środowisko do uruchamiania aplikacji.,,The container isolates the app.,Kontener izoluje aplikację.,4
+docker,docker,A platform for containerized applications.,Platforma dla aplikacji w kontenerach.,,Docker simplifies deployment.,Docker upraszcza wdrożenie.,4
+kubernetes,kubernetes,A system for managing containers.,System do zarządzania kontenerami.,,Kubernetes orchestrates the app.,Kubernetes zarządza aplikacją.,4
+cloud,cloud,Remote computing resources.,Zdalne zasoby obliczeniowe.,,The cloud stores our data.,Chmura przechowuje nasze dane.,3
+backup,kopia,A copy of data for recovery.,Kopia danych do odzyskiwania.,,The backup saved the project.,Kopia uratowała projekt.,2
+restore,przywrócenie,Recovering data from a backup.,Odzyskiwanie danych z kopii.,,The restore fixed the system.,Przywrócenie naprawiło system.,3
+snapshot,migawka,A point-in-time copy of data.,Kopia danych w określonym momencie.,,The snapshot preserves the state.,Migawka zachowuje stan.,3
+redundancy,nadmiarowość,Extra resources for reliability.,Dodatkowe zasoby dla niezawodności.,,Redundancy prevents failures.,Nadmiarowość zapobiega awariom.,4
+failover,przełączanie,Switching to a backup system.,Przełączanie na system zapasowy.,,Failover ensures continuity.,Przełączanie zapewnia ciągłość.,4
+load,obciążenie,The demand on system resources.,Żądanie na zasoby systemu.,,The load slowed the server.,Obciążenie spowolniło serwer.,3
+scale,skalowanie,Adjusting resources to meet demand.,Dostosowywanie zasobów do zapotrzebowania.,,We need to scale the system.,Musimy skalować system.,4
+horizontal,poziome,Scaling by adding more machines.,Skalowanie przez dodanie więcej maszyn.,,Horizontal scaling boosts capacity.,Poziome skalowanie zwiększa pojemność.,4
+vertical,pionowe,Scaling by upgrading existing machines.,Skalowanie przez ulepszenie istniejących maszyn.,,Vertical scaling improves performance.,Pionowe skalowanie poprawia wydajność.,4
+microservice,mikrousługa,A small, independent service.,Mała, niezależna usługa.,,The microservice handles payments.,Mikrousługa obsługuje płatności.,4
+monolith,monolit,A single, large application.,Pojedyncza, duża aplikacja.,,The monolith is hard to maintain.,Monolit jest trudny w utrzymaniu.,4
+api,interfejs,An interface for software communication.,Interfejs dla komunikacji oprogramowania.,,The API connects the apps.,Interfejs łączy aplikacje.,3
+endpoint,punkt,A specific address for API access.,Określony adres dla dostępu do API.,,The endpoint returns data.,Punkt zwraca dane.,3
+request,żądanie,A message asking for data or action.,Wiadomość żądająca danych lub działania.,,The request fetches user info.,Żądanie pobiera informacje o użytkowniku.,2
+response,odpowiedź,The data returned by a server.,Dane zwrócone przez serwer.,,The response contains the results.,Odpowiedź zawiera wyniki.,2
+authentication,uwierzytelnianie,Verifying user identity.,Weryfikacja tożsamości użytkownika.,,Authentication secures the app.,Uwierzytelnianie zabezpiecza aplikację.,3
+authorization,autoryzacja,Granting access to resources.,Udzielanie dostępu do zasobów.,,Authorization restricts user actions.,Autoryzacja ogranicza działania użytkownika.,3
+token,token,A credential for secure access.,Poświadczenie dla bezpiecznego dostępu.,,The token validates the user.,Token weryfikuje użytkownika.,3
+session,sesja,A temporary user interaction.,Tymczasowa interakcja użytkownika.,,The session tracks login state.,Sesja śledzi stan logowania.,3
+encryption,szyfrowanie,Securing data with a cipher.,Zabezpieczanie danych szyfrem.,,Encryption protects user data.,Szyfrowanie chroni dane użytkownika.,4
+hash,hasz,A unique value for data integrity.,Unikalna wartość dla integralności danych.,,The hash verifies the file.,Hasz weryfikuje plik.,3
+certificate,certyfikat,A digital document for security.,Cyfrowy dokument dla bezpieczeństwa.,,The certificate secures the connection.,Certyfikat zabezpiecza połączenie.,4
+ssl,ssl,A protocol for secure communication.,Protokół dla bezpiecznej komunikacji.,,SSL encrypts the data.,SSL szyfruje dane.,4
+tls,tls,An updated protocol for secure communication.,Zaktualizowany protokół dla bezpiecznej komunikacji.,,TLS ensures safe transfers.,TLS zapewnia bezpieczne przesyłanie.,4
+vpn,vpn,A secure network connection.,Bezpieczne połączenie sieciowe.,,The VPN protects privacy.,VPN chroni prywatność.,3
+proxy,proxy,An intermediary for network requests.,Pośrednik dla żądań sieciowych.,,The proxy hides the IP.,Proxy ukrywa adres IP.,3
+gateway,brama,A system connecting different networks.,System łączący różne sieci.,,The gateway routes traffic.,Brama kieruje ruchem.,3
+loadbalancer,balanser,A system distributing network traffic.,System rozdzielający ruch sieciowy.,,The loadbalancer optimizes performance.,Balanser optymalizuje wydajność.,4
+cdn,cdn,A network for delivering content.,Sieć do dostarczania treści.,,The CDN speeds up loading.,CDN przyspiesza ładowanie.,3
+dns,dns,A system translating domains to IPs.,System tłumaczący domeny na adresy IP.,,DNS resolves the website.,DNS rozwiązuje nazwę strony.,3
+ip,ip,A unique address for a device.,Unikalny adres dla urządzenia.,,The IP identifies the server.,IP identyfikuje serwer.,2
+subnet,podsieć,A smaller network within a larger one.,Mniejsza sieć w obrębie większej.,,The subnet organizes devices.,Podsieć organizuje urządzenia.,3
+firewall,zapora,A security barrier for networks.,Bariera bezpieczeństwa dla sieci.,,The firewall blocks threats.,Zapora blokuje zagrożenia.,3
+intrusion,intruz,An unauthorized access attempt.,Nieautoryzowana próba dostępu.,,The intrusion triggered an alert.,Intruz wywołał alarm.,4
+malware,złośliwe,Software designed to harm systems.,Oprogramowanie zaprojektowane do szkodzenia systemom.,,Malware infected the computer.,Złośliwe oprogramowanie zainfekowało komputer.,3
+phishing,phishing,A scam to steal sensitive data.,Oszustwo w celu kradzieży danych.,,Phishing emails trick users.,Phishingowe maile oszukują użytkowników.,3
+exploit,wykorzystanie,A method to attack vulnerabilities.,Metoda ataku na luki.,,The exploit targets weak code.,Wykorzystanie celuje w słaby kod.,4
+payload,ładunek,The data carried by an exploit.,Dane przenoszone przez exploit.,,The payload delivers the virus.,Ładunek dostarcza wirusa.,4
+backdoor,tylne,A hidden entry to a system.,Ukryte wejście do systemu.,,The backdoor bypasses security.,Tylne drzwi omijają zabezpieczenia.,4
+botnet,botnet,A network of infected devices.,Sieć zainfekowanych urządzeń.,,The botnet launches attacks.,Botnet przeprowadza ataki.,4
+ddos,ddos,An attack overwhelming a system.,Atak przeciążający system.,,The DDoS crashed the server.,DDoS zawiesił serwer.,4
+bruteforce,bruteforce,An attack trying many passwords.,Atak próbujący wielu haseł.,,Bruteforce cracked the account.,Bruteforce złamał konto.,3
+keylogger,keylogger,Software capturing keystrokes.,Oprogramowanie rejestrujące naciśnięcia klawiszy.,,The keylogger stole passwords.,Keylogger ukradł hasła.,3
+ransomware,ransomware,Malware locking data for ransom.,Oprogramowanie blokujące dane dla okupu.,,Ransomware encrypted the files.,Ransomware zaszyfrował pliki.,4
+sandbox,piaskownica,An isolated environment for testing.,Izolowane środowisko do testowania.,,The sandbox runs suspicious code.,Piaskownica uruchamia podejrzany kod.,4
+virtualization,wirtualizacja,Creating virtual computing resources.,Tworzenie wirtualnych zasobów obliczeniowych.,,Virtualization saves hardware costs.,Wirtualizacja obniża koszty sprzętu.,4
+hypervisor,hipernadzorca,Software managing virtual machines.,Oprogramowanie zarządzające maszynami wirtualnymi.,,The hypervisor runs multiple VMs.,Hipernadzorca uruchamia wiele maszyn wirtualnych.,4
+emulator,emulator,Software mimicking another system.,Oprogramowanie naśladujące inny system.,,The emulator runs old games.,Emulator uruchamia stare gry.,3
+compiler,kompilator,A program converting code to executable.,Program przekształcający kod w wykonywalny.,,The compiler generates the binary.,Kompilator generuje plik binarny.,4
+interpreter,interpreter,A program executing code line-by-line.,Program wykonujący kod linia po linii.,,The interpreter runs Python scripts.,Interpreter uruchamia skrypty Pythona.,3
+bytecode,bajtkod,Intermediate code for virtual machines.,Pośredni kod dla maszyn wirtualnych.,,The bytecode runs on the VM.,Bajtkod działa na maszynie wirtualnej.,3
+jit,jit,Just-in-time compilation for performance.,Kompilacja w locie dla wydajności.,,JIT speeds up execution.,JIT przyspiesza wykonanie.,4
+opcode,kodoperacyjny,A machine-level instruction.,Instrukcja na poziomie maszyny.,,The opcode directs the CPU.,Kod operacyjny steruje procesorem.,4
+register,rejestr,A small, fast storage in the CPU.,Mały, szybki magazyn w procesorze.,,The register holds temporary data.,Rejestr przechowuje tymczasowe dane.,3
+cache,pamięć podręczna,High-speed memory for frequent access.,Szybka pamięć dla częstego dostępu.,,The cache boosts performance.,Pamięć podręczna zwiększa wydajność.,3
+buffer,bufor,A temporary storage for data.,Tymczasowy magazyn dla danych.,,The buffer handles streaming.,Bufor obsługuje strumieniowanie.,3
+overflow,przepełnienie,Exceeding a buffer’s capacity.,Przekroczenie pojemności bufora.,,The overflow caused a crash.,Przepełnienie spowodowało awarię.,4
+heap,sterta,A memory area for dynamic allocation.,Obszar pamięci dla dynamicznej alokacji.,,The heap stores large objects.,Sterta przechowuje duże obiekty.,4
+garbage,śmieci,Unused memory cleaned by a collector.,Nieużywana pamięć czyszczona przez kolektor.,,Garbage collection frees memory.,Zbieranie śmieci zwalnia pamięć.,4
+pointer,wskaźnik,A reference to a memory location.,Odnośnik do lokalizacji pamięci.,,The pointer accesses the data.,Wskaźnik uzyskuje dostęp do danych.,3
+reference,referencja,An alias for a variable or object.,Alias dla zmiennej lub obiektu.,,The reference simplifies coding.,Referencja upraszcza kodowanie.,3
+dereference,dereferencja,Accessing data via a pointer.,Dostęp do danych przez wskaźnik.,,Dereference retrieves the value.,Dereferencja pobiera wartość.,4
+allocation,alokacja,Reserving memory for data.,Rezerwowanie pamięci dla danych.,,Allocation assigns space.,Alokacja przydziela miejsce.,3
+deallocation,dealokacja,Freeing reserved memory.,Zwalnianie zarezerwowanej pamięci.,,Deallocation prevents leaks.,Dealokacja zapobiega wyciekom.,4
+leak,wyciek,Unreleased memory causing waste.,Niezwolniona pamięć powodująca marnotrawstwo.,,The leak slowed the system.,Wyciek spowolnił system.,4
+fragmentation,fragmentacja,Scattered memory reducing efficiency.,Rozproszona pamięć zmniejszająca wydajność.,,Fragmentation slows allocation.,Fragmentacja spowalnia alokację.,4
+optimization,optymalizacja,Improving code efficiency.,Poprawa wydajności kodu.,,Optimization reduces runtime.,Optymalizacja skraca czas wykonania.,3
+profiling,profilowanie,Analyzing code performance.,Analiza wydajności kodu.,,Profiling identifies bottlenecks.,Profilowanie wykrywa wąskie gardła.,4
+benchmark,benchmark,A standard for measuring performance.,Standard do mierzenia wydajności.,,The benchmark compares speeds.,Benchmark porównuje szybkości.,3
+latency,opóźnienie,The delay in processing data.,Opóźnienie w przetwarzaniu danych.,,Low latency improves responsiveness.,Niskie opóźnienie poprawia responsywność.,3
+throughput,przepustowość,The rate of processing data.,Szybkość przetwarzania danych.,,High throughput handles more tasks.,Wysoka przepustowość obsługuje więcej zadań.,3
+scalability,skalowalność,The ability to handle increased load.,Zdolność do obsługi zwiększonego obciążenia.,,Scalability ensures growth.,Skalowalność zapewnia rozwój.,4
+reliability,niezawodność,The consistency of system performance.,Spójność wydajności systemu.,,Reliability prevents crashes.,Niezawodność zapobiega awariom.,3
+availability,dostępność,The uptime of a system.,Czas dostępności systemu.,,High availability ensures access.,Wysoka dostępność zapewnia dostęp.,3
+fault,usterka,An error causing system failure.,Błąd powodujący awarię systemu.,,The fault stopped the app.,Usterka zatrzymała aplikację.,3
+redundancy,nadmiarowość,Duplicate systems for reliability.,Zduplikowane systemy dla niezawodności.,,Redundancy avoids downtime.,Nadmiarowość zapobiega przestojom.,4
+cluster,klaster,A group of servers working together.,Grupa serwerów działających razem.,,The cluster handles heavy traffic.,Klaster obsługuje duży ruch.,4
+node,węzeł,A single unit in a cluster.,Pojedyncza jednostka w klastrze.,,The node processes requests.,Węzeł przetwarza żądania.,3
+partition,partycja,Dividing data for processing.,Podział danych do przetwarzania.,,The partition balances the load.,Partycja równoważy obciążenie.,3
+replication,replikacja,Copying data for availability.,Kopiowanie danych dla dostępności.,,Replication ensures data safety.,Replikacja zapewnia bezpieczeństwo danych.,4
+consistency,spójność,Ensuring data is the same across systems.,Zapewnienie, że dane są takie same w różnych systemach.,,Consistency prevents errors.,Spójność zapobiega błędom.,3
+transaction,transakcja,A sequence of operations as a unit.,Sekwencja operacji jako jednostka.,,The transaction updates the database.,Transakcja aktualizuje bazę danych.,3
+rollback,wycofanie,Reverting changes after failure.,Cofanie zmian po niepowodzeniu.,,The rollback restored the data.,Wycofanie przywróciło dane.,3
+commit,zatwierdzenie,Finalizing a transaction.,Finalizowanie transakcji.,,The commit saved the changes.,Zatwierdzenie zapisało zmiany.,3
+lock,blokada,Preventing concurrent data access.,Zapobieganie współbieżnemu dostępowi do danych.,,The lock ensures data integrity.,Blokada zapewnia integralność danych.,3
+deadlock,zakleszczenie,A situation where processes wait indefinitely.,Sytuacja, w której procesy czekają bez końca.,,The deadlock halted execution.,Zakleszczenie zatrzymało wykonanie.,4
+schema,schemat,A blueprint for database structure.,Schemat dla struktury bazy danych.,,The schema defines the tables.,Schemat określa tabele.,3
+migration,migracja,Moving data or systems to a new environment.,Przenoszenie danych lub systemów do nowego środowiska.,,The migration updated the database.,Migracja zaktualizowała bazę danych.,3
+backup,kopia zapasowa,A copy of data for recovery.,Kopia danych do odzyskiwania.,,The backup saved the system.,Kopia zapasowa uratowała system.,2
+restore,przywrócenie,Recovering data from a backup.,Odzyskiwanie danych z kopii zapasowej.,,The restore fixed the issue.,Przywrócenie naprawiło problem.,2
+archive,archiwum,Storing data for long-term use.,Przechowywanie danych na dłuższy okres.,,The archive keeps old records.,Archiwum przechowuje stare rekordy.,3
+compression,kompresja,Reducing data size for storage.,Zmniejszanie rozmiaru danych do przechowywania.,,Compression saves disk space.,Kompresja oszczędza miejsce na dysku.,3
+encryption,szyfrowanie,Securing data with a code.,Zabezpieczanie danych kodem.,,Encryption protects sensitive files.,Szyfrowanie chroni poufne pliki.,3
+decryption,deszyfrowanie,Restoring encrypted data to original.,Przywracanie zaszyfrowanych danych do oryginalnej formy.,,Decryption unlocks the file.,Deszyfrowanie odblokowuje plik.,3
+hash,hasz,A unique value for data verification.,Unikalna wartość do weryfikacji danych.,,The hash confirms data integrity.,Hasz potwierdza integralność danych.,3
+checksum,sums kontrolna,A value to detect data errors.,Wartość do wykrywania błędów danych.,,The checksum validated the file.,Suma kontrolna zweryfikowała plik.,3
+signature,podpis,A digital mark for authenticity.,Cyfrowy znak dla autentyczności.,,The signature verifies the sender.,Podpis weryfikuje nadawcę.,3
+certificate,certyfikat,A digital document for security.,Cyfrowy dokument dla bezpieczeństwa.,,The certificate secures the site.,Certyfikat zabezpiecza stronę.,3
+authentication,uwierzytelnianie,Verifying user or system identity.,Weryfikacja tożsamości użytkownika lub systemu.,,Authentication protects the account.,Uwierzytelnianie chroni konto.,3
+authorization,autoryzacja,Granting access to resources.,Udzielanie dostępu do zasobów.,,Authorization limits user actions.,Autoryzacja ogranicza działania użytkownika.,3
+token,token,A credential for secure access.,Poświadczenie dla bezpiecznego dostępu.,,The token grants entry.,Token umożliwia wejście.,3
+session,sesja,A temporary interaction with a system.,Tymczasowa interakcja z systemem.,,The session tracks user activity.,Sesja śledzi aktywność użytkownika.,3
+cookie,ciasteczko,A small file storing user data.,Mały plik przechowujący dane użytkownika.,,The cookie saves preferences.,Ciasteczko zapisuje preferencje.,3
+cache,pamięć podręczna,Temporary storage for quick access.,Tymczasowy magazyn dla szybkiego dostępu.,,The cache speeds up the site.,Pamięć podręczna przyspiesza stronę.,3
+proxy,proxy,An intermediary for requests.,Pośrednik dla żądań.,,The proxy hides the user’s IP.,Proxy ukrywa adres IP użytkownika.,3
+gateway,brama,A system connecting networks.,System łączący sieci.,,The gateway routes data.,Brama kieruje danymi.,3
+router,ruter,A device managing network traffic.,Urządzenie zarządzające ruchem sieciowym.,,The router connects devices.,Ruter łączy urządzenia.,3
+firewall,zapora,A security system for networks.,System zabezpieczający dla sieci.,,The firewall blocks attacks.,Zapora blokuje ataki.,3
+bandwidth,przepustowość,The capacity for data transfer.,Pojemność dla przesyłania danych.,,High bandwidth supports streaming.,Wysoka przepustowość wspiera strumieniowanie.,3
+latency,opóźnienie,The delay in data transfer.,Opóźnienie w przesyłaniu danych.,,Low latency improves speed.,Niskie opóźnienie poprawia szybkość.,3
+packet,pakiet,A small unit of data.,Mała jednostka danych.,,The packet carries the message.,Pakiet przenosi wiadomość.,3
+protocol,protokół,Rules for data communication.,Reguły dla komunikacji danych.,,The protocol ensures compatibility.,Protokół zapewnia kompatybilność.,3
+socket,gniazdo,A network communication endpoint.,Punkt końcowy komunikacji sieciowej.,,The socket connects the apps.,Gniazdo łączy aplikacje.,3
+port,port,A channel for network communication.,Kanał dla komunikacji sieciowej.,,The port handles traffic.,Port obsługuje ruch.,3
+address,adres,A unique identifier for a device.,Unikalny identyfikator dla urządzenia.,,The address locates the server.,Adres lokalizuje serwer.,2
+domain,domena,A named network location.,Nazwana lokalizacja sieciowa.,,The domain points to the site.,Domena wskazuje na stronę.,2
+dns,dns,A system mapping domains to IPs.,System mapujący domeny na adresy IP.,,DNS resolves the address.,DNS rozwiązuje adres.,3
+url,adres url,A web address for resources.,Adres internetowy dla zasobów.,,The URL loads the page.,Adres URL ładuje stronę.,2
+browser,przeglądarka,Software for web access.,Oprogramowanie do dostępu do sieci.,,The browser opens websites.,Przeglądarka otwiera strony internetowe.,2
+html,html,A language for web structure.,Język dla struktury stron internetowych.,,HTML builds the page.,HTML buduje stronę.,3
+css,css,A language for web styling.,Język dla stylizacji stron internetowych.,,CSS formats the layout.,CSS formatuje układ.,3
+javascript,javascript,A language for web interactivity.,Język dla interaktywności stron.,,JavaScript adds functionality.,JavaScript dodaje funkcjonalność.,3
+framework,framework,A structure for building apps.,Struktura do tworzenia aplikacji.,,The framework simplifies coding.,Framework upraszcza kodowanie.,3
+library,biblioteka,A set of reusable functions.,Zbiór wielokrotnie używalnych funkcji.,,The library saves time.,Biblioteka oszczędza czas.,3
+plugin,wtyczka,A module adding functionality.,Moduł dodający funkcjonalność.,,The plugin enhances the app.,Wtyczka ulepsza aplikację.,3
+extension,rozszerzenie,A tool adding browser features.,Narzędzie dodające funkcje przeglądarki.,,The extension blocks ads.,Rozszerzenie blokuje reklamy.,3
+script,skrypt,A small program for tasks.,Mały program do zadań.,,The script automates updates.,Skrypt automatyzuje aktualizacje.,2
+code,kod,Instructions for a program.,Instrukcje dla programu.,,The code runs the app.,Kod uruchamia aplikację.,1
+repository,repozytorium,A storage for code versions.,Magazyn dla wersji kodu.,,The repository tracks changes.,Repozytorium śledzi zmiany.,3
+commit,zatwierdzenie,A saved code change.,Zapisana zmiana kodu.,,The commit fixes bugs.,Zatwierdzenie naprawia błędy.,3
+branch,gałąź,A separate line of development.,Oddzielna linia rozwoju.,,The branch tests features.,Gałąź testuje funkcje.,3
+merge,scalanie,Combining code from branches.,Łączenie kodu z gałęzi.,,The merge integrates changes.,Scalanie integruje zmiany.,3
+pull,ściąganie,Fetching code from a repository.,Pobieranie kodu z repozytorium.,,The pull updates the code.,Ściąganie aktualizuje kod.,3
+push,wysyłanie,Uploading code to a repository.,Wysyłanie kodu do repozytorium.,,The push shares updates.,Wysyłanie udostępnia aktualizacje.,3
+fork,rozgałęzienie,Copying a repository for changes.,Kopiowanie repozytorium dla zmian.,,The fork allows customization.,Rozgałęzienie umożliwia dostosowanie.,3
+clone,klonowanie,Copying a repository locally.,Kopiowanie repozytorium lokalnie.,,The clone enables editing.,Klonowanie umożliwia edytowanie.,3
+version,wersja,A specific state of code.,Określony stan kodu.,,The version adds features.,Wersja dodaje funkcje.,2
+release,wydanie,A stable code version.,Stabilna wersja kodu.,,The release is ready.,Wydanie jest gotowe.,3
+patch,łata,A fix for code issues.,Naprawa problemów w kodzie.,,The patch resolves bugs.,Łata naprawia błędy.,3
+update,aktualizacja,An improvement to code.,Ulepszenie kodu.,,The update enhances performance.,Aktualizacja poprawia wydajność.,2
+upgrade,ulepszenie,A major code improvement.,Duże ulepszenie kodu.,,The upgrade adds tools.,Ulepszenie dodaje narzędzia.,3
+deploy,wdróżenie,Releasing code to production.,Wypuszczenie kodu do produkcji.,,The deploy launches the app.,Wdrożenie uruchamia aplikację.,3
+environment,środowisko,A setup for running code.,Konfiguracja do uruchamiania kodu.,,The environment supports testing.,Środowisko wspiera testowanie.,3
+production,produkcja,The live system environment.,Środowisko systemu produkcyjnego.,,The app runs in production.,Aplikacja działa w produkcji.,3
+staging,przygotowanie,A pre-production test environment.,Środowisko testowe przed produkcją.,,Staging mirrors production.,Przygotowanie odzwierciedla produkcję.,3
+development,rozwojowe,An environment for coding.,Środowisko do kodowania.,,Development tests new features.,Rozwojowe testuje nowe funkcje.,3
+test,test,A check for code correctness.,Sprawdzenie poprawności kodu.,,The test verifies functionality.,Test weryfikuje funkcjonalność.,2
+unit,jednostkowy,A test for single components.,Test dla pojedynczych komponentów.,,The unit test checks code.,Test jednostkowy sprawdza kod.,3
+integration,integracyjny,A test for combined components.,Test dla połączonych komponentów.,,Integration tests interactions.,Integracyjny testuje interakcje.,3
+regression,regresyjny,A test for existing features.,Test dla istniejących funkcji.,,Regression prevents bugs.,Regresyjny zapobiega błędom.,3
+automation,automatyzacja,Using tools to run tasks.,Używanie narzędzi do zadań.,,Automation runs tests.,Automatyzacja uruchamia testy.,3
+scripting,skryptowanie,Writing code for automation.,Pisanie kodu dla automatyzacji.,,Scripting automates tasks.,Skryptowanie automatyzuje zadania.,3
+debugger,debugger,A tool for fixing code.,Narzędzie do naprawy kodu.,,The debugger finds errors.,Debugger znajduje błędy.,3
+ide,ide,A tool for coding efficiency.,Narzędzie dla wydajnego kodowania.,,The IDE speeds up work.,IDE przyspiesza pracę.,3
+console,konsola,An interface for code output.,Interfejs dla wyjścia kodu.,,The console shows errors.,Konsola pokazuje błędy.,2
+log,dziennik,A record of code events.,Zapis zdarzeń kodu.,,The log tracks issues.,Dziennik śledzi problemy.,2
+exception,wyjątek,An error in code execution.,Błąd w wykonaniu kodu.,,The exception stops the app.,Wyjątek zatrzymuje aplikację.,3
+try,próbuj,A block to catch errors.,Blok do wychwytywania błędów.,,The try block handles errors.,Blok próbuj obsługuje błędy.,3
+catch,łap,A block to manage errors.,Blok do zarządzania błędami.,,The catch block fixes issues.,Blok łap naprawia problemy.,3
+throw,rzuć,Triggering an error.,Wyzwalanie błędu.,,The throw signals a problem.,Rzuć sygnalizuje problem.,3
+stacktrace,ślad stosu,A log of code execution path.,Dziennik ścieżki wykonania kodu.,,The stacktrace aids debugging.,Ślad stosu pomaga w debugowaniu.,3
+thread,wątek,A unit of code execution.,Jednostka wykonania kodu.,,The thread runs tasks.,Wątek wykonuje zadania.,3
+process,proces,A running program instance.,Działająca instancja programu.,,The process uses CPU.,Proces używa procesora.,3
+concurrency,współbieżność,Running multiple tasks together.,Wykonywanie wielu zadań razem.,,Concurrency boosts efficiency.,Współbieżność zwiększa wydajność.,4
+parallelism,równoległość,Running tasks simultaneously.,Wykonywanie zadań jednocześnie.,,Parallelism speeds up work.,Równoległość przyspiesza pracę.,4
+mutex,muteks,A lock for safe concurrency.,Blokada dla bezpiecznej współbieżności.,,The mutex prevents conflicts.,Muteks zapobiega konfliktom.,4
+semaphore,semafory,A signal for task control.,Sygnał do kontroli zadań.,,The semaphore manages access.,Semafory zarządzają dostępem.,4
+deadlock,zakleszczenie,Tasks blocking each other.,Zadania blokujące się nawzajem.,,The deadlock stops execution.,Zakleszczenie zatrzymuje wykonanie.,4
+race,kondycja,Unpredictable task timing.,Nieprzewidywalne czasowanie zadań.,,The race caused errors.,Kondycja wywołała błędy.,4
+synchronize,synchronizacja,Coordinating task execution.,Koordynowanie wykonywania zadań.,,Synchronize avoids conflicts.,Synchronizacja unika konfliktów.,4
+queue,kolejka,An ordered task list.,Uporządkowana lista zadań.,,The queue processes jobs.,Kolejka przetwarza zadania.,3
+priority,priorytet,Importance level for tasks.,Poziom ważności dla zadań.,,The priority sets order.,Priorytet ustala kolejność.,3
+scheduler,planista,A tool for task scheduling.,Narzędzie do planowania zadań.,,The scheduler assigns tasks.,Planista przydziela zadania.,3
+virtual,wirtualny,A simulated computing resource.,Symulowany zasób obliczeniowy.,,The virtual machine runs apps.,Maszyna wirtualna uruchamia aplikacje.,3
+container,kontener,An isolated app environment.,Izolowane środowisko aplikacji.,,The container runs the app.,Kontener uruchamia aplikację.,3
+docker,docker,A platform for containers.,Platforma dla kontenerów.,,Docker simplifies app deployment.,Docker upraszcza wdrożenie aplikacji.,3
+kubernetes,kubernetes,A tool for container management.,Narzędzie do zarządzania kontenerami.,,Kubernetes scales apps.,Kubernetes skaluje aplikacje.,4
+cloud,chmura,Remote computing services.,Zdalne usługi obliczeniowe.,,The cloud hosts the app.,Chmura hostuje aplikację.,3
+backup,kopia zapasowa,A duplicate for data recovery.,Duplikat dla odzyskiwania danych.,,The backup saves data.,Kopia zapasowa przechowuje dane.,2
+restore,przywrócenie,Recovering lost data.,Odzyskiwanie utraconych danych.,,The restore fixes the system.,Przywrócenie naprawia system.,2
+snapshot,migawka,A data state at a moment.,Stan danych w danym momencie.,,The snapshot saves progress.,Migawka zapisuje postęp.,3
+redundancy,nadmiarowość,Extra systems for reliability.,Dodatkowe systemy dla niezawodności.,,Redundancy prevents failures.,Nadmiarowość zapobiega awariom.,3
+failover,przełączanie,Switching to a backup system.,Przełączanie na system zapasowy.,,Failover ensures uptime.,Przełączanie zapewnia dostępność.,3
+load,obciążenie,System resource demand.,Żądanie zasobów systemu.,,The load slows performance.,Obciążenie spowalnia wydajność.,3
+scale,skalowanie,Adjusting to handle load.,Dostosowanie do obsługi obciążenia.,,The system needs to scale.,System musi się skalować.,3
+horizontal,poziome,Scaling with more machines.,Skalowanie przez więcej maszyn.,,Horizontal scaling adds servers.,Poziome skalowanie dodaje serwery.,4
+vertical,pionowe,Scaling with better machines.,Skalowanie przez lepsze maszyny.,,Vertical scaling upgrades hardware.,Pionowe skalowanie ulepsza sprzęt.,4
+microservice,mikrousługa,A small, independent app.,Mała, niezależna aplikacja.,,The microservice handles payments.,Mikrousługa obsługuje płatności.,4
+monolith,monolit,A single, large application.,Pojedyncza, duża aplikacja.,,The monolith is complex.,Monolit jest złożony.,4
+endpoint,punkt,A specific API access point.,Określony punkt dostępu do API.,,The endpoint returns data.,Punkt zwraca dane.,3
+request,żądanie,A call for data or action.,Wywołanie dla danych lub akcji.,,The request fetches records.,Żądanie pobiera rekordy.,2
+response,odpowiedź,Data returned from a request.,Dane zwrócone z żądania.,,The response shows results.,Odpowiedź pokazuje wyniki.,2
+authentication,uwierzytelnianie,Verifying user identity.,Weryfikacja tożsamości użytkownika.,,Authentication secures logins.,Uwierzytelnianie zabezpiecza logowanie.,3
+authorization,autoryzacja,Controlling access to resources.,Kontrola dostępu do zasobów.,,Authorization restricts actions.,Autoryzacja ogranicza działania.,3
+token,token,A key for secure access.,Klucz dla bezpiecznego dostępu.,,The token allows entry.,Token umożliwia wejście.,3
+session,sesja,A user’s interaction period.,Okres interakcji użytkownika.,,The session tracks activity.,Sesja śledzi aktywność.,3
+cookie,ciasteczko,A file storing user data.,Plik przechowujący dane użytkownika.,,The cookie saves settings.,Ciasteczko zapisuje ustawienia.,3
+cache,pamięć podręczna,Storage for quick data access.,Magazyn dla szybkiego dostępu do danych.,,The cache speeds up pages.,Pamięć podręczna przyspiesza strony.,3
+proxy,proxy,A mediator for network requests.,Pośrednik dla żądań sieciowych.,,The proxy enhances security.,Proxy zwiększa bezpieczeństwo.,3
+gateway,brama,A connector for networks.,Łącznik dla sieci.,,The gateway routes traffic.,Brama kieruje ruchem.,3
+router,ruter,A device for network traffic.,Urządzenie dla ruchu sieciowego.,,The router connects devices.,Ruter łączy urządzenia.,3
+firewall,zapora,A network security system.,System zabezpieczający sieć.,,The firewall stops attacks.,Zapora zatrzymuje ataki.,3
+bandwidth,przepustowość,Capacity for data transfer.,Pojemność dla przesyłania danych.,,Bandwidth supports streaming.,Przepustowość wspiera strumieniowanie.,3
+latency,opóźnienie,Delay in data transfer.,Opóźnienie w przesyłaniu danych.,,Low latency improves speed.,Niskie opóźnienie poprawia szybkość.,3
+packet,pakiet,A unit of network data.,Jednostka danych sieciowych.,,The packet carries data.,Pakiet przenosi dane.,3
+protocol,protokół,Rules for network communication.,Reguły dla komunikacji sieciowej.,,The protocol ensures compatibility.,Protokół zapewnia kompatybilność.,3
+socket,gniazdo,A point for network communication.,Punkt dla komunikacji sieciowej.,,The socket connects apps.,Gniazdo łączy aplikacje.,3
+port,port,A channel for network traffic.,Kanał dla ruchu sieciowego.,,The port handles data.,Port obsługuje dane.,3
+address,adres,An identifier for a device.,Identyfikator dla urządzenia.,,The address locates the server.,Adres lokalizuje serwer.,2
+domain,domena,A named network address.,Nazwany adres sieciowy.,,The domain points to the site.,Domena wskazuje na stronę.,2
+dns,dns,A system for domain resolution.,System do rozwiązywania domen.,,DNS maps domains to IPs.,DNS mapuje domeny na adresy IP.,3
+url,adres url,An address for web resources.,Adres dla zasobów internetowych.,,The URL opens the site.,Adres URL otwiera stronę.,2
+browser,przeglądarka,Software for web browsing.,Oprogramowanie do przeglądania sieci.,,The browser loads pages.,Przeglądarka ładuje strony.,2
+html,html,A language for web pages.,Język dla stron internetowych.,,HTML structures the site.,HTML strukturyzuje stronę.,3
+css,css,A language for web design.,Język dla projektowania stron.,,CSS styles the page.,CSS stylizuje stronę.,3
+javascript,javascript,A language for web dynamics.,Język dla dynamiki stron.,,JavaScript adds interactivity.,JavaScript dodaje interaktywność.,3
+framework,framework,A tool for app development.,Narzędzie do tworzenia aplikacji.,,The framework speeds coding.,Framework przyspiesza kodowanie.,3
+library,biblioteka,A set of reusable code.,Zbiór wielokrotnie używanego kodu.,,The library simplifies tasks.,Biblioteka upraszcza zadania.,3
+plugin,wtyczka,A module for extra features.,Moduł dla dodatkowych funkcji.,,The plugin adds tools.,Wtyczka dodaje narzędzia.,3
+extension,rozszerzenie,A tool for browser features.,Narzędzie dla funkcji przeglądarki.,,The extension blocks ads.,Rozszerzenie blokuje reklamy.,3
+script,skrypt,A program for small tasks.,Program dla małych zadań.,,The script automates work.,Skrypt automatyzuje pracę.,2
+code,kod,Instructions for software.,Instrukcje dla oprogramowania.,,The code runs the app.,Kod uruchamia aplikację.,1
