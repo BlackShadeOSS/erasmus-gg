@@ -52,6 +52,12 @@ export default function AdminLayout({ user, children }: AdminLayoutProps) {
                 path: "/admin-panel/vocabulary",
             },
             {
+                id: "vocabulary-import",
+                label: "Import Słownictwa",
+                icon: "📥",
+                path: "/admin-panel/vocabulary-import",
+            },
+            {
                 id: "videos",
                 label: "Filmy",
                 icon: "🎥",
