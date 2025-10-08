@@ -3,11 +3,11 @@ import { redirect } from "next/navigation";
 import UserDashboard from "@/components/user/UserDashboard";
 
 export default async function Dashboard() {
-    const user = await getCurrentUser();
+  const user = await getCurrentUser();
 
-    if (!user) {
-        redirect("/login");
-    }
+  if (!user) {
+    redirect("/login");
+  }
 
-    return <UserDashboard user={user} />;
+  return <UserDashboard user={user} />;
 }

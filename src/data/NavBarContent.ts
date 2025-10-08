@@ -2,21 +2,21 @@ export const NavBarContent = {
   navItems: [
     {
       label: "Strona główna",
-      href: "/"
+      href: "/",
     },
     {
       label: "Szkoła",
-      href: "/about"
+      href: "https://zs1.nowotarski.edu.pl/",
     },
     {
       label: "Logowanie",
-      href: "/login"
+      href: "https://erasmus-gg.vercel.app/login",
     },
     {
       label: "Rejestracja",
-      href: "/register",
-      highlight: true
-    }
+      href: "https://erasmus-gg.vercel.app/register",
+      highlight: true,
+    },
   ],
-  logoAlt: "icon of the app"
+  logoAlt: "icon of the app",
 };
