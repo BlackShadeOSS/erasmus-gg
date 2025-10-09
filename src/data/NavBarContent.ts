@@ -10,11 +10,11 @@ export const NavBarContent = {
     },
     {
       label: "Logowanie",
-      href: "https://erasmus-gg.vercel.app/login",
+      href: "/login",
     },
     {
       label: "Rejestracja",
-      href: "https://erasmus-gg.vercel.app/register",
+      href: "/register",
       highlight: true,
     },
   ],
