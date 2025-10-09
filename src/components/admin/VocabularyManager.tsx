@@ -874,7 +874,7 @@ export default function VocabularyManager() {
                                             value={category.id}
                                         >
                                             {category.name} (
-                                            {category.profession.name})
+                                            {category.profession?.name || 'No profession'})
                                         </option>
                                     ))}
                             </Select>
@@ -1052,9 +1052,9 @@ export default function VocabularyManager() {
                                         {entry.term_pl}
                                     </TableCell>
                                     <TableCell>
-                                        <div>{entry.category.name}</div>
+                                        <div>{entry.category?.name || 'No category'}</div>
                                         <div className="text-sm text-neutral-400">
-                                            {entry.category.profession.name}
+                                            {entry.category?.profession?.name || ''}
                                         </div>
                                     </TableCell>
                                     <TableCell>
@@ -1125,9 +1125,9 @@ export default function VocabularyManager() {
                                     {category.name_en}
                                 </TableCell>
                                 <TableCell>
-                                    <div>{category.profession.name}</div>
+                                    <div>{category.profession?.name || 'No profession'}</div>
                                     <div className="text-sm text-neutral-400">
-                                        {category.profession.name_en}
+                                        {category.profession?.name_en || ''}
                                     </div>
                                 </TableCell>
                                 <TableCell>
@@ -1244,7 +1244,7 @@ export default function VocabularyManager() {
                                         value={category.id}
                                     >
                                         {category.name} (
-                                        {category.profession.name})
+                                        {category.profession?.name || 'No profession'})
                                     </option>
                                 ))}
                             </Select>
@@ -1585,7 +1585,7 @@ export default function VocabularyManager() {
                     deleteConfirm.entry
                         ? `Czy na pewno chcesz usunąć wpis "${deleteConfirm.entry.term_en}" z słownictwa? Ta akcja jest nieodwracalna.`
                         : deleteConfirm.category
-                        ? `Czy na pewno chcesz usunąć kategorię "${deleteConfirm.category.name}"? Ta akcja jest nieodwracalna i usunie również wszystkie wpisy słownictwa w tej kategorii.`
+                        ? `Czy na pewno chcesz usunąć kategorię "${deleteConfirm.category?.name || 'Unknown'}"? Ta akcja jest nieodwracalna i usunie również wszystkie wpisy słownictwa w tej kategorii.`
                         : ""
                 }
                 confirmText="Usuń"
