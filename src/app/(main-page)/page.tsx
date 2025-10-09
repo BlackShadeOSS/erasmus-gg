@@ -10,12 +10,61 @@ import icon from "@/lib/NavIcon.svg";
 import Image from "next/image";
 import { AnimatedBeamMultipleOutputDemo } from "@/components/UserBeam";
 import { Particles } from "@/components/ui/particles";
+import Carousel from "@/components/ui/carousel";
+
+// Import zdjęć specjalizacji
+import fotograf from "@/lib/specializations/fotograf.jpg";
+import grafik from "@/lib/specializations/grafik.jpg";
+import informatyk from "@/lib/specializations/informatyk.jpg";
+import logistyk from "@/lib/specializations/logistyk.jpg";
+import moda from "@/lib/specializations/moda.jpg";
+import programista from "@/lib/specializations/programista.jpg";
+import reklama from "@/lib/specializations/reklama.jpg";
 
 export default function Home() {
   const { hero, secondSection } = HomeContent;
 
+  // Dane dla slajdów z specjalizacjami
+  const specializationSlides = [
+    {
+      title: "Technik Informatyk",
+      button: "Dowiedz się więcej",
+      src: informatyk.src,
+    },
+    {
+      title: "Technik Programista",
+      button: "Dowiedz się więcej",
+      src: programista.src,
+    },
+    {
+      title: "Technik Grafiki i Poligrafii Cyfrowej",
+      button: "Dowiedz się więcej",
+      src: grafik.src,
+    },
+    {
+      title: "Technik Fotograf",
+      button: "Dowiedz się więcej",
+      src: fotograf.src,
+    },
+    {
+      title: "Technik Reklamy",
+      button: "Dowiedz się więcej",
+      src: reklama.src,
+    },
+    {
+      title: "Technik Przemysłu Mody",
+      button: "Dowiedz się więcej",
+      src: moda.src,
+    },
+    {
+      title: "Technik Logistyk",
+      button: "Dowiedz się więcej",
+      src: logistyk.src,
+    },
+  ];
+
   return (
-    <div>
+    <div className="overflow-x-hidden">
       <NavBar />
 
       <div className="hidden sm:block">
@@ -41,7 +90,7 @@ export default function Home() {
               {hero.highlightedText}
             </LineShadowText>
           </h1>
-          <h2 className="text-base sm:text-lg text-stone-200/70 mt-4 max-w-2xl mx-auto px-2">
+          <h2 className="text-base sm:text-xl text-stone-200/70 mt-4 max-w-2xl mx-auto px-2">
             {hero.heroDescription}
           </h2>
           <div className="-z-10">
@@ -54,7 +103,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="bg-neutral-900/40 text-stone-300 px-4 sm:px-6 lg:px-10 py-10 flex flex-col items-center">
+        <section className="bg-neutral-900/40 text-stone-300 px-4 sm:px-6 lg:px-10 py-10 flex flex-col items-center border-b-2 border-neutral-800">
           <div className="max-w-4xl text-center min-h-12 my-6 sm:my-10">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-2 sm:mb-4">
               {secondSection.title}
@@ -74,6 +123,14 @@ export default function Home() {
             />
             <AnimatedBeamMultipleOutputDemo />
           </div>
+        </section>
+        <section className="min-h-[95svh]  flex flex-col bg-neutral-900/20 items-center justify-start pt-15 pb-15 selection:bg-transparent selection:text-amber-200">
+          <div className="max-w-6xl w-full text-center mb-8">
+            <h2 className="text-3xl sm:text-4xl md:text-4xl font-semibold text-stone-200 select-none">
+              Nasze Specjalizacje
+            </h2>
+          </div>
+          <Carousel slides={specializationSlides} />
         </section>
       </main>
       <Footer />

@@ -1,4 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { DotPattern } from "@/components/ui/dot-pattern";
@@ -13,7 +19,8 @@ const games = [
   {
     id: "pamiec",
     title: "Pamięć",
-    description: "Sprawdź swoją pamięć i zdolności językowe! Dopasuj słówka angielskie do polskich.",
+    description:
+      "Sprawdź swoją pamięć i zdolności językowe! Dopasuj słówka angielskie do polskich.",
     icon: "🧠",
     path: "/pamiec",
     difficulty: "Średnia",

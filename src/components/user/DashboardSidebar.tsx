@@ -9,7 +9,10 @@ interface DashboardSidebarProps {
   onLogout?: () => void;
 }
 
-export default function DashboardSidebar({ username, onLogout }: DashboardSidebarProps) {
+export default function DashboardSidebar({
+  username,
+  onLogout,
+}: DashboardSidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -18,7 +21,7 @@ export default function DashboardSidebar({ username, onLogout }: DashboardSideba
       onLogout();
       return;
     }
-    
+
     try {
       await fetch("/api/auth/logout", {
         method: "POST",
