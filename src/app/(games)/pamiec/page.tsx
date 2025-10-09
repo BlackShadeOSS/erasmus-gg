@@ -141,7 +141,12 @@ export default function pamiec() {
         }
         
     }).catch((error)=>{
-        console.log("Error fetching :" + error);
+        console.log("Error fetching: " + error);
+        console.log(document.getElementById("LogInPlease"));
+        
+        if (document.getElementById("LogInPlease")) {
+            document.getElementById("LogInPlease")!.style.display = "inline-block";
+        }
     })
     }
   }
@@ -170,7 +175,7 @@ export default function pamiec() {
  
     return (
        <div className="flex flex-col items-center justify-center min-h-screen p-10">
-            <h1 className="text-4xl font-bold text-green-300 mb-10">Pamięć</h1>
+            <h1 className="text-4xl font-bold text-amber-200 mb-10">Pamięć</h1>
             <main id="gameSetUp" className="md:text-base text-2xl">
                 <p className="flex flex-col items-center justify-center">Sprawdź swoją pamięć i zdolności językowe!</p>
 
@@ -178,18 +183,19 @@ export default function pamiec() {
 
                 <form id="startForm" className="flex flex-col justify-center mb-10" method="post" onSubmit={zacznijGre}>
                     <h3 className="text-center mt-5">Wybierz trudność:</h3>
-                    <select className="text-center max-w-fit m-auto bg-green-900 " name="trudnosc" id="trudnoscSelect">
+                    <select className="text-center max-w-fit m-auto bg-amber-600 " name="trudnosc" id="trudnoscSelect">
                         {listaTrudnosci}
                     </select>
-                    <button id="start" disabled={czekaNaSlowka} className="disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 mt-4 max-w-fit m-auto bg-green-200 border border-green-900 rounded-[6px] shadow-sm 
+                    <button id="start" disabled={czekaNaSlowka} className="disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 mt-4 max-w-fit m-auto bg-amber-200 border border-amber-900 rounded-[6px] shadow-sm 
+           t-4 max-w-fit m-auto bg-amber-200 border border-amber-700 rounded-[6px] shadow-sm 
            box-border text-black text-[16px] font-bold
-            p-3 px-4 hover:bg-transparent hover:text-green-200 hover:border-green-200
-           active:opacity-50
-           " type="submit"  >start</button>
-           <p className="text-center" id="startInfo">Ładuję dane... Proszę czekać.</p>
+            p-3 px-4 hover:bg-transparent hover:text-amber-200 hover:border-amber-200
+           active:opacity-50" type="submit"  >start</button>
+           <p className="text-center" id="startInfo">Ładuję dane... Proszę czekać.  </p>
+           <p className="text-center hidden" id="logInPlease">Proszę się zalogować.</p>
                 </form>
 
-                <h3 className="text-green-200 text-center">Jak grać?</h3>
+                <h3 className="text-amber-200 text-center">Jak grać?</h3>
                 <p className="2xl:mx-80 sm:mx-36 mx-10 ">Kliknij kartę aby ją odsłonić. Odkryj drugą kartę, jeśli pasują (słówko po angielsku do słówka po polsku) karty znikają z pola. Jeśli nie pasują, zapamiętaj ich pozycję i ich zawartość. Karty zostaną ponownie zakryte i możesz próbować dalej. Gra kończy się gdy pole zostanie oczyszczone z kart lub gdy wszystkie próby zostaną wykorzystane.</p>
             </main>
             <div id="planszaPojemnik" className="w-screen"></div>

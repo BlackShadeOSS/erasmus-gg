@@ -29,9 +29,7 @@ let iloscKart: number;
 const rozmiarKartyCSS:string = "min-w-fit m-2 w-1/3 sm:m-4 sm:w-1/5 md:m-3 md:w-1/3 lg:w-1/5 2xl:w-1/8 aspect-square";
 const flipCardCSS:string = "  bg-transparent   ";
 const kartaCSS: string = " inline-flex items-center justify-center select-none rounded-2xl  ease-in-out text-white border-white/5 backdrop-blur-[25px] bg-origin-border shadow-sm not-disabled:hover:bg-white/90 not-disabled:hover:text-black not-disabled:hover:shadow-button transition-all duration-200 focus-visible:ring-4 focus-visible:ring-white/30 focus-visible:outline-hidden focus-visible:bg-white/90 focus-visible:text-black after:absolute  after:top-[-2px] after:left-[-2px] after:rounded-[1rem] after:bg-repeat after:pointer-events-none text-base font-semibold cursor-pointer rounded-lg ";
-// const rozmiarKartyCSS:string = " m-0 w-[498px] h-[498px] sm:m-10 sm:w-6px sm:h-6px ";
-// const rozmiarKartyCSS:string = " sm:w-1/8 sm:h-1/8";
-// const kartaCSS: string = "inline-flex items-center justify-center select-none rounded-2xl m-8 ease-in-out text-white border-white/5 backdrop-blur-[25px] bg-origin-border  shadow-sm not-disabled:hover:bg-white/90 not-disabled:hover:text-black not-disabled:hover:shadow-button transition-all duration-200 focus-visible:ring-4 focus-visible:ring-white/30 focus-visible:outline-hidden focus-visible:bg-white/90 focus-visible:text-black after:absolute  after:top-[-2px] after:left-[-2px] after:rounded-[1rem] after:bg-repeat after:pointer-events-none text-base h-12 gap-0 font-semibold size-1/8 max-w-1/4 cursor-pointer max-w-full rounded-lg min-w-fit ";//old
+
 const nazwaKlasyKartyPol: string = "karta pol " + kartaCSS + rozmiarKartyCSS;
 const nazwaKlasyKartyAng: string = "karta ang " + kartaCSS + rozmiarKartyCSS;
 //TODO adjust card size
@@ -40,10 +38,10 @@ function stworzKarte(id: number, slowko:string, nazwaKlasy:string, jezyk:string 
     return (    
         <div key={id} data-id-w-liscie={idwLiscie} data-para={idPary} data-odkryta={false} className={flipCardCSS + nazwaKlasy + " flip-card"} onClick={odkryjKarte} data-jezyk={jezyk}>
             <div className="flip-card-inner">
-                 <div className={"flip-card-front " + " select-none rounded-2xl ease-in-out border-white/5 backdrop-blur-[25px] bg-origin-border bg-[linear-gradient(104deg,rgba(253,253,253,0.05)_5%,rgba(240,240,228,0.1)_100%)] shadow-sm not-disabled:hover:bg-white/90 not-disabled:hover:text-black not-disabled:hover:shadow-button transition-all duration-200 after:absolute  after:top-[-2px] after:left-[-2px] after:rounded-[1rem] font-semibold   cursor-pointer rounded-lg min-w-fit"}>
+                 <div className={"flip-card-front " + " select-none rounded-2xl ease-in-out border-white/5 backdrop-blur-[25px] bg-origin-border shadow-sm not-disabled:hover:bg-white/90 not-disabled:hover:text-black not-disabled:hover:shadow-button transition-all duration-200 after:absolute  after:top-[-2px] after:left-[-2px] after:rounded-[1rem] font-semibold   cursor-pointer rounded-lg min-w-fit"}>
                      </div>
 
-                <div className="flex flex-col flip-card-back  tekstKarty bg-green-900" >
+                <div className="flex flex-col flip-card-back  tekstKarty bg-amber-900" >
                 <p className="w-[100%] h-fit">{slowko}</p>
                 <div className="w-[100%] h-fit">({jezyk})</div>
                 </div>
@@ -220,11 +218,8 @@ function odkryjKarte(e: any) {
             document.getElementById("zostaloProb")!.innerText = (proby) as unknown as string;
             while (terazOdkryte.length > 0) {
                 terazOdkryte!.pop()!.setAttribute("data-odkryta", "false");
-
             }
-
         }
-            
         },1000)
             
         }
@@ -250,12 +245,7 @@ planszaRoot = root;
 const szerokoscCSS: string = "w-full";//w-screen
 iloscKart = szerokosc * wysokosc;//docelowa ilość kart
 proby = (Math.ceil(iloscKart/2)) + 1;
-
-// if (pobranaListaSlowek.length > 0) { 
-    listaSlowek = pobranaListaSlowek;
-    //test this - i have done the powtarzaəce sie slowka check now and check if everything is loaded properly
-// }
-
+listaSlowek = pobranaListaSlowek;
 
 let losowaParaSlowek: number = losowaLiczbaCalkowita(0, listaSlowek.length-1);
 const listaUżytychPar: number[] = [];
@@ -279,13 +269,9 @@ while (licznik < iloscKart) {//nie ma znaczenia czy tworzymy pojedyńczo czy pod
     }
 }
 
-
 listaUżytychPar.sort((a,b)=>{
     return a-b
 });
-
-// console.log("licznik:" + licznik);
-// console.log("karrty length:" + karty.length);
 
 losujMiejscaKart(karty);
 
@@ -301,9 +287,9 @@ losujMiejscaKart(karty);
 }
 
 function koniecGry(wygrana: boolean = true) {
-    const buttonCSS:string = `mt-4 max-w-fit m-auto bg-green-200 border border-green-900 rounded-[6px] shadow-sm 
+    const buttonCSS:string = `mt-4 max-w-fit m-auto bg-amber-200 border border-amber-700 rounded-[6px] shadow-sm 
            box-border text-black text-[16px] font-bold
-            p-3 px-4 hover:bg-transparent hover:text-green-200 hover:border-green-200
+            p-3 px-4 hover:bg-transparent hover:text-amber-200 hover:border-amber-200
            active:opacity-50`;
     if (wygrana) {
         const wygranaHTML:string = `<p>Gratulacje!</p>
