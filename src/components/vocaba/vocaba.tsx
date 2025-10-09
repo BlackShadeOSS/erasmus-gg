@@ -1,21 +1,26 @@
 'use client'; 
 
+import { h1 } from 'motion/react-client';
 import React from 'react';
 
-type Props = {
-    width: number;
-    height: number;
-};
+// type Props = {
+//     width: number;
+//     height: number;
+// };
 
-function Vocaba({ width, height }: Props) {
-    const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+function Vocaba() {
+    // const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+
+    // return (
+    //     <canvas
+    //         ref={canvasRef}
+    //         width={width}
+    //         height={height}
+    //     />
+    // );
 
     return (
-        <canvas
-            ref={canvasRef}
-            width={width}
-            height={height}
-        />
-    );
+       <><h1>Vocaba</h1></> 
+    )
 }
 export default Vocaba;
