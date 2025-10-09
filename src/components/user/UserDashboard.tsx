@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import GlowingCircle from "@/components/ui/glowing-circle";
 import NoiseFilter from "@/components/NoiseFilter";
 import { UserSession } from "@/lib/auth";
+import DashboardSidebar from "@/components/user/DashboardSidebar";
 
 interface UserDashboardProps {
   user: UserSession;
@@ -23,18 +24,8 @@ interface UserDashboardProps {
 export default function UserDashboard({ user }: UserDashboardProps) {
   const router = useRouter();
 
-  const handleLogout = async () => {
-    try {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-      });
-      router.push("/login");
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
-
   const goToVocabulary = () => router.push("/dashboard/vocabulary");
+  const goToGames = () => router.push("/dashboard/games");
 
   return (
     <div className="min-h-screen bg-neutral-900 relative">
@@ -44,68 +35,7 @@ export default function UserDashboard({ user }: UserDashboardProps) {
       </div>
 
       <div className="flex">
-        {/* Sidebar */}
-        <div className="w-64 bg-neutral-900/50 backdrop-blur-md border-r border-neutral-800 min-h-screen p-4">
-          <div className="mb-8">
-            <LineShadowText
-              className="text-amber-200 text-2xl font-bold"
-              shadowColor="#fdef7b"
-            >
-              VocEnglish
-            </LineShadowText>
-            <p className="text-neutral-400 text-sm mt-2">Panel Ucznia</p>
-            <p className="text-neutral-300 text-sm">Witaj, {user.username}</p>
-          </div>
-
-          <nav className="space-y-2">
-            <Button
-              variant="default"
-              className="w-full justify-start text-left bg-amber-600 hover:bg-amber-700 text-white"
-            >
-              <span className="mr-2">🏠</span>
-              Panel
-            </Button>
-            <Button
-              variant="secondary"
-              className="w-full justify-start text-left text-neutral-300 hover:text-white hover:bg-neutral-800"
-              onClick={goToVocabulary}
-            >
-              <span className="mr-2">📚</span>
-              Słownictwo
-            </Button>
-            <Button
-              variant="secondary"
-              className="w-full justify-start text-left text-neutral-300 hover:text-white hover:bg-neutral-800"
-            >
-              <span className="mr-2">🎥</span>
-              Filmy
-            </Button>
-            <Button
-              variant="secondary"
-              className="w-full justify-start text-left text-neutral-300 hover:text-white hover:bg-neutral-800"
-            >
-              <span className="mr-2">🎮</span>
-              Gry
-            </Button>
-            <Button
-              variant="secondary"
-              className="w-full justify-start text-left text-neutral-300 hover:text-white hover:bg-neutral-800"
-            >
-              <span className="mr-2">📊</span>
-              Postęp
-            </Button>
-          </nav>
-
-          <div className="mt-auto pt-8">
-            <Button
-              variant="secondary"
-              className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-red-900/20"
-              onClick={handleLogout}
-            >
-              🚪 Wyloguj
-            </Button>
-          </div>
-        </div>
+        <DashboardSidebar username={user.username} />
 
         {/* Main Content */}
         <div className="flex-1 p-8">
@@ -168,7 +98,10 @@ export default function UserDashboard({ user }: UserDashboardProps) {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button className="w-full bg-amber-600 hover:bg-amber-700 text-white">
+                  <Button 
+                    className="w-full bg-amber-600 hover:bg-amber-700 text-white"
+                    onClick={goToGames}
+                  >
                     Zagraj
                   </Button>
                 </CardContent>
