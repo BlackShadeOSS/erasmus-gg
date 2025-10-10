@@ -26,6 +26,7 @@ export default function UserDashboard({ user }: UserDashboardProps) {
 
   const goToVocabulary = () => router.push("/dashboard/vocabulary");
   const goToGames = () => router.push("/dashboard/games");
+  const goToVideos = () => router.push("/dashboard/videos");
 
   return (
     <div className="min-h-screen bg-neutral-900 relative">
@@ -81,7 +82,10 @@ export default function UserDashboard({ user }: UserDashboardProps) {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button className="w-full bg-amber-600 hover:bg-amber-700 text-white">
+                  <Button
+                    className="w-full bg-amber-600 hover:bg-amber-700 text-white"
+                    onClick={goToVideos}
+                  >
                     Oglądaj Teraz
                   </Button>
                 </CardContent>
@@ -98,7 +102,7 @@ export default function UserDashboard({ user }: UserDashboardProps) {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button 
+                  <Button
                     className="w-full bg-amber-600 hover:bg-amber-700 text-white"
                     onClick={goToGames}
                   >
