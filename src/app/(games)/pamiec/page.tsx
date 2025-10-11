@@ -146,11 +146,18 @@ export default function pamiec() {
                         document.getElementById("startInfo")!.innerText = "";
                     }
                 })
-                .catch((error) => {
-                    console.log("Error fetching :" + error);
-                });
+                .catch((error)=>{
+        console.log("Error fetching: " + error);
+        console.log(document.getElementById("LogInPlease"));
+        
+        if (document.getElementById("LogInPlease")) {
+            document.getElementById("LogInPlease")!.style.display = "inline-block";
         }
+    });
+        }
+        
     }
+    
 
     for (let i = 1; i <= Trudnosc.ekspert; i++) {
         let nazwa = Trudnosc[i];
@@ -180,7 +187,7 @@ export default function pamiec() {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen p-10">
             <AuthNavBar showBackToLogin={false} showDashboard={true} />
-            <h1 className="text-4xl font-bold text-green-300 mb-10 mt-16">
+            <h1 className="text-4xl font-bold text-amber-200 mb-10 mt-16">
                 Pamięć
             </h1>
             <main id="gameSetUp" className="md:text-base text-2xl">
@@ -209,11 +216,11 @@ export default function pamiec() {
                     <button
                         id="start"
                         disabled={czekaNaSlowka}
-                        className="disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 mt-4 max-w-fit m-auto bg-green-200 border border-green-900 rounded-[6px] shadow-sm 
+                        className="disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 mt-4 max-w-fit m-auto bg-amber-200 border border-amber-900 rounded-[6px] shadow-sm 
+           t-4 max-w-fit m-auto bg-amber-200 border border-amber-700 rounded-[6px] shadow-sm 
            box-border text-black text-[16px] font-bold
-            p-3 px-4 hover:bg-transparent hover:text-green-200 hover:border-green-200
-           active:opacity-50
-           "
+            p-3 px-4 hover:bg-transparent hover:text-amber-200 hover:border-amber-200
+           active:opacity-50"
                         type="submit"
                     >
                         start
