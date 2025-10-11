@@ -6,7 +6,7 @@ CREATE EXTENSION IF NOT EXISTS "pg_cron";
 -- Create enum types
 CREATE TYPE user_role AS ENUM ('student', 'teacher', 'admin');
 CREATE TYPE content_type AS ENUM ('video', 'text', 'game', 'exercise', 'vocabulary');
-CREATE TYPE game_type AS ENUM ('memory', 'crossword', 'quiz');
+-- game_type enum removed: games table simplified to core metadata only
 CREATE TYPE exercise_type AS ENUM ('fill_gaps', 'matching', 'dialogue');
 CREATE TYPE activation_code_status AS ENUM ('active', 'used', 'expired');
 
@@ -21,7 +21,9 @@ CREATE TABLE public.activation_codes (
     expires_at TIMESTAMP WITH TIME ZONE,
     created_by UUID, -- references admin who created it
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    profession_id UUID NULL,
+    constraint activation_codes_profession_id_fkey foreign KEY (profession_id) references professions (id) on update CASCADE on delete set null
 );
 
 -- Users table (standalone, not extending Supabase auth)
@@ -120,16 +122,12 @@ CREATE TABLE public.video_vocabulary (
 );
 
 -- Games
+-- Games: simplified schema to keep core metadata (id, title, description, difficulty_level)
 CREATE TABLE public.games (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    profession_id UUID REFERENCES professions(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
-    title_en TEXT NOT NULL,
     description TEXT,
-    game_type game_type NOT NULL,
     difficulty_level INTEGER DEFAULT 1 CHECK (difficulty_level >= 1 AND difficulty_level <= 5),
-    config JSONB, -- game-specific configuration
-    is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -195,7 +193,8 @@ CREATE TABLE public.user_progress (
     time_spent INTEGER, -- in seconds
     attempts INTEGER DEFAULT 1,
     last_attempt_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- User vocabulary learning progress
@@ -252,7 +251,7 @@ CREATE INDEX idx_user_sessions_expires ON user_sessions(expires_at);
 CREATE INDEX idx_vocabulary_category ON vocabulary(category_id);
 CREATE INDEX idx_vocabulary_terms ON vocabulary(term_en, term_pl);
 CREATE INDEX idx_videos_profession ON videos(profession_id);
-CREATE INDEX idx_games_profession ON games(profession_id);
+-- idx_games_profession removed: games no longer references profession_id
 CREATE INDEX idx_exercises_profession ON exercises(profession_id);
 CREATE INDEX idx_texts_profession ON professional_texts(profession_id);
 CREATE INDEX idx_user_progress_user ON user_progress(user_id);
@@ -478,6 +477,9 @@ CREATE TRIGGER update_professional_texts_updated_at BEFORE UPDATE ON public.prof
     FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 CREATE TRIGGER update_user_vocabulary_progress_updated_at BEFORE UPDATE ON public.user_vocabulary_progress
+    FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+CREATE TRIGGER update_user_progress_updated_at BEFORE UPDATE ON public.user_progress
     FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 CREATE TRIGGER update_profession_presentations_updated_at BEFORE UPDATE ON public.profession_presentations

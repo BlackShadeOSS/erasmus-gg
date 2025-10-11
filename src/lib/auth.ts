@@ -285,7 +285,8 @@ export async function registerUser(
         email,
         password_hash: hashedPassword,
         role: 'student',
-        activation_code_id: codeValidation.activationCode!.id
+        activation_code_id: codeValidation.activationCode!.id,
+        selected_profession_id: codeValidation.activationCode!.profession_id
       })
       .select()
       .single()

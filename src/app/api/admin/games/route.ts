@@ -17,31 +17,18 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '10')
     const search = searchParams.get('search') || ''
-    const professionId = searchParams.get('professionId') || ''
-    const gameType = searchParams.get('gameType') || ''
 
     const offset = (page - 1) * limit
 
-    // Build query
+    // Build query for simplified games table
     let query = supabaseAdmin
       .from('games')
-      .select(`
-        *,
-        profession:professions(id, name, name_en)
-      `)
+      .select('*')
       .order('created_at', { ascending: false })
 
-    // Apply filters
+    // Apply basic search filter against title and description
     if (search) {
-      query = query.or(`title_en.ilike.%${search}%,title_pl.ilike.%${search}%,description_en.ilike.%${search}%,description_pl.ilike.%${search}%`)
-    }
-
-    if (professionId) {
-      query = query.eq('profession_id', professionId)
-    }
-
-    if (gameType) {
-      query = query.eq('game_type', gameType)
+      query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`)
     }
 
     // Get total count for pagination
@@ -91,20 +78,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const {
-      profession_id,
-      title_en,
-      title_pl,
-      description_en,
-      description_pl,
-      game_type,
-      game_config,
-      difficulty_level
-    } = await request.json()
+    const { title, description, difficulty_level } = await request.json()
 
-    if (!profession_id || !title_en || !title_pl || !game_type) {
+    if (!title) {
       return NextResponse.json(
-        { error: 'Required fields: profession_id, title_en, title_pl, game_type' },
+        { error: 'Required field: title' },
         { status: 400 }
       )
     }
@@ -112,20 +90,11 @@ export async function POST(request: NextRequest) {
     const { data: newGame, error } = await supabaseAdmin
       .from('games')
       .insert({
-        profession_id,
-        title_en,
-        title_pl,
-        description_en,
-        description_pl,
-        game_type,
-        game_config,
-        difficulty_level: difficulty_level || 1,
-        is_active: true
+        title,
+        description: description || null,
+        difficulty_level: difficulty_level || 1
       })
-      .select(`
-        *,
-        profession:professions(id, name, name_en)
-      `)
+      .select('*')
       .single()
 
     if (error) {
@@ -160,18 +129,7 @@ export async function PUT(request: NextRequest) {
       )
     }
 
-    const {
-      id,
-      profession_id,
-      title_en,
-      title_pl,
-      description_en,
-      description_pl,
-      game_type,
-      game_config,
-      difficulty_level,
-      is_active
-    } = await request.json()
+    const { id, title, description, difficulty_level } = await request.json()
 
     if (!id) {
       return NextResponse.json(
@@ -183,21 +141,12 @@ export async function PUT(request: NextRequest) {
     const { data: updatedGame, error } = await supabaseAdmin
       .from('games')
       .update({
-        profession_id,
-        title_en,
-        title_pl,
-        description_en,
-        description_pl,
-        game_type,
-        game_config,
-        difficulty_level: difficulty_level || 1,
-        is_active
+        title,
+        description: description || null,
+        difficulty_level: difficulty_level || 1
       })
       .eq('id', id)
-      .select(`
-        *,
-        profession:professions(id, name, name_en)
-      `)
+      .select('*')
       .single()
 
     if (error) {

@@ -58,16 +58,22 @@ export async function GET(request: NextRequest) {
     const vIds = (vocabIds || []).map(v => v.id)
     if (vIds.length === 0) return NextResponse.json({ success: true, summary: [] })
 
-    // Get progress for those ids
-    const { data: progress, error } = await supabaseAdmin
-      .from('user_vocabulary_progress')
-      .select('mastery_level')
-      .eq('user_id', (user as any).id)
-      .in('vocabulary_id', vIds)
+    // Get progress for those ids. If the list is large, query in batches to avoid long URL / payload issues
+    const batchSize = 500
+    let progress: any[] = []
+    for (let i = 0; i < vIds.length; i += batchSize) {
+      const batch = vIds.slice(i, i + batchSize)
+      const { data: part, error: pErr } = await supabaseAdmin
+        .from('user_vocabulary_progress')
+        .select('mastery_level')
+        .eq('user_id', (user as any).id)
+        .in('vocabulary_id', batch)
 
-    if (error) {
-      console.error('Progress summary error:', error)
-      return NextResponse.json({ error: 'Failed to load summary' }, { status: 500 })
+      if (pErr) {
+        console.error('Progress summary error (batch):', pErr)
+        return NextResponse.json({ error: 'Failed to load summary' }, { status: 500 })
+      }
+      progress = progress.concat(part || [])
     }
 
     const counts = [0,0,0,0,0,0] // 0..5
