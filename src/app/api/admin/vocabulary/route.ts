@@ -18,6 +18,8 @@ export async function GET(request: NextRequest) {
         const categoryId = searchParams.get("categoryId") || "";
         const professionId = searchParams.get("professionId") || "";
         const difficultyLevel = searchParams.get("difficultyLevel") || "";
+        const sortBy = searchParams.get("sortBy") || "created_at";
+        const sortOrder = searchParams.get("sortOrder") || "desc";
 
         const offset = (page - 1) * limit;
 
@@ -32,10 +34,9 @@ export async function GET(request: NextRequest) {
                     name_en,
                     profession:professions(id, name, name_en)
                 )
-            `)
-            .order("created_at", { ascending: false });
+            `);
 
-        // Apply filters
+        // Apply filters first
         if (search) {
             query = query.or(`term_en.ilike.%${search}%,term_pl.ilike.%${search}%,definition_en.ilike.%${search}%,definition_pl.ilike.%${search}%`);
         }
@@ -64,6 +65,10 @@ export async function GET(request: NextRequest) {
         if (difficultyLevel) {
             query = query.eq("difficulty_level", parseInt(difficultyLevel));
         }
+
+        // Apply sorting
+        const ascending = sortOrder === "asc";
+        query = query.order(sortBy, { ascending });
 
         // Get total count for pagination (with same filters)
         let countQuery = supabaseAdmin
