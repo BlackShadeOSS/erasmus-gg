@@ -31,6 +31,12 @@ interface ActivationCode {
     status: string;
     expires_at: string;
     created_at: string;
+    profession_id: string | null;
+    profession?: {
+        id: string;
+        name: string;
+        name_en: string;
+    } | null;
 }
 
 interface ActivationCodeFormData {
@@ -38,6 +44,7 @@ interface ActivationCodeFormData {
     maxUses: number;
     expiresAt: string;
     status: string;
+    professionId: string;
 }
 
 const initialFormData: ActivationCodeFormData = {
@@ -45,6 +52,7 @@ const initialFormData: ActivationCodeFormData = {
     maxUses: 1,
     expiresAt: "",
     status: "active",
+    professionId: "",
 };
 
 export default function ActivationCodesManager() {
@@ -60,6 +68,8 @@ export default function ActivationCodesManager() {
     const [editingCode, setEditingCode] = useState<ActivationCode | null>(null);
     const [formData, setFormData] =
         useState<ActivationCodeFormData>(initialFormData);
+    const [professions, setProfessions] = useState<Array<{id: string, name: string, name_en: string}>>([]);
+    const [loadingProfessions, setLoadingProfessions] = useState(false);
     const [deleteConfirm, setDeleteConfirm] = useState<{
         isOpen: boolean;
         code: ActivationCode | null;
@@ -73,6 +83,25 @@ export default function ActivationCodesManager() {
     const abortControllerRef = useRef<AbortController | null>(null);
 
     const limit = 10;
+
+    // Fetch professions
+    useEffect(() => {
+        const fetchProfessions = async () => {
+            setLoadingProfessions(true);
+            try {
+                const response = await fetch('/api/admin/professions?status=active');
+                const data = await response.json();
+                if (data.success) {
+                    setProfessions(data.professions);
+                }
+            } catch (error) {
+                console.error('Error fetching professions:', error);
+            } finally {
+                setLoadingProfessions(false);
+            }
+        };
+        fetchProfessions();
+    }, []);
 
     // Fetch activation codes data with caching
     const fetchCodes = useCallback(
@@ -272,6 +301,7 @@ export default function ActivationCodesManager() {
                 ? new Date(code.expires_at).toISOString().slice(0, 16)
                 : "",
             status: code.status,
+            professionId: code.profession_id || "",
         });
         setIsModalOpen(true);
     };
@@ -396,6 +426,7 @@ export default function ActivationCodesManager() {
                         <TableRow>
                             <TableHeaderCell>Kod</TableHeaderCell>
                             <TableHeaderCell>Opis</TableHeaderCell>
+                            <TableHeaderCell>Zawód</TableHeaderCell>
                             <TableHeaderCell>Użycie</TableHeaderCell>
                             <TableHeaderCell>Status</TableHeaderCell>
                             <TableHeaderCell>Wygasa</TableHeaderCell>
@@ -417,6 +448,14 @@ export default function ActivationCodesManager() {
                                         title={code.description}
                                     >
                                         {code.description}
+                                    </div>
+                                </TableCell>
+                                <TableCell className="max-w-xs">
+                                    <div
+                                        className="truncate"
+                                        title={code.profession?.name || 'Brak'}
+                                    >
+                                        {code.profession?.name || 'Brak'}
                                     </div>
                                 </TableCell>
                                 <TableCell>
@@ -554,6 +593,28 @@ export default function ActivationCodesManager() {
                                 })
                             }
                         />
+                    </div>
+
+                    <div>
+                        <Label htmlFor="professionId">Zawód (opcjonalny)</Label>
+                        <Select
+                            id="professionId"
+                            value={formData.professionId}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    professionId: e.target.value,
+                                })
+                            }
+                            disabled={loadingProfessions}
+                        >
+                            <option value="">Brak (dowolny zawód)</option>
+                            {professions.map((profession) => (
+                                <option key={profession.id} value={profession.id}>
+                                    {profession.name}
+                                </option>
+                            ))}
+                        </Select>
                     </div>
 
                     <div>

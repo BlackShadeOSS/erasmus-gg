@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/form";
 
 interface ActivationCode {
     id: string;
@@ -21,6 +22,12 @@ interface ActivationCode {
     status: string;
     expires_at: string;
     created_at: string;
+    profession_id: string | null;
+    profession?: {
+        id: string;
+        name: string;
+        name_en: string;
+    } | null;
 }
 
 export default function ActivationCodesManager() {
@@ -31,10 +38,31 @@ export default function ActivationCodesManager() {
         description: "",
         maxUses: 1,
         expiresAt: "",
+        professionId: "",
     });
+    const [professions, setProfessions] = useState<Array<{id: string, name: string, name_en: string}>>([]);
+    const [loadingProfessions, setLoadingProfessions] = useState(false);
 
     useEffect(() => {
         fetchCodes();
+    }, []);
+
+    useEffect(() => {
+        const fetchProfessions = async () => {
+            setLoadingProfessions(true);
+            try {
+                const response = await fetch('/api/admin/professions?status=active');
+                const data = await response.json();
+                if (data.success) {
+                    setProfessions(data.professions);
+                }
+            } catch (error) {
+                console.error('Error fetching professions:', error);
+            } finally {
+                setLoadingProfessions(false);
+            }
+        };
+        fetchProfessions();
     }, []);
 
     const fetchCodes = async () => {
@@ -62,7 +90,7 @@ export default function ActivationCodesManager() {
             if (data.success) {
                 fetchCodes();
                 setShowCreateForm(false);
-                setCreateForm({ description: "", maxUses: 1, expiresAt: "" });
+                setCreateForm({ description: "", maxUses: 1, expiresAt: "", professionId: "" });
             }
         } catch (error) {
             console.error("Error creating activation code:", error);
@@ -142,6 +170,33 @@ export default function ActivationCodesManager() {
                                 }
                                 className="bg-neutral-700/50 border-neutral-600 text-neutral-100"
                             />
+                        </div>
+                        <div>
+                            <Label
+                                htmlFor="professionId"
+                                className="text-neutral-100"
+                            >
+                                Zawód (opcjonalny)
+                            </Label>
+                            <Select
+                                id="professionId"
+                                value={createForm.professionId}
+                                onChange={(e) =>
+                                    setCreateForm((prev) => ({
+                                        ...prev,
+                                        professionId: e.target.value,
+                                    }))
+                                }
+                                disabled={loadingProfessions}
+                                className="bg-neutral-700/50 border-neutral-600 text-neutral-100"
+                            >
+                                <option value="">Brak (dowolny zawód)</option>
+                                {professions.map((profession) => (
+                                    <option key={profession.id} value={profession.id}>
+                                        {profession.name}
+                                    </option>
+                                ))}
+                            </Select>
                         </div>
                         <div>
                             <Label

@@ -47,6 +47,7 @@ export interface ActivationCode {
   status: 'active' | 'used' | 'expired'
   expires_at: string | null
   created_by: string | null
+  profession_id: string | null
   created_at: string
   updated_at: string
 }

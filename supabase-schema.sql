@@ -21,7 +21,9 @@ CREATE TABLE public.activation_codes (
     expires_at TIMESTAMP WITH TIME ZONE,
     created_by UUID, -- references admin who created it
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    profession_id UUID NULL,
+    constraint activation_codes_profession_id_fkey foreign KEY (profession_id) references professions (id) on update CASCADE on delete set null
 );
 
 -- Users table (standalone, not extending Supabase auth)
