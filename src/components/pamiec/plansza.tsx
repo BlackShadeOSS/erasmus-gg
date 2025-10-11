@@ -3,14 +3,8 @@ import { ReactElement } from "react";
 import "@/app/(games)/pamiec/styles.css"
 import { Root } from "react-dom/client";
 
-//TODO remove all debug comments at the end
-//TODO get all todo comments done
-
-///TODO mieszany tryb wszyśćko
 let listaSlowek: {pol:string, ang: string}[] = [];
 
-//komunikat że nie ma wystarczająco słówek np na poziom trudny ale dalej można zagrac
-//
 //global var
 const terazOdkryte: HTMLElement[] = [];
 let liczbaUsunietychKart = 0;//
@@ -38,12 +32,12 @@ function stworzKarte(id: number, slowko:string, nazwaKlasy:string, jezyk:string 
     return (    
         <div key={id} data-id-w-liscie={idwLiscie} data-para={idPary} data-odkryta={false} className={flipCardCSS + nazwaKlasy + " flip-card"} onClick={odkryjKarte} data-jezyk={jezyk}>
             <div className="flip-card-inner">
-                 <div className={"flip-card-front " + " select-none rounded-2xl ease-in-out border-white/5 backdrop-blur-[25px] bg-origin-border shadow-sm not-disabled:hover:bg-white/90 not-disabled:hover:text-black not-disabled:hover:shadow-button transition-all duration-200 after:absolute  after:top-[-2px] after:left-[-2px] after:rounded-[1rem] font-semibold   cursor-pointer rounded-lg min-w-fit"}>
+                 <div className={"flip-card-front " + "bg-neutral-800 select-none rounded-2xl ease-in-out border-white/5 backdrop-blur-[25px] bg-origin-border shadow-sm not-disabled:hover:bg-white/90 not-disabled:hover:text-black not-disabled:hover:shadow-button transition-all duration-200 after:absolute  after:top-[-2px] after:left-[-2px] after:rounded-[1rem] font-semibold   cursor-pointer rounded-lg min-w-fit"}>
                      </div>
 
-                <div className="flex flex-col flip-card-back  tekstKarty bg-amber-900" >
-                <p className="w-[100%] h-fit">{slowko}</p>
-                <div className="w-[100%] h-fit">({jezyk})</div>
+                <div className="flex flex-col flip-card-back  text-black tekstKarty bg-amber-200" >
+                <p className="w-[100%] h-fit text-black">{slowko}</p>
+                <div className="w-[100%] h-fit text-black">({jezyk})</div>
                 </div>
 
             </div>
@@ -117,7 +111,6 @@ function usunPareKart(karta1: any, karta2: any) {
 
 //TODO
 // function sprawdzOdkryteKarty() {
-
 // }
 
 /**
@@ -149,8 +142,6 @@ function odkryjKarte(e: any) {
     const rot180 = "rotateY(180deg)";
     const rot0 = "rotateY(0deg)";
 
-    // console.log(jezykKarty);
-    
     if (element == terazOdkryte[0]) {
         return -1;
     }
@@ -160,8 +151,6 @@ function odkryjKarte(e: any) {
         
         return -1;
     }
-    // console.log("id Pary tej KARTY:", idPary);
-    // console.log("id w liscie tej KARTY:", idWliscieTeraz);
     
     if (!kartaOdkryta) {
         terazOdkryte.push(element);

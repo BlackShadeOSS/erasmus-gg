@@ -59,7 +59,7 @@ function zapytanieFetch(method:string, url:string, cookie: boolean = true, data:
 }
 
 async function pobierzSlowka(param:string = "") {
-    const url: string = "api/user/vocabulary" + param;
+    const url: string = "/api/user/vocabulary" + param;
     return zapytanieFetch("GET", url)
 }
 
