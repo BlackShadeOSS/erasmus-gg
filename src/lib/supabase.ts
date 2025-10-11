@@ -107,14 +107,9 @@ export interface Video {
 
 export interface Game {
   id: string
-  profession_id: string
   title: string
-  title_en: string
   description: string | null
-  game_type: 'memory' | 'crossword' | 'quiz'
   difficulty_level: number
-  config: any
-  is_active: boolean
   created_at: string
   updated_at: string
 }

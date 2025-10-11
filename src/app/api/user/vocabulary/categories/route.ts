@@ -22,7 +22,18 @@ export async function GET(request: NextRequest) {
     }
 
     if (!professionId) {
-      return NextResponse.json({ success: true, items: [] })
+      // Return all categories if no profession selected
+      const { data, error } = await supabaseAdmin
+        .from('vocabulary_categories')
+        .select('id, name, name_en, description, order_index')
+        .order('order_index', { ascending: true })
+
+      if (error) {
+        console.error('Fetch categories error:', error)
+        return NextResponse.json({ error: 'Failed to load categories' }, { status: 500 })
+      }
+
+      return NextResponse.json({ success: true, items: data || [] })
     }
 
     const { data, error } = await supabaseAdmin

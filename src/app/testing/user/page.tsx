@@ -11,6 +11,18 @@ export default function UserApiDebugPage() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [lastRefresh, setLastRefresh] = useState<string>("");
+    const [postResult, setPostResult] = useState<any>(null);
+    const [getResult, setGetResult] = useState<any>(null);
+    const [progressPayload, setProgressPayload] = useState<any>({
+        content_type: "game",
+        content_id: "",
+        completed: false,
+        score: 0,
+        attempts: 1,
+        time_spent: 0,
+    });
+    const [progressQueryContentId, setProgressQueryContentId] =
+        useState<string>("");
 
     async function fetcher(url: string, opts?: RequestInit) {
         const res = await fetch(url, {
@@ -144,6 +156,177 @@ export default function UserApiDebugPage() {
             <section>
                 <h2 className="text-xl font-semibold">/api/user/videos</h2>
                 <VideosBlock />
+            </section>
+
+            <section>
+                <h2 className="text-xl font-semibold">/api/user/progress</h2>
+                <div className="bg-stone-800 p-3 rounded text-xs">
+                    <div className="space-y-2">
+                        <div className="flex gap-2 items-center">
+                            <select
+                                value={progressPayload.content_type}
+                                onChange={(e) =>
+                                    setProgressPayload({
+                                        ...progressPayload,
+                                        content_type: e.target.value,
+                                    })
+                                }
+                                className="border px-2 py-1 rounded"
+                            >
+                                <option value="game">game</option>
+                                <option value="exercise">exercise</option>
+                                <option value="vocabulary">vocabulary</option>
+                            </select>
+                            <input
+                                value={progressPayload.content_id}
+                                onChange={(e) =>
+                                    setProgressPayload({
+                                        ...progressPayload,
+                                        content_id: e.target.value,
+                                    })
+                                }
+                                placeholder="content_id (e.g. pamiec)"
+                                className="border px-2 py-1 rounded flex-1"
+                            />
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    checked={progressPayload.completed}
+                                    onChange={(e) =>
+                                        setProgressPayload({
+                                            ...progressPayload,
+                                            completed: e.target.checked,
+                                        })
+                                    }
+                                />
+                                Completed
+                            </label>
+                        </div>
+
+                        <div className="flex gap-2 items-center">
+                            <input
+                                type="number"
+                                value={progressPayload.score}
+                                onChange={(e) =>
+                                    setProgressPayload({
+                                        ...progressPayload,
+                                        score: Number(e.target.value),
+                                    })
+                                }
+                                className="border px-2 py-1 rounded w-24"
+                                placeholder="score"
+                            />
+                            <input
+                                type="number"
+                                value={progressPayload.attempts}
+                                onChange={(e) =>
+                                    setProgressPayload({
+                                        ...progressPayload,
+                                        attempts: Number(e.target.value),
+                                    })
+                                }
+                                className="border px-2 py-1 rounded w-24"
+                                placeholder="attempts"
+                            />
+                            <input
+                                type="number"
+                                value={progressPayload.time_spent}
+                                onChange={(e) =>
+                                    setProgressPayload({
+                                        ...progressPayload,
+                                        time_spent: Number(e.target.value),
+                                    })
+                                }
+                                className="border px-2 py-1 rounded w-32"
+                                placeholder="time_spent (s)"
+                            />
+                            <button
+                                onClick={async () => {
+                                    setError(null);
+                                    const res = await fetch(
+                                        "/api/user/progress",
+                                        {
+                                            method: "POST",
+                                            headers: {
+                                                "Content-Type":
+                                                    "application/json",
+                                            },
+                                            body: JSON.stringify({
+                                                content_type:
+                                                    progressPayload.content_type,
+                                                content_id:
+                                                    progressPayload.content_id,
+                                                progress: {
+                                                    completed:
+                                                        progressPayload.completed,
+                                                    score: progressPayload.score,
+                                                    attempts:
+                                                        progressPayload.attempts,
+                                                    time_spent:
+                                                        progressPayload.time_spent,
+                                                },
+                                            }),
+                                        }
+                                    );
+                                    const json = await res.json();
+                                    setPostResult({ ok: res.ok, json });
+                                }}
+                                className="px-3 py-1 bg-emerald-600 text-white rounded"
+                            >
+                                POST Progress
+                            </button>
+                        </div>
+
+                        <div className="mt-2 flex gap-2 items-center">
+                            <input
+                                value={progressQueryContentId}
+                                onChange={(e) =>
+                                    setProgressQueryContentId(e.target.value)
+                                }
+                                placeholder="contentId (optional)"
+                                className="border px-2 py-1 rounded flex-1"
+                            />
+                            <button
+                                onClick={async () => {
+                                    setError(null);
+                                    const params = new URLSearchParams();
+                                    params.set(
+                                        "type",
+                                        progressPayload.content_type || "game"
+                                    );
+                                    if (progressQueryContentId)
+                                        params.set(
+                                            "contentId",
+                                            progressQueryContentId
+                                        );
+                                    const res = await fetch(
+                                        `/api/user/progress?${params.toString()}`
+                                    );
+                                    const json = await res.json();
+                                    setGetResult({ ok: res.ok, json });
+                                }}
+                                className="px-3 py-1 bg-sky-600 text-white rounded"
+                            >
+                                GET Progress
+                            </button>
+                        </div>
+
+                        <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <div>
+                                <h4 className="font-semibold">POST result</h4>
+                                <pre className="bg-stone-900 p-2 rounded text-xs overflow-auto">
+                                    {JSON.stringify(postResult, null, 2)}
+                                </pre>
+                            </div>
+                            <div>
+                                <h4 className="font-semibold">GET result</h4>
+                                <pre className="bg-stone-900 p-2 rounded text-xs overflow-auto">
+                                    {JSON.stringify(getResult, null, 2)}
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <section>
