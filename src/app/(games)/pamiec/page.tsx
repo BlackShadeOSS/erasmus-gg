@@ -146,20 +146,18 @@ export default function pamiec() {
                         document.getElementById("startInfo")!.innerText = "";
                     }
                 })
-                .catch((error) => {
-                    console.log("Error fetching :" + error);
-                });
-        }
-        
-    }).catch((error)=>{
+                .catch((error)=>{
         console.log("Error fetching: " + error);
         console.log(document.getElementById("LogInPlease"));
         
         if (document.getElementById("LogInPlease")) {
             document.getElementById("LogInPlease")!.style.display = "inline-block";
         }
-    })
+    });
+        }
+        
     }
+    
 
     for (let i = 1; i <= Trudnosc.ekspert; i++) {
         let nazwa = Trudnosc[i];
