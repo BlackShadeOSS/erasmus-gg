@@ -36,7 +36,7 @@ export default function DashboardSidebar({
     { label: "Panel", icon: "🏠", path: "/dashboard" },
     { label: "Słownictwo", icon: "📚", path: "/dashboard/vocabulary" },
     { label: "Filmy", icon: "🎥", path: "/dashboard/videos" },
-    { label: "Gry", icon: "🎮", path: "/dashboard/games" },
+    { label: "Ćwiczenia", icon: "🎮", path: "/dashboard/games" },
     { label: "Postęp", icon: "📊", path: "/dashboard/progress" },
   ];
 

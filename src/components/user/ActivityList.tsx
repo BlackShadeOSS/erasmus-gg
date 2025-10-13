@@ -65,7 +65,7 @@ export default function ActivityList({
                         className="bg-neutral-900 border border-neutral-700 text-neutral-200 rounded px-2 py-1"
                     >
                         <option value="all">Wszystkie</option>
-                        <option value="game">Gry</option>
+                        <option value="game">Ćwiczenia</option>
                         <option value="vocabulary">Słownictwo</option>
                         <option value="video">Wideo</option>
                     </select>
