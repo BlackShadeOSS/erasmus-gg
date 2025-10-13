@@ -68,7 +68,9 @@ export default function ActivationCodesManager() {
     const [editingCode, setEditingCode] = useState<ActivationCode | null>(null);
     const [formData, setFormData] =
         useState<ActivationCodeFormData>(initialFormData);
-    const [professions, setProfessions] = useState<Array<{id: string, name: string, name_en: string}>>([]);
+    const [professions, setProfessions] = useState<
+        Array<{ id: string; name: string; name_en: string }>
+    >([]);
     const [loadingProfessions, setLoadingProfessions] = useState(false);
     const [deleteConfirm, setDeleteConfirm] = useState<{
         isOpen: boolean;
@@ -89,13 +91,15 @@ export default function ActivationCodesManager() {
         const fetchProfessions = async () => {
             setLoadingProfessions(true);
             try {
-                const response = await fetch('/api/admin/professions?status=active');
+                const response = await fetch(
+                    "/api/admin/professions?status=active"
+                );
                 const data = await response.json();
                 if (data.success) {
                     setProfessions(data.professions);
                 }
             } catch (error) {
-                console.error('Error fetching professions:', error);
+                console.error("Error fetching professions:", error);
             } finally {
                 setLoadingProfessions(false);
             }
@@ -225,6 +229,11 @@ export default function ActivationCodesManager() {
 
         if (!formData.description) {
             showToast("Opis jest wymagany", "error");
+            return;
+        }
+
+        if (!formData.professionId) {
+            showToast("Wybór zawodu jest wymagany", "error");
             return;
         }
 
@@ -453,9 +462,9 @@ export default function ActivationCodesManager() {
                                 <TableCell className="max-w-xs">
                                     <div
                                         className="truncate"
-                                        title={code.profession?.name || 'Brak'}
+                                        title={code.profession?.name || "Brak"}
                                     >
-                                        {code.profession?.name || 'Brak'}
+                                        {code.profession?.name || "Brak"}
                                     </div>
                                 </TableCell>
                                 <TableCell>
@@ -596,7 +605,7 @@ export default function ActivationCodesManager() {
                     </div>
 
                     <div>
-                        <Label htmlFor="professionId">Zawód (opcjonalny)</Label>
+                        <Label htmlFor="professionId">Zawód *</Label>
                         <Select
                             id="professionId"
                             value={formData.professionId}
@@ -607,10 +616,13 @@ export default function ActivationCodesManager() {
                                 })
                             }
                             disabled={loadingProfessions}
+                            required
                         >
-                            <option value="">Brak (dowolny zawód)</option>
                             {professions.map((profession) => (
-                                <option key={profession.id} value={profession.id}>
+                                <option
+                                    key={profession.id}
+                                    value={profession.id}
+                                >
                                     {profession.name}
                                 </option>
                             ))}
