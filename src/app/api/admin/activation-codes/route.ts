@@ -88,6 +88,13 @@ export async function POST(request: NextRequest) {
 
     const { description, maxUses, expiresAt, professionId } = await request.json()
 
+    if (!description || !professionId) {
+      return NextResponse.json(
+        { error: 'Description and profession are required' },
+        { status: 400 }
+      )
+    }
+
     // Generate a random 8-character code
     const code = Math.random().toString(36).substring(2, 10).toUpperCase()
 
@@ -141,6 +148,13 @@ export async function PUT(request: NextRequest) {
     if (!id) {
       return NextResponse.json(
         { error: 'Code ID is required' },
+        { status: 400 }
+      )
+    }
+
+    if (!description || !professionId) {
+      return NextResponse.json(
+        { error: 'Description and profession are required' },
         { status: 400 }
       )
     }
