@@ -64,7 +64,7 @@ const Footer = () => {
       </div>
       <div className="py-3 bg-neutral-950/20 flex justify-center items-center gap-2 border-t-2 border-neutral-800">
         <p className="text-sm sm:text-md text-center text-neutral-500 flex items-center justify-center">
-          Realizacja: TT, KW, ZZ,
+          Realizacja: Tomasz Tarnawski, Kamil Wida, Zuzanna Zych, Dominik Chrobak
           <Image src={rs} alt="Realizacja" width={80} />
         </p>
       </div>
