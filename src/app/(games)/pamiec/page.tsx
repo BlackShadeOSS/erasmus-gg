@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 import { ButtonHTMLAttributes, ReactElement } from "react";
 import "./styles.css";
 import AuthNavBar from "@/components/AuthNavBar";
+import Footer from "@/components/Footer";
 
 //globals
 let planszaPojemnikNode: any;
@@ -181,7 +182,7 @@ export default function pamiec() {
             <option className="bg-transparent" key={count} value={trudnosc.key}>
                 {trudnosc.nazwa}
             </option>
-        ); //is this alright???
+        );
     });
 
     return (
@@ -246,5 +247,8 @@ export default function pamiec() {
                 className="flex flex-col items-center justify-center"
             ></div>
         </div>
+
+        
+
     );
 }
