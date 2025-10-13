@@ -189,9 +189,9 @@ export default function WordQuiz({ limit = 8 }: { limit?: number }) {
             try {
                 setLoading(true);
                 setError(null);
-                let url = `/api/user/vocabulary/recommended?limit=${settings.limit}`;
+                let url = `/api/user/vocabulary/random?limit=100`; // Fetch more for better randomization
                 if (settings.category) {
-                    url = `/api/user/vocabulary/by-category?categoryId=${settings.category}&limit=${settings.limit}`;
+                    url += `&categoryId=${settings.category}`;
                 }
                 const res = await fetch(url);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -205,11 +205,7 @@ export default function WordQuiz({ limit = 8 }: { limit?: number }) {
                     json?.data ||
                     [];
 
-                // fallback: if recommended returned empty, try the generic endpoint
-                const rowsSource =
-                    list && list.length ? list : json?.items ? list : null;
-
-                const rows: VocabRow[] = (rowsSource || []).map((v: any) => {
+                const rows: VocabRow[] = (list || []).map((v: any) => {
                     const termEn =
                         v.term_en || v.term || v.english || v.word || "";
                     const termPl = v.term_pl || v.polish || v.translation || "";
@@ -223,36 +219,32 @@ export default function WordQuiz({ limit = 8 }: { limit?: number }) {
                     };
                 });
 
-                // If still empty, try the non-recommended endpoint as a last resort
-                if (!rows.length) {
-                    let altUrl = `/api/user/vocabulary?limit=${settings.limit}`;
-                    if (settings.category) {
-                        altUrl = `/api/user/vocabulary/by-category?categoryId=${settings.category}&limit=${settings.limit}`;
-                    }
-                    const alt = await fetch(altUrl);
-                    if (!alt.ok) throw new Error(`HTTP ${alt.status}`);
-                    const altJson = await alt.json();
-                    const altList = altJson?.items || altJson?.vocabulary || [];
-                    const altRows: VocabRow[] = (altList || []).map(
-                        (v: any) => ({
-                            id: v.id,
-                            term: String(
-                                v.term_en || v.term || v.english || v.word || ""
-                            ),
-                            translation: String(
-                                v.term_pl || v.polish || v.translation || ""
-                            ),
-                            definition: String(
-                                v.definition_en || v.definition_pl || ""
-                            ),
-                        })
-                    );
-                    setItems(altRows || []);
-                    setLoading(false);
-                    return;
+                // Shuffle the rows to randomize order
+                for (let i = rows.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [rows[i], rows[j]] = [rows[j], rows[i]];
                 }
 
-                setItems(rows);
+                // Take only the requested limit
+                const limitedRows = rows.slice(0, settings.limit);
+
+                // Auto-switch mode if definition mode has no valid items but term mode does
+                const termFiltered = limitedRows.filter(
+                    (item) => item.term && item.translation
+                );
+                const defFiltered = limitedRows.filter(
+                    (item) =>
+                        item.definition && item.definition.trim().length > 0
+                );
+                if (
+                    mode === "definition" &&
+                    defFiltered.length === 0 &&
+                    termFiltered.length > 0
+                ) {
+                    setMode("term");
+                }
+
+                setItems(limitedRows);
                 setLoading(false);
             } catch (e) {
                 console.error(e);
@@ -355,12 +347,6 @@ export default function WordQuiz({ limit = 8 }: { limit?: number }) {
                 : filteredItems[index].term === choice;
         if (correct) setScore((s) => s + 1);
 
-        // Don't report progress for individual answers - only at the end
-        // if (correct) {
-        //     // best-effort: try several patch shapes
-        //     void patchMastery(filteredItems[index].id);
-        // }
-
         setTimeout(() => {
             if (index + 1 >= filteredItems.length) {
                 setFinished(true);
@@ -430,6 +416,7 @@ export default function WordQuiz({ limit = 8 }: { limit?: number }) {
     const cur = filteredItems[index];
 
     if (!cur) {
+        const hasAnyItems = items.length > 0;
         return (
             <Card className="bg-neutral-800/80">
                 <CardHeader>
@@ -437,16 +424,27 @@ export default function WordQuiz({ limit = 8 }: { limit?: number }) {
                 </CardHeader>
                 <CardContent>
                     <p className="text-neutral-200">
-                        Brak słówek dostępnych dla wybranego trybu. Spróbuj
-                        zmienić tryb lub załaduj więcej słówek.
-                    </p>
-                    <Button
-                        onClick={() =>
-                            setMode(mode === "term" ? "definition" : "term")
+                        {hasAnyItems
+                            ? "Brak słówek dostępnych dla wybranego trybu. Spróbuj zmienić tryb lub załaduj więcej słówek."
+                            : "Brak słówek w bazie danych. Załaduj więcej słówek."
                         }
-                        className="mt-2"
+                    </p>
+                    {hasAnyItems && (
+                        <Button
+                            onClick={() =>
+                                setMode(mode === "term" ? "definition" : "term")
+                            }
+                            className="mt-2"
+                        >
+                            Zmień tryb
+                        </Button>
+                    )}
+                    <Button
+                        onClick={() => setSettings(null)}
+                        variant="outline"
+                        className="mt-2 ml-2"
                     >
-                        Zmień tryb
+                        Nowe ustawienia
                     </Button>
                 </CardContent>
             </Card>
