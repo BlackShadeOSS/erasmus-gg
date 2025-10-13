@@ -124,7 +124,7 @@ export default function Home() {
             <AnimatedBeamMultipleOutputDemo />
           </div>
         </section>
-        <section className="min-h-[95svh]  flex flex-col bg-neutral-900/20 items-center justify-start pt-15 pb-15 selection:bg-transparent selection:text-amber-200">
+        <section className="min-h-[70svh] sm:min-h-[95svh] flex flex-col bg-neutral-900/20 items-center justify-start pt-15 pb-15 selection:bg-transparent selection:text-amber-200">
           <div className="max-w-6xl w-full text-center mb-8">
             <h2 className="text-3xl sm:text-4xl md:text-4xl font-semibold text-stone-200 select-none">
               Nasze Specjalizacje
