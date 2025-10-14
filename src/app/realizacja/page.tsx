@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import rs from "../../../public/radecky-studio-realizacja.svg";
 import zs1 from "../../../public/zs1-logo.png";
+import dif from "@/lib/dinfinite.svg";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import GlowingCircle from "@/components/ui/glowing-circle";
@@ -61,7 +62,7 @@ export default function RealizacjaPage() {
                       Tomasz Radecki
                     </h3>
 
-                    <a href="https://radecky-studio.tech">
+                    <a href="https://radecky-studio.tech" target="blank">
                       <Image
                         src={rs}
                         alt="Radecky Studio"
@@ -88,7 +89,23 @@ export default function RealizacjaPage() {
                   <p className="text-neutral-400"></p>
                 </div>
                 <div className="bg-neutral-900/50 rounded-xl p-6 border border-neutral-700 hover:border-amber-200 transition-colors">
-                  <h3 className="text-xl font-semibold mb-2">Przemek Gruca</h3>
+                  <div className="flex justify-between">
+                    <h3 className="text-xl font-semibold mb-2">
+                      Przemek Gruca
+                    </h3>
+
+                    <a
+                      href="https://www.instagram.com/prz3mek_gruca/"
+                      target="blank"
+                    >
+                      <Image
+                        src={dif}
+                        alt="Radecky Studio"
+                        width={60}
+                        className="object-contain h-12"
+                      />
+                    </a>
+                  </div>
                   <p className="text-neutral-400">Logo</p>
                 </div>
               </div>
