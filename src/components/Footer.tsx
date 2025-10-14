@@ -62,11 +62,13 @@ const Footer = () => {
           ))}
         </div>
       </div>
-      <div className="py-3 bg-neutral-950/20 flex justify-center items-center gap-2 border-t-2 border-neutral-800">
-        <p className="text-sm sm:text-md text-center text-neutral-500 flex items-center justify-center">
-          Realizacja: TT, KW, ZZ,
-          <Image src={rs} alt="Realizacja" width={80} />
-        </p>
+      <div className="py-4 bg-neutral-950/20 flex justify-center items-center gap-2 border-t-2 border-neutral-800">
+        <Link
+          href="/realizacja"
+          className="text-sm sm:text-md text-center text-amber-200 hover:text-stone-100 hover:underline transition-colors duration-200 flex items-center justify-center gap-2"
+        >
+          REALIZACJA PROJEKTU
+        </Link>
       </div>
     </footer>
   );

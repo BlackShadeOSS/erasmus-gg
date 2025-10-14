@@ -122,7 +122,7 @@ export default function VocabularyManager() {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedProfession, setSelectedProfession] = useState("");
     const [selectedDifficulty, setSelectedDifficulty] = useState("");
-    const [sortBy, setSortBy] = useState("order_index");
+    const [sortBy, setSortBy] = useState("created_at");
     const [sortOrder, setSortOrder] = useState("asc");
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -161,7 +161,8 @@ export default function VocabularyManager() {
         professions: null,
     });
 
-    const limit = 10;
+    const [perPage, setPerPage] = useState<number>(10);
+    const limit = perPage;
 
     // Fetch vocabulary data with caching
     const fetchVocabulary = useCallback(
@@ -173,6 +174,8 @@ export default function VocabularyManager() {
                 categoryId: selectedCategory,
                 professionId: selectedProfession,
                 difficultyLevel: selectedDifficulty,
+                sortBy,
+                sortOrder,
             };
 
             const cacheKey = generateCacheKey("vocabulary", params);
@@ -272,6 +275,9 @@ export default function VocabularyManager() {
             selectedCategory,
             selectedProfession,
             selectedDifficulty,
+            sortBy,
+            sortOrder,
+            limit,
             showToast,
         ]
     );
@@ -388,6 +394,17 @@ export default function VocabularyManager() {
         ]
     );
 
+    // Helper to toggle sorting on a column
+    const toggleSort = (column: string) => {
+        if (sortBy === column) {
+            setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+        } else {
+            setSortBy(column);
+            setSortOrder("asc");
+        }
+        setCurrentPage(1);
+    };
+
     // Fetch professions with caching
     const fetchProfessions = useCallback(
         async (forceRefresh = false) => {
@@ -455,14 +472,25 @@ export default function VocabularyManager() {
     }, [fetchCategories, fetchProfessions]);
 
     // Optimized tab switching with preloading
-    const handleTabSwitch = useCallback((tab: "vocabulary" | "categories") => {
-        setActiveTab(tab);
-        setCurrentPage(1);
-        setSearchTerm("");
-        setSelectedCategory("");
-        setSelectedProfession("");
-        setSelectedDifficulty("");
-    }, []);
+    const handleTabSwitch = useCallback(
+        (tab: "vocabulary" | "categories") => {
+            setActiveTab(tab);
+            setCurrentPage(1);
+            setSearchTerm("");
+            setSelectedCategory("");
+            setSelectedProfession("");
+            setSelectedDifficulty("");
+            setSortBy(tab === "vocabulary" ? "created_at" : "order_index");
+            setSortOrder("asc");
+
+            // If switching to vocabulary, ensure categories are prefetched
+            if (tab === "vocabulary" && categories.length === 0) {
+                // background fetch without blocking UI
+                fetchCategories(true);
+            }
+        },
+        [categories.length, fetchCategories]
+    );
 
     // Cleanup on unmount
     useEffect(() => {
@@ -676,6 +704,8 @@ export default function VocabularyManager() {
             difficulty_level: entry.difficulty_level,
         });
         setIsModalOpen(true);
+        // Ensure categories are available when editing
+        if (categories.length === 0) fetchCategories(true);
     };
 
     // Open add modal
@@ -685,6 +715,8 @@ export default function VocabularyManager() {
         setFormData(initialVocabularyFormData);
         setCategoryFormData(initialCategoryFormData);
         setIsModalOpen(true);
+        // Prefetch categories so the select is ready
+        if (categories.length === 0) fetchCategories(true);
     };
 
     // Category modal functions
@@ -754,14 +786,7 @@ export default function VocabularyManager() {
             {/* Tabs */}
             <div className="flex space-x-1 border-b border-neutral-700">
                 <button
-                    onClick={() => {
-                        setActiveTab("vocabulary");
-                        setCurrentPage(1);
-                        setSearchTerm("");
-                        setSelectedCategory("");
-                        setSelectedProfession("");
-                        setSelectedDifficulty("");
-                    }}
+                    onClick={() => handleTabSwitch("vocabulary")}
                     className={`px-4 py-2 font-medium text-sm rounded-t-lg transition-colors ${
                         activeTab === "vocabulary"
                             ? "bg-amber-500 text-neutral-900 border-b-2 border-amber-500"
@@ -771,14 +796,7 @@ export default function VocabularyManager() {
                     Słownictwo
                 </button>
                 <button
-                    onClick={() => {
-                        setActiveTab("categories");
-                        setCurrentPage(1);
-                        setSearchTerm("");
-                        setSelectedCategory("");
-                        setSelectedProfession("");
-                        setSelectedDifficulty("");
-                    }}
+                    onClick={() => handleTabSwitch("categories")}
                     className={`px-4 py-2 font-medium text-sm rounded-t-lg transition-colors ${
                         activeTab === "categories"
                             ? "bg-amber-500 text-neutral-900 border-b-2 border-amber-500"
@@ -856,7 +874,7 @@ export default function VocabularyManager() {
                                             value={category.id}
                                         >
                                             {category.name} (
-                                            {category.profession.name})
+                                            {category.profession?.name || 'No profession'})
                                         </option>
                                     ))}
                             </Select>
@@ -907,6 +925,23 @@ export default function VocabularyManager() {
                     </div>
                 )}
 
+                <div className="min-w-[150px]">
+                    <Label htmlFor="per_page">Wpisów na stronę</Label>
+                    <Select
+                        id="per_page"
+                        value={perPage.toString()}
+                        onChange={(e) => {
+                            setPerPage(parseInt(e.target.value));
+                            setCurrentPage(1);
+                        }}
+                    >
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                    </Select>
+                </div>
+
                 <Button
                     onClick={
                         activeTab === "vocabulary"
@@ -934,11 +969,69 @@ export default function VocabularyManager() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHeaderCell>Termin EN</TableHeaderCell>
-                                <TableHeaderCell>Termin PL</TableHeaderCell>
+                                <TableHeaderCell>
+                                    <button
+                                        onClick={() => toggleSort("term_en")}
+                                        className="flex items-center gap-2"
+                                    >
+                                        Termin EN
+                                        {sortBy === "term_en" && (
+                                            <span className="text-xs text-neutral-400">
+                                                {sortOrder === "asc"
+                                                    ? "↑"
+                                                    : "↓"}
+                                            </span>
+                                        )}
+                                    </button>
+                                </TableHeaderCell>
+                                <TableHeaderCell>
+                                    <button
+                                        onClick={() => toggleSort("term_pl")}
+                                        className="flex items-center gap-2"
+                                    >
+                                        Termin PL
+                                        {sortBy === "term_pl" && (
+                                            <span className="text-xs text-neutral-400">
+                                                {sortOrder === "asc"
+                                                    ? "↑"
+                                                    : "↓"}
+                                            </span>
+                                        )}
+                                    </button>
+                                </TableHeaderCell>
                                 <TableHeaderCell>Kategoria</TableHeaderCell>
-                                <TableHeaderCell>Poziom</TableHeaderCell>
-                                <TableHeaderCell>Utworzono</TableHeaderCell>
+                                <TableHeaderCell>
+                                    <button
+                                        onClick={() =>
+                                            toggleSort("difficulty_level")
+                                        }
+                                        className="flex items-center gap-2"
+                                    >
+                                        Poziom
+                                        {sortBy === "difficulty_level" && (
+                                            <span className="text-xs text-neutral-400">
+                                                {sortOrder === "asc"
+                                                    ? "↑"
+                                                    : "↓"}
+                                            </span>
+                                        )}
+                                    </button>
+                                </TableHeaderCell>
+                                <TableHeaderCell>
+                                    <button
+                                        onClick={() => toggleSort("created_at")}
+                                        className="flex items-center gap-2"
+                                    >
+                                        Utworzono
+                                        {sortBy === "created_at" && (
+                                            <span className="text-xs text-neutral-400">
+                                                {sortOrder === "asc"
+                                                    ? "↑"
+                                                    : "↓"}
+                                            </span>
+                                        )}
+                                    </button>
+                                </TableHeaderCell>
                                 <TableHeaderCell>Akcje</TableHeaderCell>
                             </TableRow>
                         </TableHeader>
@@ -959,9 +1052,9 @@ export default function VocabularyManager() {
                                         {entry.term_pl}
                                     </TableCell>
                                     <TableCell>
-                                        <div>{entry.category.name}</div>
+                                        <div>{entry.category?.name || 'No category'}</div>
                                         <div className="text-sm text-neutral-400">
-                                            {entry.category.profession.name}
+                                            {entry.category?.profession?.name || ''}
                                         </div>
                                     </TableCell>
                                     <TableCell>
@@ -1032,9 +1125,9 @@ export default function VocabularyManager() {
                                     {category.name_en}
                                 </TableCell>
                                 <TableCell>
-                                    <div>{category.profession.name}</div>
+                                    <div>{category.profession?.name || 'No profession'}</div>
                                     <div className="text-sm text-neutral-400">
-                                        {category.profession.name_en}
+                                        {category.profession?.name_en || ''}
                                     </div>
                                 </TableCell>
                                 <TableCell>
@@ -1151,7 +1244,7 @@ export default function VocabularyManager() {
                                         value={category.id}
                                     >
                                         {category.name} (
-                                        {category.profession.name})
+                                        {category.profession?.name || 'No profession'})
                                     </option>
                                 ))}
                             </Select>
@@ -1492,7 +1585,7 @@ export default function VocabularyManager() {
                     deleteConfirm.entry
                         ? `Czy na pewno chcesz usunąć wpis "${deleteConfirm.entry.term_en}" z słownictwa? Ta akcja jest nieodwracalna.`
                         : deleteConfirm.category
-                        ? `Czy na pewno chcesz usunąć kategorię "${deleteConfirm.category.name}"? Ta akcja jest nieodwracalna i usunie również wszystkie wpisy słownictwa w tej kategorii.`
+                        ? `Czy na pewno chcesz usunąć kategorię "${deleteConfirm.category?.name || 'Unknown'}"? Ta akcja jest nieodwracalna i usunie również wszystkie wpisy słownictwa w tej kategorii.`
                         : ""
                 }
                 confirmText="Usuń"

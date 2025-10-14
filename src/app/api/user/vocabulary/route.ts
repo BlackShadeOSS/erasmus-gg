@@ -92,21 +92,32 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to load vocabulary' }, { status: 500 })
     }
 
-    const ids = (vocab || []).map(v => v.id)
+  // Validate ids are UUIDs to avoid Postgres 22P02 errors when a non-uuid sneaks in
+  const ids = (vocab || []).map(v => v.id)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+    const validIds = ids.filter((id) => typeof id === 'string' && uuidRegex.test(id))
+    if (validIds.length !== ids.length) {
+      console.warn('Warning - some vocabulary ids were invalid UUIDs and were filtered out', { ids, validIds })
+    }
 
     // Fetch progress for these vocabulary ids for current user
     const progressMap: Record<string, number> = {}
-    if (ids.length) {
-      const { data: progress, error: pErr } = await supabaseAdmin
-        .from('user_vocabulary_progress')
-        .select('vocabulary_id, mastery_level')
-        .eq('user_id', (user as any).id)
-        .in('vocabulary_id', ids)
+    if (validIds.length) {
+      try {
+        const { data: progress, error: pErr } = await supabaseAdmin
+          .from('user_vocabulary_progress')
+          .select('vocabulary_id, mastery_level')
+          .eq('user_id', (user as any).id)
+          .in('vocabulary_id', validIds)
 
-      if (pErr) {
-        console.error('Fetch progress error:', pErr)
-      } else {
-        for (const p of progress || []) progressMap[p.vocabulary_id] = p.mastery_level ?? 0
+        if (pErr) {
+          console.error('Fetch progress error:', pErr)
+        } else {
+          for (const p of progress || []) progressMap[p.vocabulary_id] = p.mastery_level ?? 0
+        }
+      } catch (e) {
+        // Catch DB-level errors (e.g., 22P02) and continue with empty progressMap
+        console.error('Progress select error:', e)
       }
     }
 

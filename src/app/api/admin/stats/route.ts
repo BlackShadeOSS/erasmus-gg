@@ -40,10 +40,10 @@ export async function GET(request: NextRequest) {
         .from('videos')
         .select('difficulty_level, is_active', { count: 'exact' }),
       
-      // Games stats
+      // Games stats (simplified schema)
       supabaseAdmin
         .from('games')
-        .select('game_type, difficulty_level, is_active', { count: 'exact' })
+        .select('difficulty_level', { count: 'exact' })
     ]);
 
     // Calculate statistics
@@ -104,13 +104,6 @@ export async function GET(request: NextRequest) {
       },
       games: {
         total: gamesRes.count || 0,
-        active: gamesRes.data?.filter((g: any) => g.is_active).length || 0,
-        byType: {
-          flashcards: gamesRes.data?.filter((g: any) => g.game_type === 'flashcards').length || 0,
-          quiz: gamesRes.data?.filter((g: any) => g.game_type === 'quiz').length || 0,
-          matching: gamesRes.data?.filter((g: any) => g.game_type === 'matching').length || 0,
-          dragdrop: gamesRes.data?.filter((g: any) => g.game_type === 'dragdrop').length || 0
-        },
         byLevel: {
           level1: gamesRes.data?.filter((g: any) => g.difficulty_level === 1).length || 0,
           level2: gamesRes.data?.filter((g: any) => g.difficulty_level === 2).length || 0,

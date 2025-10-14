@@ -24,7 +24,10 @@ export async function GET(request: NextRequest) {
     // Build query
     let query = supabaseAdmin
       .from('activation_codes')
-      .select('*')
+      .select(`
+        *,
+        profession:professions(id, name, name_en)
+      `)
       .order('created_at', { ascending: false })
 
     // Apply filters
@@ -83,7 +86,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { description, maxUses, expiresAt } = await request.json()
+    const { description, maxUses, expiresAt, professionId } = await request.json()
+
+    if (!description || !professionId) {
+      return NextResponse.json(
+        { error: 'Description and profession are required' },
+        { status: 400 }
+      )
+    }
 
     // Generate a random 8-character code
     const code = Math.random().toString(36).substring(2, 10).toUpperCase()
@@ -95,6 +105,7 @@ export async function POST(request: NextRequest) {
         description,
         max_uses: maxUses,
         expires_at: expiresAt || null,
+        profession_id: professionId || null,
         created_by: user.id
       })
       .select()
@@ -132,11 +143,18 @@ export async function PUT(request: NextRequest) {
       )
     }
 
-    const { id, description, maxUses, expiresAt, status } = await request.json()
+    const { id, description, maxUses, expiresAt, status, professionId } = await request.json()
 
     if (!id) {
       return NextResponse.json(
         { error: 'Code ID is required' },
+        { status: 400 }
+      )
+    }
+
+    if (!description || !professionId) {
+      return NextResponse.json(
+        { error: 'Description and profession are required' },
         { status: 400 }
       )
     }
@@ -147,7 +165,8 @@ export async function PUT(request: NextRequest) {
         description,
         max_uses: maxUses,
         expires_at: expiresAt || null,
-        status: status || 'active'
+        status: status || 'active',
+        profession_id: professionId || null
       })
       .eq('id', id)
       .select()
