@@ -257,7 +257,7 @@ function odkryjKarte(e: any) {
 function sprawdzStanPlanszy() {}
 
 const powtarzamySlowka: boolean = false;
-let graSkonczonaState: {
+const graSkonczonaState: {
     value: boolean
     setValue: any
   } = {
@@ -267,7 +267,7 @@ let graSkonczonaState: {
   };
 
   let graSkonczona = false;
-let globalKarty: any = [];
+const globalKarty: any = [];
 
 export default function Plansza({
     szerokosc,
@@ -369,7 +369,7 @@ if (startTime == 0) {
         }
         
            
-    }, [sprwadzStanGry]);
+    }, [sprwadzStanGry, report]);
 
         return (
            <div 
@@ -412,7 +412,7 @@ function koniecGry(wygrana: boolean = true) {
     const koniecGryHTML = `<a href="/pamiec"><button class="${buttonCSS}">Zagraj jeszcze raz</button></a>
         <a href="/dashboard"><button class="${buttonCSS}">Panel ucznia</button></a>`;
     
-        let odkryteKartyProcent = Math.floor((liczbaUsunietychKart / iloscKart)*100);
+        const odkryteKartyProcent = Math.floor((liczbaUsunietychKart / iloscKart)*100);
 
     if (wygrana) {
         const wygranaHTML: string = `<p>Gratulacje!</p>
