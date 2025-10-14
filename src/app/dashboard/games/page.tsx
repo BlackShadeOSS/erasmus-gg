@@ -18,7 +18,7 @@ import DashboardSidebar from "@/components/user/DashboardSidebar";
 const games = [
     {
         id: "pamiec",
-        title: "Pamięć",
+        title: "Memory",
         description:
             "Sprawdź swoją pamięć i zdolności językowe! Dopasuj słówka angielskie do polskich.",
         icon: "🧠",
@@ -58,7 +58,7 @@ export default async function GamesPage() {
                     <div className="space-y-6">
                         <div>
                             <h1 className="text-3xl font-bold text-neutral-100">
-                                Gry Edukacyjne
+                                Gry Edukacyjne i Ćwiczenia
                             </h1>
                             <p className="text-neutral-400 mt-2">
                                 Ucz się angielskiego przez zabawę!
