@@ -18,6 +18,11 @@ const jezyk = {
 let planszaRoot: Root;
 let iloscKart: number;
 
+
+
+
+
+
 //TODO comments on functions
 
 const rozmiarKartyCSS: string =
@@ -73,6 +78,8 @@ function stworzKarte(
  */
 function stworzPareKart(slowka: { pol: string; ang: string }, idwLiscie = -1) {
     licznikPar++;
+    console.log("licznikPar: "+licznikPar);
+    
     return [
         stworzKarte(
             licznik,
@@ -273,6 +280,7 @@ function odkryjKarte(e: any) {
 }
 
 function sprawdzStanPlanszy() {}
+
 const powtarzamySlowka: boolean = false;
 
 export default function Plansza({
@@ -292,46 +300,72 @@ export default function Plansza({
     iloscKart = szerokosc * wysokosc; //docelowa ilość kart
     proby = Math.ceil(iloscKart / 2) + 1;
     listaSlowek = pobranaListaSlowek;
-
     let losowaParaSlowek: number = losowaLiczbaCalkowita(
         0,
         listaSlowek.length - 1
     );
+
+    console.log(listaSlowek);
+    
     const listaUżytychPar: number[] = [];
+    console.log(licznik);
+    console.log(iloscKart);
+
     while (licznik < iloscKart) {
+        console.log("licznik :"+licznik);
+        
         //nie ma znaczenia czy tworzymy pojedyńczo czy podwójną funkcją
 
         if (listaSlowek.length * 2 >= iloscKart) {
             //mamy wystarczająco słówek
             while (listaUżytychPar.includes(losowaParaSlowek)) {
                 //nie powtarzamy ich
-                losowaParaSlowek = losowaLiczbaCalkowita(
-                    0,
-                    listaSlowek.length - 1
-                );
+                losowaParaSlowek = losowaLiczbaCalkowita(0, listaSlowek.length - 1);
             }
+        }
 
             const noweKarty = stworzPareKart(
                 listaSlowek[losowaParaSlowek],
                 losowaParaSlowek
             );
+
             listaUżytychPar.push(losowaParaSlowek);
             losowaParaSlowek = losowaLiczbaCalkowita(0, listaSlowek.length - 1);
             karty.push(noweKarty[0]);
             karty.push(noweKarty[1]);
+        console.log("licznik :"+licznik);
+
+            console.log("dodano karty");
+            
+           
+            
             if (licznik == 0) {
                 break;
             }
+
+        // listaUżytychPar.sort((a, b) => {
+        //     return a - b;
+        // });
+
+        // losujMiejscaKart(karty);
+        console.log("karty: ");
+        for (const element of karty) {
+            console.log(element);
+            
         }
-
-        listaUżytychPar.sort((a, b) => {
-            return a - b;
-        });
-
-        losujMiejscaKart(karty);
-
-        return <div>{karty}</div>;
     }
+        
+        // return <div>{karty}</div>;
+        // let a = ;
+        return (
+           <div id="plansza" key={"plansza"} className={"flex flex-wrap items-center justify-center mb-10 md:text-base text-2xl " + szerokoscCSS}>
+    <p className="text-center w-full">Kliknij na kartę aby ją odsłonić</p>
+    <p className="text-center w-full">Zostało kart: <span id="zostaloKart">{iloscKart}</span></p>
+    <p className="text-center w-full">Zostało prób: <span id="zostaloProb">{proby}</span></p>
+
+    {karty}
+   </div>
+        )
 }
 
 function koniecGry(wygrana: boolean = true) {
@@ -346,7 +380,7 @@ function koniecGry(wygrana: boolean = true) {
                                     <p id="wynikiOdkryteKarty">${liczbaUsunietychKart}/${iloscKart}</p>
                                     <a href="/pamiec"><button class="${buttonCSS}">Zagraj jeszcze raz
         </button></a>
-        <a href="/dashboard"><button class="${buttonCSS}">Strona głowna</button></a>
+        <a href="/dashboard"><button class="${buttonCSS}">Panel ucznia</button></a>
         `; //TODO jak sie by nie włączało dobrze to odpoczątku włączyc i display none
 
         //TODO failsafe jak nie załaduje słówek
@@ -357,7 +391,7 @@ function koniecGry(wygrana: boolean = true) {
             <p id="wynikiOdkryteKarty">${liczbaUsunietychKart}/${iloscKart}</p>
             <p>Spróbuj jeszcze raz, możesz następnym razem wybrać mnijeszą trudność.</p>
             <a href="/pamiec"><button class="${buttonCSS}">Zagraj jeszcze raz</button></a>
-            <a href="/login"><button class="${buttonCSS}">Strona głowna</button></a>
+            <a href="/dashboard"><button class="${buttonCSS}">Panel ucznia</button></a>
         `;
         document.getElementById("wynikiPojemnik")!.innerHTML = przegranaHTML;
     }
