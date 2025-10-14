@@ -33,6 +33,14 @@ const games = [
         path: "/word-quiz",
         difficulty: "Łatwa",
     },
+    {
+        id: "word-matching",
+        title: "Word Matching",
+        description: "Dopasuj słówka przeciągając je we właściwe miejsce.",
+        icon: "🪧",
+        path: "/word-matching",
+        difficulty: "Łatwa",
+    },
     // Możesz dodać więcej gier tutaj w przyszłości
 ];
 

@@ -1,14 +1,17 @@
 "use client";
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import "@/app/(games)/pamiec/styles.css";
 import { Root } from "react-dom/client";
+import { useReportProgress } from "@/hooks/useReportProgress";
+import { button } from "motion/react-client";
 
 let listaSlowek: { pol: string; ang: string }[] = [];
 
 //global var
 const terazOdkryte: HTMLElement[] = [];
+let startTime: number = 0;
 let liczbaUsunietychKart = 0; //
-let proby: number = 7; // proby = ilosckart/2 +1
+let proby: number = -1; // proby = ilosckart/2 +1
 let licznik: number = 0; //zlicza karty
 let licznikPar: number = -1;
 const jezyk = {
@@ -18,16 +21,8 @@ const jezyk = {
 let planszaRoot: Root;
 let iloscKart: number;
 
-
-
-
-
-
-//TODO comments on functions
-
-const rozmiarKartyCSS: string =
-    "min-w-fit m-2 w-1/3 sm:m-4 sm:w-1/5 md:m-3 md:w-1/3 lg:w-1/5 2xl:w-1/8 aspect-square";
-const flipCardCSS: string = "  bg-transparent   ";
+const rozmiarKartyCSS: string = " min-w-fit m-2 w-1/3 sm:m-4 sm:w-1/5 md:m-3 md:w-1/3 lg:w-1/5 2xl:w-1/8 aspect-square";
+const flipCardCSS: string = " bg-transparent ";
 const kartaCSS: string =
     " inline-flex items-center justify-center select-none rounded-2xl  ease-in-out text-white border-white/5 backdrop-blur-[25px] bg-origin-border shadow-sm not-disabled:hover:bg-white/90 not-disabled:hover:text-black not-disabled:hover:shadow-button transition-all duration-200 focus-visible:ring-4 focus-visible:ring-white/30 focus-visible:outline-hidden focus-visible:bg-white/90 focus-visible:text-black after:absolute  after:top-[-2px] after:left-[-2px] after:rounded-[1rem] after:bg-repeat after:pointer-events-none text-base font-semibold cursor-pointer rounded-lg ";
 
@@ -45,6 +40,7 @@ function stworzKarte(
     licznik++;
     return (
         <div
+            
             key={id}
             data-id-w-liscie={idwLiscie}
             data-para={idPary}
@@ -78,7 +74,6 @@ function stworzKarte(
  */
 function stworzPareKart(slowka: { pol: string; ang: string }, idwLiscie = -1) {
     licznikPar++;
-    console.log("licznikPar: "+licznikPar);
     
     return [
         stworzKarte(
@@ -100,7 +95,7 @@ function stworzPareKart(slowka: { pol: string; ang: string }, idwLiscie = -1) {
     ];
 }
 
-function losujMiejscaKart(karty: any[], sila: number = 1) {
+function losujMiejscaKart(karty: any[], sila: number = 3) {
     for (let i = 0; i < karty.length * sila; i++) {
         let losowyElement = losowaLiczbaCalkowita(0, karty.length - 1);
         let losowaPozycja = losowaLiczbaCalkowita(0, karty.length - 1);
@@ -149,22 +144,13 @@ function usunPareKart(karta1: any, karta2: any) {
     }
 }
 
-//TODO
-// function sprawdzOdkryteKarty() {
-// }
-
-/**
- * Uruchamiane przy kliknięciu karty
- * @param e
- * @returns idPary karty
- */
 //onclick
 let ostatniaKarta: any; //ostatnia odwrócona karta
 function odkryjKarte(e: any) {
     //!first we chech aganinst the pair id
-    if (e.ctrlKey) {
-        koniecGry(false); //debug;
-    }
+    // if (e.ctrlKey) {
+    //     koniecGry(false); //debug;
+    // }
     const element = e.target;
 
     if (
@@ -223,32 +209,21 @@ function odkryjKarte(e: any) {
 
         if (terazOdkryte.length == 2) {
             setTimeout(() => {
+                console.log("CHEKNING CARDS....");
+                
                 const idPary_teraz: string = idPary;
-                const idPary_poprzednie: string | null =
-                    terazOdkryte[0]!.parentElement!.parentElement!.getAttribute(
-                        "data-para"
-                    );
-                const idWlisciePoprzednie: string | null =
-                    terazOdkryte[0]!.parentElement!.parentElement!.getAttribute(
-                        "data-id-w-liscie"
-                    );
+                const idPary_poprzednie: string | null = terazOdkryte[0]!.parentElement!.parentElement!.getAttribute("data-para");
+                const idWlisciePoprzednie: string | null = terazOdkryte[0]!.parentElement!.parentElement!.getAttribute("data-id-w-liscie");
 
                 if (idPary_teraz != null && idPary_teraz == idPary_poprzednie) {
                     //są parą
                     usunPareKart(element, terazOdkryte[0]);
                 } else if (
-                    powtarzamySlowka &&
-                    jezykKarty !=
-                        terazOdkryte[0]!.parentElement!.parentElement!.getAttribute(
-                            "data-jezyk"
-                        ) &&
-                    idWliscieTeraz == idWlisciePoprzednie
-                ) {
+                    powtarzamySlowka && jezykKarty != terazOdkryte[0]!.parentElement!.parentElement!.getAttribute("data-jezyk") && idWliscieTeraz == idWlisciePoprzednie) {
                     //zatwierdzanie par między różnymi parami
 
                     usunPareKart(element, terazOdkryte[0]);
                 } else {
-                    // console.log("odwracam");
                     terazOdkryte[1]!.parentElement!.style.transform = rot0;
                     terazOdkryte[0]!.parentElement!.style.transform = rot0;
                     proby--; // one func
@@ -282,6 +257,17 @@ function odkryjKarte(e: any) {
 function sprawdzStanPlanszy() {}
 
 const powtarzamySlowka: boolean = false;
+const graSkonczonaState: {
+    value: boolean
+    setValue: any
+  } = {
+    value: false,
+    setValue: ()=>{}
+
+  };
+
+  let graSkonczona = false;
+const globalKarty: any = [];
 
 export default function Plansza({
     szerokosc,
@@ -294,26 +280,32 @@ export default function Plansza({
     root: Root;
     pobranaListaSlowek: { pol: string; ang: string }[];
 }) {
+    const [sprwadzStanGry, setStanGry] = useState(false);
+//    const [graSkonczona, setGraState] = useState(false);
+//     graSkonczonaState.value = graSkonczona;
+//     graSkonczonaState.setValue = useState;
+if (startTime == 0) {
+    startTime = Date.now();
+
+}
     const karty: any[] = [];
     planszaRoot = root;
     const szerokoscCSS: string = "w-full"; //w-screen
     iloscKart = szerokosc * wysokosc; //docelowa ilość kart
-    proby = Math.ceil(iloscKart / 2) + 1;
+
+    if (proby == -1) {
+        proby = Math.ceil(iloscKart / 2) + 1;
+    }
     listaSlowek = pobranaListaSlowek;
     let losowaParaSlowek: number = losowaLiczbaCalkowita(
         0,
         listaSlowek.length - 1
     );
 
-    console.log(listaSlowek);
     
     const listaUżytychPar: number[] = [];
-    console.log(licznik);
-    console.log(iloscKart);
 
     while (licznik < iloscKart) {
-        console.log("licznik :"+licznik);
-        
         //nie ma znaczenia czy tworzymy pojedyńczo czy podwójną funkcją
 
         if (listaSlowek.length * 2 >= iloscKart) {
@@ -333,68 +325,114 @@ export default function Plansza({
             losowaParaSlowek = losowaLiczbaCalkowita(0, listaSlowek.length - 1);
             karty.push(noweKarty[0]);
             karty.push(noweKarty[1]);
-        console.log("licznik :"+licznik);
-
-            console.log("dodano karty");
-            
-           
             
             if (licznik == 0) {
                 break;
             }
 
-        // listaUżytychPar.sort((a, b) => {
-        //     return a - b;
-        // });
+        listaUżytychPar.sort((a, b) => {
+            return a - b;
+        });
 
-        // losujMiejscaKart(karty);
-        console.log("karty: ");
-        for (const element of karty) {
-            console.log(element);
-            
-        }
+        losujMiejscaKart(karty);
     }
+
+    karty.forEach(element => {
+        globalKarty.push(element);
+    });
+
+    losujMiejscaKart(globalKarty);
+        const { report } = useReportProgress();
+
+        useEffect(() => {
+           
+           
+                 console.log("use effect ran");
+            console.log("graSkonczona: " + graSkonczona);
+            console.log('ilosc kart:', iloscKart);
+            console.log('Liczba kart:', globalKarty?.length);
+
+            if (graSkonczona) {
+            console.log("should send the report");
+            
+             const totalTimeSpent = Math.floor((Date.now() - startTime) / 1000);
+            report({
+                content_type: "game",
+                content_id: "69641b89-217c-423c-ada8-5e24eafe0c3c",
+                progress: {
+                    completed: true,
+                    score: liczbaUsunietychKart,//ile odkryli
+                    attempts: iloscKart,//na ile kart
+                    time_spent: totalTimeSpent,
+                },
+            }).catch((e) => console.error("Final progress report error", e));
+        }
         
-        // return <div>{karty}</div>;
-        // let a = ;
+           
+    }, [sprwadzStanGry, report]);
+
         return (
-           <div id="plansza" key={"plansza"} className={"flex flex-wrap items-center justify-center mb-10 md:text-base text-2xl " + szerokoscCSS}>
+           <div 
+           onClick={(e) => {
+
+            if (liczbaUsunietychKart > globalKarty.length/2 || proby <= 1) {
+                    console.log("wait in html");
+
+                setTimeout(() => {
+                console.log("waited");
+                                    
+            setStanGry(!sprwadzStanGry)
+
+                }, 2000);
+                
+            }
+        
+        }}
+           id="plansza" key={"plansza"} className={"flex flex-wrap items-center justify-center mb-10 md:text-base text-2xl " + szerokoscCSS}>
     <p className="text-center w-full">Kliknij na kartę aby ją odsłonić</p>
     <p className="text-center w-full">Zostało kart: <span id="zostaloKart">{iloscKart}</span></p>
     <p className="text-center w-full">Zostało prób: <span id="zostaloProb">{proby}</span></p>
-
-    {karty}
+             {/* {karty} */}
+             {globalKarty}
    </div>
         )
 }
 
+
+
 function koniecGry(wygrana: boolean = true) {
+    document.getElementById("plansza")!.style.display = "none";
+    graSkonczona = true;
+    console.log("koniec gry ----------------------------------------");
+    
     const buttonCSS: string = `mt-4 max-w-fit m-auto bg-amber-200 border border-amber-700 rounded-[6px] shadow-sm 
            box-border text-black text-[16px] font-bold
             p-3 px-4 hover:bg-transparent hover:text-amber-200 hover:border-amber-200
            active:opacity-50`;
+    const koniecGryHTML = `<a href="/pamiec"><button class="${buttonCSS}">Zagraj jeszcze raz</button></a>
+        <a href="/dashboard"><button class="${buttonCSS}">Panel ucznia</button></a>`;
+    
+        const odkryteKartyProcent = Math.floor((liczbaUsunietychKart / iloscKart)*100);
+
     if (wygrana) {
         const wygranaHTML: string = `<p>Gratulacje!</p>
                     <p>Udało się tobie odkryć poprawnie wszystkie karty.</p>
                                     <p>Odkryte karty:</p>
                                     <p id="wynikiOdkryteKarty">${liczbaUsunietychKart}/${iloscKart}</p>
-                                    <a href="/pamiec"><button class="${buttonCSS}">Zagraj jeszcze raz
-        </button></a>
-        <a href="/dashboard"><button class="${buttonCSS}">Panel ucznia</button></a>
-        `; //TODO jak sie by nie włączało dobrze to odpoczątku włączyc i display none
-
-        //TODO failsafe jak nie załaduje słówek
+                                    <p id="wynikiOdkryteKartyProcent">${odkryteKartyProcent}%</p>
+                                    `;
         document.getElementById("wynikiPojemnik")!.innerHTML = wygranaHTML;
     } else {
         const przegranaHTML = `<p>Nie udało się!</p>
             <p>Odkryte karty:</p>
             <p id="wynikiOdkryteKarty">${liczbaUsunietychKart}/${iloscKart}</p>
-            <p>Spróbuj jeszcze raz, możesz następnym razem wybrać mnijeszą trudność.</p>
-            <a href="/pamiec"><button class="${buttonCSS}">Zagraj jeszcze raz</button></a>
-            <a href="/dashboard"><button class="${buttonCSS}">Panel ucznia</button></a>
-        `;
+                                    <p id="wynikiOdkryteKartyProcent">${odkryteKartyProcent}%</p>
+
+            <p className='text-center'>Spróbuj jeszcze raz, możesz następnym razem wybrać niższą trudność.</p>
+           `;
         document.getElementById("wynikiPojemnik")!.innerHTML = przegranaHTML;
     }
-
-    planszaRoot.unmount();
+    document.getElementById("wynikiPojemnik")!.innerHTML += koniecGryHTML;
+    // planszaRoot.render(<button></button>)
+    // planszaRoot.unmount();//debug comment
 }
