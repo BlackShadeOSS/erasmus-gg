@@ -8,15 +8,16 @@ import { AnimatedBeam } from "@/components/ui/animated-beam";
 import VocIcon from "@/lib/NavIcon-dark.svg";
 import DuolingoIcon from "@/lib/duolingo.svg";
 import GoogleClassroomIcon from "@/lib/classroom.svg";
-import GoogleDocsIcon from "@/lib/docs.svg";
+import InstaLingIcon from "@/lib/Instaling.svg";
 import NotionIcon from "@/lib/notion.svg";
 
 const Circle = forwardRef<
   HTMLDivElement,
-  { className?: string; children?: React.ReactNode }
->(({ className, children }, ref) => {
+  { className?: string; children?: React.ReactNode; title?: string }
+>(({ className, children, title }, ref) => {
   return (
     <div
+      title={title}
       ref={ref}
       className={cn(
         "z-10 flex size-12 items-center justify-center rounded-full border-2 border-border bg-white p-3 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]",
@@ -57,16 +58,16 @@ export function AnimatedBeamMultipleOutputDemo({
     >
       <div className="flex size-full max-w-lg flex-row items-stretch justify-between gap-10">
         <div className="flex flex-col justify-center gap-2">
-          <Circle ref={div1Ref}>
+          <Circle ref={div1Ref} title="Classroom">
             <Image src={GoogleClassroomIcon} alt="Google Classroom" />
           </Circle>
-          <Circle ref={div2Ref}>
-            <Image src={GoogleDocsIcon} alt="Google Docs" />
+          <Circle ref={div2Ref} title="InstaLing">
+            <Image src={InstaLingIcon} alt="Google Docs" />
           </Circle>
-          <Circle ref={div3Ref}>
+          <Circle ref={div3Ref} title="Notion">
             <Image src={NotionIcon} alt="Notion" />
           </Circle>
-          <Circle ref={div4Ref}>
+          <Circle ref={div4Ref} title="Duolingo">
             <Image src={DuolingoIcon} alt="Duolingo" />
           </Circle>
         </div>

@@ -5,6 +5,7 @@ import { ButtonHTMLAttributes, ReactElement } from "react";
 import "./styles.css";
 import AuthNavBar from "@/components/AuthNavBar";
 import Footer from "@/components/Footer";
+import { log } from "node:console";
 
 //globals
 let planszaPojemnikNode: any;
@@ -63,6 +64,13 @@ function zapytanieFetch(
     }
 }
 
+function nieMaSlowekInfo() {
+    if (document.getElementById("startInfo")) {
+        document.getElementById("startInfo")!.innerText = "Nie znaleziono słówek dla twojego zawodu, skontaktuj się z osobą administrującą."
+    }
+}
+
+
 async function pobierzSlowka(param: string = "") {
     const url: string = "/api/user/vocabulary" + param;
     return zapytanieFetch("GET", url);
@@ -120,11 +128,17 @@ export default function pamiec() {
         if (czekaNaSlowka) {
             pobierzSlowka()
                 .then((res) => {
+                   
                     return res.json();
                 })
                 .then((a) => {
                     if (pobraneSlowka.length > 0) {
                         return;
+                    }
+                    
+                    if (a.items.length <= 0) {//nie ma żadych słówek - edge case
+                        nieMaSlowekInfo();
+                        
                     }
 
                     a.items.forEach((slowko: any) => {
@@ -149,17 +163,15 @@ export default function pamiec() {
                 })
                 .catch((error)=>{
         console.log("Error fetching: " + error);
-        console.log(document.getElementById("LogInPlease"));
+                        document.getElementById("startInfo")!.innerText = "";
         
         if (document.getElementById("LogInPlease")) {
             document.getElementById("LogInPlease")!.style.display = "inline-block";
         }
     });
         }
-        
     }
     
-
     for (let i = 1; i <= Trudnosc.ekspert; i++) {
         let nazwa = Trudnosc[i];
 
@@ -186,10 +198,10 @@ export default function pamiec() {
     });
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen p-10">
+        <div className="flex flex-col items-center justify-center min-h-screen">
             <AuthNavBar showBackToLogin={false} showDashboard={true} />
-            <h1 className="text-4xl font-bold text-amber-200 mb-10 mt-16">
-                Pamięć
+            <h1 className="text-4xl font-bold text-amber-200 mb-10 mt-[13%]">
+                Memory
             </h1>
             <main id="gameSetUp" className="md:text-base text-2xl">
                 <p className="flex flex-col items-center justify-center">
@@ -208,7 +220,7 @@ export default function pamiec() {
                 >
                     <h3 className="text-center mt-5">Wybierz trudność:</h3>
                     <select
-                        className="text-center max-w-fit m-auto bg-green-900 "
+                        className="text-center max-w-fit m-auto bg-amber-900 "
                         name="trudnosc"
                         id="trudnoscSelect"
                     >
@@ -226,12 +238,16 @@ export default function pamiec() {
                     >
                         start
                     </button>
+                
                     <p className="text-center" id="startInfo">
                         Ładuję dane... Proszę czekać.
                     </p>
+                    <p id="logInPlease" className=" text-center hidden">
+                        Proszę się zalogować, bądź spróbować za chwilę ponownie.
+                    </p>
                 </form>
 
-                <h3 className="text-green-200 text-center">Jak grać?</h3>
+                <h3 className="text-amber-200 text-center">Jak grać?</h3>
                 <p className="2xl:mx-80 sm:mx-36 mx-10 ">
                     Kliknij kartę aby ją odsłonić. Odkryj drugą kartę, jeśli
                     pasują (słówko po angielsku do słówka po polsku) karty
@@ -244,11 +260,18 @@ export default function pamiec() {
             <div id="planszaPojemnik" className="w-screen"></div>
             <div
                 id="wynikiPojemnik"
-                className="flex flex-col items-center justify-center"
-            ></div>
+                className="flex flex-col items-center justify-center"></div>
+            <footer className="mt-auto sticky bottom-0 w-full bg-neutral-900/70 border-t-2 border-neutral-800 flex flex-col">
+                <div className="py-3 bg-neutral-950/20 flex justify-center items-center gap-2 border-t-2 border-neutral-800">
+                    <p className="text-sm sm:text-md text-center text-neutral-500 flex items-center justify-center">
+                        Realizacja: © Zuzanna Zych 2025-{new Date().getFullYear()}
+                    </p>
+                </div>
+            </footer>
         </div>
 
         
 
     );
 }
+
