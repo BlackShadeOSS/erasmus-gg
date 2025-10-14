@@ -59,7 +59,7 @@ const NavBar = () => {
   return (
     <>
       <header className="flex justify-center fixed top-5 left-0 right-0 z-50 pointer-events-none">
-        <div className="w-11/12 md:w-2/3 2xl:w-1/3 h-13 bg-neutral-700/30 border-0 sm:border-2 border-neutral-800 backdrop-blur-md rounded-lg flex justify-end items-center pointer-events-auto">
+        <div className="w-11/12 md:w-2/3 xl:w-1/2 3xl:w-1/3 h-13 bg-neutral-700/30 border-0 sm:border-2 border-neutral-800 backdrop-blur-md rounded-lg flex justify-end items-center pointer-events-auto">
           <div className="bg-transparent sm:bg-neutral-700/20 rounded-md w-12 h-11 mx-1 backdrop-blur-md flex items-center justify-center">
             <Link href={"/"} className=" cursor-pointer">
               <Image src={icon} width={45} alt={NavBarContent.logoAlt} />
