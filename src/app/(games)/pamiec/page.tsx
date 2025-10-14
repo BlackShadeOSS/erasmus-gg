@@ -121,11 +121,11 @@ let authCookie: string;
 const pobraneSlowka: { pol: string; ang: string }[] = [];
 
 export default function pamiec() {
-    //?is it better to pass this to the func or let it get it itself?
     if (isClient()) {
-        //TODO WAIT FOR THIS TO LOAD
-
+        //TODO if its taking too long ask to reload
+        // document.getElementById("startInfo")!.innerText = "";
         if (czekaNaSlowka) {
+
             pobierzSlowka()
                 .then((res) => {
                    
@@ -197,18 +197,22 @@ export default function pamiec() {
         );
     });
 
+
+
+
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen">
             <AuthNavBar showBackToLogin={false} showDashboard={true} />
-            <h1 className="text-4xl font-bold text-amber-200 mb-10 mt-[13%]">
+            <h1 className="text-4xl font-bold text-amber-200 mb-10 mt-20">
                 Memory
             </h1>
             <main id="gameSetUp" className="md:text-base text-2xl">
-                <p className="flex flex-col items-center justify-center">
+                <p className="flex text-center flex-col items-center justify-center">
                     Sprawdź swoją pamięć i zdolności językowe!
                 </p>
 
-                <p className="flex flex-col items-center justify-center">
+                <p className="flex text-center flex-col items-center justify-center">
                     Zaleca się rozgrywkę na komputerze.
                 </p>
 
@@ -243,7 +247,7 @@ export default function pamiec() {
                         Ładuję dane... Proszę czekać.
                     </p>
                     <p id="logInPlease" className=" text-center hidden">
-                        Proszę się zalogować, bądź spróbować za chwilę ponownie.
+                        Proszę się zalogować i spróbować za chwilę ponownie.
                     </p>
                 </form>
 
