@@ -36,7 +36,8 @@ const videos: Video[] = [
       "https://drive.google.com/open?id=13QCPLSImmdeHAc5nRnx_N95f_vsndUQ_&usp=drive_copy",
     embedUrl:
       "https://drive.google.com/file/d/13QCPLSImmdeHAc5nRnx_N95f_vsndUQ_/preview",
-    descriptionUrl: "https://docs.google.com/document/d/140BdGIIaYBIDINr5Mbv9dAJBYfK5hMmpDGfcwtgZ0I0/edit?hl=pl&tab=t.0",
+    descriptionUrl:
+      "https://docs.google.com/document/d/140BdGIIaYBIDINr5Mbv9dAJBYfK5hMmpDGfcwtgZ0I0/edit?hl=pl&tab=t.0",
   },
   {
     id: "1ndGnuL4Iw8wpgUoT-CbNB6tkRJuDgijr",
@@ -45,7 +46,8 @@ const videos: Video[] = [
       "https://drive.google.com/open?id=1ndGnuL4Iw8wpgUoT-CbNB6tkRJuDgijr&usp=drive_copy",
     embedUrl:
       "https://drive.google.com/file/d/1ndGnuL4Iw8wpgUoT-CbNB6tkRJuDgijr/preview",
-    descriptionUrl: "https://drive.google.com/drive/folders/1kW6ivYwDiTXXLAYqE3PdUS2g6tAb11Po?hl=pl",
+    descriptionUrl:
+      "https://drive.google.com/drive/folders/1kW6ivYwDiTXXLAYqE3PdUS2g6tAb11Po?hl=pl",
   },
   {
     id: "1RiwaicHnortoymVBVU8dyc6_W7F_K6Cn",
@@ -54,7 +56,8 @@ const videos: Video[] = [
       "https://drive.google.com/open?id=1RiwaicHnortoymVBVU8dyc6_W7F_K6Cn&usp=drive_copy",
     embedUrl:
       "https://drive.google.com/file/d/1RiwaicHnortoymVBVU8dyc6_W7F_K6Cn/preview",
-    descriptionUrl: "https://docs.google.com/document/d/1lJ2VN_0OPjav0P7O6yexTInlaluA0WoWfChK4wDUQCI/edit?hl=pl&tab=t.0#heading=h.4g01gcnx6th1",
+    descriptionUrl:
+      "https://docs.google.com/document/d/1lJ2VN_0OPjav0P7O6yexTInlaluA0WoWfChK4wDUQCI/edit?hl=pl&tab=t.0#heading=h.4g01gcnx6th1",
   },
   {
     id: "1bstpC24GHe9-7wlAnE0uRBhD5YFAgIaX",
@@ -63,7 +66,8 @@ const videos: Video[] = [
       "https://drive.google.com/open?id=1bstpC24GHe9-7wlAnE0uRBhD5YFAgIaX&usp=drive_copy",
     embedUrl:
       "https://drive.google.com/file/d/1bstpC24GHe9-7wlAnE0uRBhD5YFAgIaX/preview",
-    descriptionUrl: "https://docs.google.com/document/d/1QF0TeDQ9B5y5adwPtPh4JBoROqZzzSFpLYrnvV5zDHE/edit?hl=pl&tab=t.0",
+    descriptionUrl:
+      "https://docs.google.com/document/d/1QF0TeDQ9B5y5adwPtPh4JBoROqZzzSFpLYrnvV5zDHE/edit?hl=pl&tab=t.0",
   },
   {
     id: "1qcYV-C4U5vnHB7_nGZ_ZR6JyWPzkwtVp",
@@ -72,7 +76,8 @@ const videos: Video[] = [
       "https://drive.google.com/open?id=1qcYV-C4U5vnHB7_nGZ_ZR6JyWPzkwtVp&usp=drive_copy",
     embedUrl:
       "https://drive.google.com/file/d/1qcYV-C4U5vnHB7_nGZ_ZR6JyWPzkwtVp/preview",
-    descriptionUrl: "https://drive.google.com/drive/folders/1kW6ivYwDiTXXLAYqE3PdUS2g6tAb11Po?hl=pl",
+    descriptionUrl:
+      "https://drive.google.com/drive/folders/1kW6ivYwDiTXXLAYqE3PdUS2g6tAb11Po?hl=pl",
   },
   {
     id: "1hkTnCHh-FI6EAjKKJTE3WvWj8NFKu1dG",
@@ -81,7 +86,8 @@ const videos: Video[] = [
       "https://drive.google.com/open?id=1hkTnCHh-FI6EAjKKJTE3WvWj8NFKu1dG&usp=drive_copy",
     embedUrl:
       "https://drive.google.com/file/d/1hkTnCHh-FI6EAjKKJTE3WvWj8NFKu1dG/preview",
-    descriptionUrl: "https://docs.google.com/document/d/1Untfkcm07d9iDQH96OalZtvSY6yQixxnZybsHNCFpjM/edit?hl=pl&tab=t.0#heading=h.ykdcxywatc1u",
+    descriptionUrl:
+      "https://docs.google.com/document/d/1Untfkcm07d9iDQH96OalZtvSY6yQixxnZybsHNCFpjM/edit?hl=pl&tab=t.0#heading=h.ykdcxywatc1u",
   },
   {
     id: "1X750UJnH33nD2PvNWb2I--iyMjRhpmDI",
@@ -90,7 +96,8 @@ const videos: Video[] = [
       "https://drive.google.com/open?id=1X750UJnH33nD2PvNWb2I--iyMjRhpmDI&usp=drive_copy",
     embedUrl:
       "https://drive.google.com/file/d/1X750UJnH33nD2PvNWb2I--iyMjRhpmDI/preview",
-    descriptionUrl: "https://docs.google.com/document/d/1ccSBP1zug9Btv_wkyR2rLk10dEKP2C18t279a_qaj-4/edit?usp=drive_open&hl=pl",
+    descriptionUrl:
+      "https://docs.google.com/document/d/1ccSBP1zug9Btv_wkyR2rLk10dEKP2C18t279a_qaj-4/edit?usp=drive_open&hl=pl",
   },
   {
     id: "1ME-zLbPkluqMqQRk3uWLBjX3vkQEuWT_",
@@ -115,7 +122,8 @@ const videos: Video[] = [
       "https://drive.google.com/open?id=1MTsOmbR5VJ70kzUQDFuAQqjUUe0Jvg1g&usp=drive_copy",
     embedUrl:
       "https://drive.google.com/file/d/1MTsOmbR5VJ70kzUQDFuAQqjUUe0Jvg1g/preview",
-    descriptionUrl: "https://drive.google.com/drive/folders/1kW6ivYwDiTXXLAYqE3PdUS2g6tAb11Po?hl=pl",
+    descriptionUrl:
+      "https://drive.google.com/drive/folders/1kW6ivYwDiTXXLAYqE3PdUS2g6tAb11Po?hl=pl",
   },
   {
     id: "1B8i2er8-NZmrHlR8LABrr6NfSXyBjM3m",
@@ -132,7 +140,8 @@ const videos: Video[] = [
       "https://drive.google.com/open?id=1CJPYtD3lISbRXC9mcewHV-gYuKZ7UU-U&usp=drive_copy",
     embedUrl:
       "https://drive.google.com/file/d/1CJPYtD3lISbRXC9mcewHV-gYuKZ7UU-U/preview",
-    descriptionUrl: "https://docs.google.com/document/d/1-LG-LKzE0Yi2a22-y6WKnPrQ4jH3-YzLTJ39EsB7d84/edit?usp=drive_open&hl=pl",
+    descriptionUrl:
+      "https://docs.google.com/document/d/1-LG-LKzE0Yi2a22-y6WKnPrQ4jH3-YzLTJ39EsB7d84/edit?usp=drive_open&hl=pl",
   },
 ];
 
@@ -194,7 +203,9 @@ export default function VideosPage({ user }: UserDashboardProps) {
                         variant="outline"
                         size="sm"
                         className="w-full bg-amber-600 hover:bg-amber-700 text-white border-amber-500"
-                        onClick={() => window.open(video.descriptionUrl, "_blank")}
+                        onClick={() =>
+                          window.open(video.descriptionUrl, "_blank")
+                        }
                       >
                         <FileText className="mr-2 h-4 w-4" />
                         Zobacz opis filmu

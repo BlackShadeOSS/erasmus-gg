@@ -76,17 +76,17 @@ export default function RealizacjaPage() {
 
                 <div className="bg-neutral-900/50 rounded-xl p-6 border border-neutral-700 hover:border-amber-200 transition-colors">
                   <h3 className="text-xl font-semibold mb-2">Kamil Wida</h3>
-                  <p className="text-neutral-400">Vocaba</p>
+                  <p className="text-neutral-400">Gra Vocaba</p>
                 </div>
                 <div className="bg-neutral-900/50 rounded-xl p-6 border border-neutral-700 hover:border-amber-200 transition-colors">
                   <h3 className="text-xl font-semibold mb-2">Zuzanna Zych</h3>
-                  <p className="text-neutral-400">Pamięć</p>
+                  <p className="text-neutral-400">Gra Memory</p>
                 </div>
                 <div className="bg-neutral-900/50 rounded-xl p-6 border border-neutral-700 hover:border-amber-200 transition-colors">
                   <h3 className="text-xl font-semibold mb-2">
                     Dominik Chrobak
                   </h3>
-                  <p className="text-neutral-400"></p>
+                  <p className="text-neutral-400">Gra Word-Matching</p>
                 </div>
                 <div className="bg-neutral-900/50 rounded-xl p-6 border border-neutral-700 hover:border-amber-200 transition-colors">
                   <div className="flex justify-between">
@@ -101,12 +101,18 @@ export default function RealizacjaPage() {
                       <Image
                         src={dif}
                         alt="Radecky Studio"
-                        width={60}
-                        className="object-contain h-12"
+                        width={65}
+                        className="object-contain h-11"
                       />
                     </a>
                   </div>
                   <p className="text-neutral-400">Logo</p>
+                </div>
+                <div className="bg-neutral-900/50 rounded-xl p-6 border border-neutral-700 hover:border-amber-200 transition-colors">
+                  <h3 className="text-xl font-semibold mb-2">
+                    Dominik Leśniak
+                  </h3>
+                  <p className="text-neutral-400">Wprowadzanie słownictwa</p>
                 </div>
               </div>
             </section>
