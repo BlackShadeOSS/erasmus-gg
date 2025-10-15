@@ -33,6 +33,22 @@ const games = [
         path: "/word-quiz",
         difficulty: "Łatwa",
     },
+    {
+        id: "word-matching",
+        title: "Word Matching",
+        description: "Dopasuj słówka przeciągając je we właściwe miejsce.",
+        icon: "🪧",
+        path: "/word-matching",
+        difficulty: "Łatwa",
+    },
+    {
+        id: "vocaba",
+        title: "Vocaba",
+        description: "Utwórz zdania na podstawie podanych wyrazów.",
+        icon: "📚",
+        path: "/vocaba",
+        difficulty: "Mieszana",
+    },
     // Możesz dodać więcej gier tutaj w przyszłości
 ];
 
