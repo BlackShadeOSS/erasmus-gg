@@ -94,12 +94,6 @@ function rysujPlansze(trudnosc: number) {
     rysujxyKart(wysokoscPlanszy, szerokoscPlanszy);
 }
 
-/**
- * Rysuje 'karty' w prostokącie
- * @param x - szerosokc
- * @param y - wysokosc
- */
-
 function rysujxyKart(x: number, y: number) {
     planszaPojemnikNode = document.getElementById("planszaPojemnik");
 
@@ -138,7 +132,6 @@ export default function pamiec() {
                     
                     if (a.items.length <= 0) {//nie ma żadych słówek - edge case
                         nieMaSlowekInfo();
-                        
                     }
 
                     a.items.forEach((slowko: any) => {
@@ -153,22 +146,23 @@ export default function pamiec() {
                         czekaNaSlowka = true;
                     } else {
                         czekaNaSlowka = false;
-                        (
-                            document.getElementById(
-                                "start"
-                            )! as HTMLButtonElement
-                        ).disabled = false;
+                        (document.getElementById("start")! as HTMLButtonElement).disabled = false;
                         document.getElementById("startInfo")!.innerText = "";
                     }
                 })
                 .catch((error)=>{
         console.log("Error fetching: " + error);
-                        document.getElementById("startInfo")!.innerText = "";
-        
-        if (document.getElementById("LogInPlease")) {
-            document.getElementById("LogInPlease")!.style.display = "inline-block";
+        if (document.getElementById("startInfo")) {
+           const logInString = "Proszę się zalogować i spróbować za chwilę ponownie.";
+            document.getElementById("startInfo")!.innerText = logInString;
         }
+        
+        
     });
+        } else {
+            if (document.getElementById("startInfo")) {
+                document.getElementById("startInfo")!.innerText = "";
+            }
         }
     }
     
@@ -197,9 +191,11 @@ export default function pamiec() {
         );
     });
 
+    
 
-
-
+    // if (!czekaNaSlowka && document.getElementById("startInfo")) { 
+    //     document.getElementById("startInfo")!.innerText = "";
+    // }
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen">
@@ -242,12 +238,9 @@ export default function pamiec() {
                     >
                         start
                     </button>
-                
-                    <p className="text-center" id="startInfo">
+
+                    <p className="text-center" id="startInfo" hidden={!czekaNaSlowka}>
                         Ładuję dane... Proszę czekać.
-                    </p>
-                    <p id="logInPlease" className=" text-center hidden">
-                        Proszę się zalogować i spróbować za chwilę ponownie.
                     </p>
                 </form>
 
