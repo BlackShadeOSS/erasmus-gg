@@ -37,7 +37,7 @@ const games = [
         id: "word-matching",
         title: "Word Matching",
         description: "Dopasuj słówka przeciągając je we właściwe miejsce.",
-        icon: "🪧",
+        icon: "📑",
         path: "/word-matching",
         difficulty: "Łatwa",
     },
