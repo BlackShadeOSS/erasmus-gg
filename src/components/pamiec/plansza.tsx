@@ -53,7 +53,7 @@ function stworzKarte(
                 <div
                     className={
                         "flip-card-front " +
-                        "bg-neutral-800 select-none rounded-2xl ease-in-out border-white/5 backdrop-blur-[25px] bg-origin-border shadow-sm not-disabled:hover:bg-white/90 not-disabled:hover:text-black not-disabled:hover:shadow-button transition-all duration-200 after:absolute  after:top-[-2px] after:left-[-2px] after:rounded-[1rem] font-semibold   cursor-pointer rounded-lg min-w-fit"
+                        "bg-neutral-700 select-none rounded-2xl ease-in-out border-white/5 backdrop-blur-[25px] bg-origin-border shadow-sm not-disabled:hover:bg-white/90 not-disabled:hover:text-black not-disabled:hover:shadow-button transition-all duration-200 after:absolute  after:top-[-2px] after:left-[-2px] after:rounded-[1rem] font-semibold   cursor-pointer rounded-lg min-w-fit"
                     }
                 ></div>
 
@@ -403,7 +403,6 @@ if (startTime == 0) {
 function koniecGry(wygrana: boolean = true) {
     document.getElementById("plansza")!.style.display = "none";
     graSkonczona = true;
-    console.log("koniec gry ----------------------------------------");
     
     const buttonCSS: string = `mt-4 max-w-fit m-auto bg-amber-200 border border-amber-700 rounded-[6px] shadow-sm 
            box-border text-black text-[16px] font-bold
