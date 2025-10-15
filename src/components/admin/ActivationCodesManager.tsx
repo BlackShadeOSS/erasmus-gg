@@ -318,7 +318,10 @@ export default function ActivationCodesManager() {
     // Open add modal
     const openAddModal = () => {
         setEditingCode(null);
-        setFormData(initialFormData);
+        setFormData({
+            ...initialFormData,
+            professionId: professions[0]?.id || "",
+        });
         setIsModalOpen(true);
     };
 
