@@ -41,6 +41,14 @@ const games = [
         path: "/word-matching",
         difficulty: "Łatwa",
     },
+    {
+        id: "vocaba",
+        title: "Vocaba",
+        description: "Utwórz zdania na podstawie podanych wyrazów.",
+        icon: "📚",
+        path: "/vocaba",
+        difficulty: "Mieszana",
+    },
     // Możesz dodać więcej gier tutaj w przyszłości
 ];
 
