@@ -161,8 +161,8 @@ export default function VocabularyTable() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col md:flex-row md:items-end gap-3">
-        <form onSubmit={handleSearchSubmit} className="flex-1">
+      <div className="flex flex-col gap-3">
+        <form onSubmit={handleSearchSubmit} className="w-full">
           <label className="block text-sm text-neutral-300 mb-1">Szukaj</label>
           <div className="flex gap-2">
             <Input
@@ -176,70 +176,76 @@ export default function VocabularyTable() {
           </div>
         </form>
 
-        <div className="min-w-[200px]">
-          <label className="block text-sm text-neutral-300 mb-1">
-            Kategoria
-          </label>
-          <select
-            value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
-            className="w-full bg-neutral-900 border border-neutral-700 text-neutral-200 rounded-md px-3 py-2"
-          >
-            <option value="">Wszystkie</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name || c.name_en}
-              </option>
-            ))}
-          </select>
-        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div>
+            <label className="block text-sm text-neutral-300 mb-1">
+              Kategoria
+            </label>
+            <select
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+              className="w-full bg-neutral-900 border border-neutral-700 text-neutral-200 rounded-md px-3 py-2"
+            >
+              <option value="">Wszystkie</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name || c.name_en}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div className="min-w-[140px]">
-          <label className="block text-sm text-neutral-300 mb-1">Poziom</label>
-          <select
-            value={level}
-            onChange={(e) => setLevel(e.target.value)}
-            className="w-full bg-neutral-900 border border-neutral-700 text-neutral-200 rounded-md px-3 py-2"
-          >
-            <option value="">Wszystkie</option>
-            <option value="1">A1</option>
-            <option value="2">A2</option>
-            <option value="3">B1</option>
-            <option value="4">B2</option>
-            <option value="5">C1</option>
-          </select>
-        </div>
+          <div>
+            <label className="block text-sm text-neutral-300 mb-1">
+              Poziom
+            </label>
+            <select
+              value={level}
+              onChange={(e) => setLevel(e.target.value)}
+              className="w-full bg-neutral-900 border border-neutral-700 text-neutral-200 rounded-md px-3 py-2"
+            >
+              <option value="">Wszystkie</option>
+              <option value="1">A1</option>
+              <option value="2">A2</option>
+              <option value="3">B1</option>
+              <option value="4">B2</option>
+              <option value="5">C1</option>
+            </select>
+          </div>
 
-        <div className="min-w-[120px]">
-          <label className="block text-sm text-neutral-300 mb-1">
-            Na stronie
-          </label>
-          <select
-            value={String(limit)}
-            onChange={(e) => setLimit(Number(e.target.value))}
-            className="w-full bg-neutral-900 border border-neutral-700 text-neutral-200 rounded-md px-3 py-2"
-          >
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-          </select>
-        </div>
+          <div>
+            <label className="block text-sm text-neutral-300 mb-1">
+              Na stronie
+            </label>
+            <select
+              value={String(limit)}
+              onChange={(e) => setLimit(Number(e.target.value))}
+              className="w-full bg-neutral-900 border border-neutral-700 text-neutral-200 rounded-md px-3 py-2"
+            >
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+            </select>
+          </div>
 
-        <div className="min-w-[120px]">
-          <label className="block text-sm text-neutral-300 mb-1">&nbsp;</label>
-          <Button
-            variant="secondary"
-            className="w-full bg-neutral-800 hover:bg-neutral-700 text-neutral-100"
-            onClick={() => {
-              setSearch("");
-              setCategoryId("");
-              setLevel("");
-              setLimit(20);
-              fetchVocab(1);
-            }}
-          >
-            Reset
-          </Button>
+          <div>
+            <label className="block text-sm text-neutral-300 mb-1">
+              &nbsp;
+            </label>
+            <Button
+              variant="secondary"
+              className="w-full bg-neutral-800 hover:bg-neutral-700 text-neutral-100"
+              onClick={() => {
+                setSearch("");
+                setCategoryId("");
+                setLevel("");
+                setLimit(20);
+                fetchVocab(1);
+              }}
+            >
+              Reset
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -257,88 +263,98 @@ export default function VocabularyTable() {
         </div>
       ) : (
         <div className="space-y-3">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHeaderCell>
-                  <button onClick={() => toggleSort("term_en")}>
-                    Słówko (EN){" "}
-                    {sortKey === "term_en"
-                      ? sortDir === "asc"
-                        ? "▲"
-                        : "▼"
-                      : null}
-                  </button>
-                </TableHeaderCell>
-                <TableHeaderCell>
-                  <button onClick={() => toggleSort("term_pl")}>
-                    Słówko (PL){" "}
-                    {sortKey === "term_pl"
-                      ? sortDir === "asc"
-                        ? "▲"
-                        : "▼"
-                      : null}
-                  </button>
-                </TableHeaderCell>
-                <TableHeaderCell>
-                  <button onClick={() => toggleSort("difficulty_level")}>
-                    Poziom{" "}
-                    {sortKey === "difficulty_level"
-                      ? sortDir === "asc"
-                        ? "▲"
-                        : "▼"
-                      : null}
-                  </button>
-                </TableHeaderCell>
-                <TableHeaderCell>Kategoria</TableHeaderCell>
-                <TableHeaderCell>
-                  <button onClick={() => toggleSort("mastery_level")}>
-                    Opanowanie{" "}
-                    {sortKey === "mastery_level"
-                      ? sortDir === "asc"
-                        ? "▲"
-                        : "▼"
-                      : null}
-                  </button>
-                </TableHeaderCell>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell className="py-8 text-center" colSpan={5}>
-                    Ładowanie...
-                  </TableCell>
-                </TableRow>
-              ) : sortedItems.length === 0 ? (
-                <TableRow>
-                  <TableCell className="py-8 text-center" colSpan={5}>
-                    Brak wyników
-                  </TableCell>
-                </TableRow>
-              ) : (
-                sortedItems.map((v) => (
-                  <TableRow key={v.id}>
-                    <TableCell className="font-medium text-neutral-100">
-                      {v.term_en}
-                    </TableCell>
-                    <TableCell>{v.term_pl}</TableCell>
-                    <TableCell>{v.level_name || v.difficulty_level}</TableCell>
-                    <TableCell>
-                      {v.category?.name || v.category?.name_en || "-"}
-                    </TableCell>
-                    <TableCell>
-                      {typeof v.mastery_level === "number"
-                        ? v.mastery_level
-                        : 0}
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+          <div className="overflow-x-auto -mx-4 md:mx-0">
+            <div className="inline-block min-w-full align-middle">
+              <div className="overflow-hidden border border-neutral-700 rounded-lg">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHeaderCell>
+                        <button onClick={() => toggleSort("term_en")}>
+                          Słówko (EN){" "}
+                          {sortKey === "term_en"
+                            ? sortDir === "asc"
+                              ? "▲"
+                              : "▼"
+                            : null}
+                        </button>
+                      </TableHeaderCell>
+                      <TableHeaderCell>
+                        <button onClick={() => toggleSort("term_pl")}>
+                          Słówko (PL){" "}
+                          {sortKey === "term_pl"
+                            ? sortDir === "asc"
+                              ? "▲"
+                              : "▼"
+                            : null}
+                        </button>
+                      </TableHeaderCell>
+                      <TableHeaderCell className="hidden sm:table-cell">
+                        <button onClick={() => toggleSort("difficulty_level")}>
+                          Poziom{" "}
+                          {sortKey === "difficulty_level"
+                            ? sortDir === "asc"
+                              ? "▲"
+                              : "▼"
+                            : null}
+                        </button>
+                      </TableHeaderCell>
+                      <TableHeaderCell className="hidden md:table-cell">
+                        Kategoria
+                      </TableHeaderCell>
+                      <TableHeaderCell className="hidden lg:table-cell">
+                        <button onClick={() => toggleSort("mastery_level")}>
+                          Opanowanie{" "}
+                          {sortKey === "mastery_level"
+                            ? sortDir === "asc"
+                              ? "▲"
+                              : "▼"
+                            : null}
+                        </button>
+                      </TableHeaderCell>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {loading ? (
+                      <TableRow>
+                        <TableCell className="py-8 text-center" colSpan={5}>
+                          Ładowanie...
+                        </TableCell>
+                      </TableRow>
+                    ) : sortedItems.length === 0 ? (
+                      <TableRow>
+                        <TableCell className="py-8 text-center" colSpan={5}>
+                          Brak wyników
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      sortedItems.map((v) => (
+                        <TableRow key={v.id}>
+                          <TableCell className="font-medium text-neutral-100">
+                            {v.term_en}
+                          </TableCell>
+                          <TableCell>{v.term_pl}</TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            {v.level_name || v.difficulty_level}
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            {v.category?.name || v.category?.name_en || "-"}
+                          </TableCell>
+                          <TableCell className="hidden lg:table-cell">
+                            {typeof v.mastery_level === "number"
+                              ? v.mastery_level
+                              : 0}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </div>
 
-          <div className="flex items-center justify-between text-neutral-300">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-neutral-300">
             <div>
               Strona {pagination.page} z {Math.max(1, pagination.totalPages)}
             </div>

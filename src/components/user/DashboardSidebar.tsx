@@ -3,15 +3,18 @@
 import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import AuthNavBar from "@/components/AuthNavBar";
+import { X } from "lucide-react";
 
 interface DashboardSidebarProps {
   username: string;
   onLogout?: () => void;
+  onClose?: () => void;
 }
 
 export default function DashboardSidebar({
   username,
   onLogout,
+  onClose,
 }: DashboardSidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -45,7 +48,19 @@ export default function DashboardSidebar({
   return (
     <div className="w-64 bg-neutral-900/50 backdrop-blur-md border-r border-neutral-800 min-h-screen p-4">
       <div className="mb-8">
-        <AuthNavBar inline />
+        <div className="flex items-center justify-between mb-4">
+          <AuthNavBar inline />
+          {onClose && (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={onClose}
+              className="lg:hidden text-neutral-400 hover:text-white"
+            >
+              <X size={16} />
+            </Button>
+          )}
+        </div>
         <p className="text-neutral-400 text-sm mt-2">Panel Ucznia</p>
         <p className="text-neutral-300 text-sm">Witaj, {username}</p>
       </div>
@@ -60,7 +75,10 @@ export default function DashboardSidebar({
                 ? "bg-amber-600 hover:bg-amber-700 text-white"
                 : "text-neutral-300 hover:text-white hover:bg-neutral-800"
             }`}
-            onClick={() => router.push(item.path)}
+            onClick={() => {
+              router.push(item.path);
+              if (onClose) onClose();
+            }}
           >
             <span className="mr-2">{item.icon}</span>
             {item.label}
