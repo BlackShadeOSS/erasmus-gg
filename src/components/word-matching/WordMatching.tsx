@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DndContext, useSensor, useSensors, PointerSensor, closestCenter, DragEndEvent, DragStartEvent, useDroppable, useDraggable } from "@dnd-kit/core";
+import { DndContext, useSensor, useSensors, PointerSensor, closestCenter, DragEndEvent, DragStartEvent, useDroppable, useDraggable, TouchSensor } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { restrictToFirstScrollableAncestor } from "@dnd-kit/modifiers";
 
@@ -102,47 +102,6 @@ function SettingsForm({ onStart }: { onStart: (settings: Settings) => void }) {
     );
 }
 
-function DraggableChoice({ id, children }: { id: string; children: React.ReactNode }) {
-    const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id });
-
-    const style: React.CSSProperties = {
-        transform: transform ? CSS.Translate.toString(transform) : undefined,
-        cursor: "grab",
-        width: "100%", // take full width of parent
-        boxSizing: "border-box",
-        flexShrink: 0,
-        zIndex: isDragging ? 999 : "auto",
-    };
-
-    return (
-        <div ref={setNodeRef} style={style} {...listeners} {...attributes} className="bg-neutral-500 text-neutral-200 p-2 rounded text-center select-none">
-            {children}
-        </div>
-    );
-}
-
-function DroppableWord({ id, children, assignedChoice, status }: { id: string; children: React.ReactNode; assignedChoice?: string; status?: "correct" | "wrong" }) {
-    const { setNodeRef, isOver } = useDroppable({ id });
-
-    let borderClass = "border-transparent";
-    if (status === "correct") borderClass = "border-2 border-green-500";
-    else if (status === "wrong") borderClass = "border-2 border-red-500";
-
-    return (
-        <div
-            ref={setNodeRef}
-            className={`flex justify-between items-center p-2 rounded mb-2
-                ${isOver ? "bg-neutral-600" : "bg-neutral-700"} ${borderClass}`}
-            style={{ minHeight: 56 }}
-        >
-            <div className="text-neutral-200">{children}</div>
-            <div className="w-72 flex justify-center items-center" style={{ minHeight: 40 }}>
-                {assignedChoice ? <DraggableChoice id={assignedChoice}>{assignedChoice}</DraggableChoice> : <div className="h-10" />}
-            </div>
-        </div>
-    );
-}
-
 export default function WordMatching({ limit = 8 }: { limit?: number }) {
     const [items, setItems] = useState<VocabRow[]>([]);
     const [score, setScore] = useState(0);
@@ -206,7 +165,6 @@ export default function WordMatching({ limit = 8 }: { limit?: number }) {
                 [rows[i], rows[j]] = [rows[j], rows[i]];
             }
 
-            // Take only the requested limit
             const limitedRows = rows.slice(0, settings.limit);
 
             const shuffle = <T,>(array: T[]) => [...array].sort(() => Math.random() - 0.5);
@@ -243,7 +201,19 @@ export default function WordMatching({ limit = 8 }: { limit?: number }) {
         if (settings) loadWords(settings);
     }, [settings]);
 
-    const sensors = useSensors(useSensor(PointerSensor));
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 5,
+            },
+        }),
+        useSensor(TouchSensor, {
+            activationConstraint: {
+                delay: 150,
+                tolerance: 5,
+            },
+        })
+    );
 
     const handleDragStart = (event: DragStartEvent) => {
         setIsDragging(true);
@@ -341,13 +311,66 @@ export default function WordMatching({ limit = 8 }: { limit?: number }) {
         );
     }
 
+    function DraggableChoice({ id, children, disabled = false }: { id: string; children: React.ReactNode; disabled?: boolean }) {
+        const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+            id,
+            disabled,
+        });
+
+        const style: React.CSSProperties = {
+            transform: transform ? CSS.Translate.toString(transform) : undefined,
+            cursor: disabled ? "default" : "grab",
+            width: "100%",
+            boxSizing: "border-box",
+            flexShrink: 0,
+            zIndex: isDragging ? 999 : "auto",
+            opacity: disabled ? 0.7 : 1,
+            pointerEvents: disabled ? "none" : "auto",
+            transition: "opacity 0.2s ease",
+        };
+
+        return (
+            <div ref={setNodeRef} style={style} {...(!disabled ? listeners : {})} {...(!disabled ? attributes : {})} className="bg-neutral-500 text-neutral-200 p-2 rounded text-center select-none">
+                {children}
+            </div>
+        );
+    }
+
+    function DroppableWord({ id, children, assignedChoice, status, finished }: { id: string; children: React.ReactNode; assignedChoice?: string; status?: "correct" | "wrong"; finished?: boolean }) {
+        const { setNodeRef, isOver } = useDroppable({ id });
+
+        let borderClass = "border-transparent";
+        if (status === "correct") borderClass = "border-2 border-green-500";
+        else if (status === "wrong") borderClass = "border-2 border-red-500";
+
+        return (
+            <div
+                ref={setNodeRef}
+                className={`flex flex-col md:flex-row justify-between items-stretch gap-2 p-2 rounded mb-2
+        ${isOver ? "bg-neutral-600" : "bg-neutral-700"} ${borderClass}`}
+                style={{ minHeight: 56 }}
+            >
+                <div className="text-neutral-200 text-center w-full md:w-auto flex justify-center items-center">{children}</div>
+                <div className="flex justify-center items-center w-full md:w-72" style={{ minHeight: 40 }}>
+                    {assignedChoice ? (
+                        <DraggableChoice id={assignedChoice} disabled={finished}>
+                            {assignedChoice}
+                        </DraggableChoice>
+                    ) : (
+                        <div className="h-10 w-full md:w-72" />
+                    )}
+                </div>
+            </div>
+        );
+    }
+
     const BottomPoolDroppable = () => {
         const { setNodeRef, isOver } = useDroppable({ id: "choices-basket" });
         return (
             <div ref={setNodeRef} className={`mt-4 p-3 rounded ${isOver ? "bg-neutral-600" : "bg-neutral-800/60"}`}>
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid gap-2 grid-cols-1 xl:grid-cols-4 select-none touch-none">
                     {choices.map((choice) => (
-                        <DraggableChoice key={choice} id={choice}>
+                        <DraggableChoice key={choice} id={choice} disabled={finished}>
                             {choice}
                         </DraggableChoice>
                     ))}
@@ -370,7 +393,7 @@ export default function WordMatching({ limit = 8 }: { limit?: number }) {
                 </CardHeader>
                 <CardContent>
                     <DndContext sensors={sensors} modifiers={[restrictToFirstScrollableAncestor]} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-                        <div className="grid grid-cols-1 gap-4 mb-4">
+                        <div className="grid grid-cols-1 gap-4 mb-4 select-none touch-none">
                             {words.map((word) => (
                                 <DroppableWord key={word} id={word} assignedChoice={matches[word]} status={results[word]}>
                                     {word}
