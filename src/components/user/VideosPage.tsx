@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import GlowingCircle from "@/components/ui/glowing-circle";
 import NoiseFilter from "@/components/NoiseFilter";
 import { UserSession } from "@/lib/auth";
-import DashboardSidebar from "@/components/user/DashboardSidebar";
+import DashboardPageWrapper from "@/components/user/DashboardPageWrapper";
 import { Play, FileText } from "lucide-react";
 
 interface UserDashboardProps {
@@ -153,11 +153,9 @@ export default function VideosPage({ user }: UserDashboardProps) {
         <GlowingCircle isRight={true} />
       </div>
 
-      <div className="flex">
-        <DashboardSidebar username={user.username} />
-
+      <DashboardPageWrapper username={user.username}>
         {/* Main Content */}
-        <div className="flex-1 p-8">
+        <div className="flex-1 p-4 md:p-8">
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-bold text-neutral-100">
@@ -167,7 +165,7 @@ export default function VideosPage({ user }: UserDashboardProps) {
             </div>
 
             {/* Video Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {videos.map((video) => (
                 <Card
                   key={video.id}
@@ -217,7 +215,7 @@ export default function VideosPage({ user }: UserDashboardProps) {
             </div>
           </div>
         </div>
-      </div>
+      </DashboardPageWrapper>
 
       <div className="-z-10">
         <DotPattern

@@ -16,11 +16,11 @@ export default function RealizacjaPage() {
         <GlowingCircle isRight={true} />
       </div>
       <NavBar />
-      <div className="min-h-screen bg-gradient-to-b = text-neutral-100 relative top-20">
+      <div className="min-h-screen bg-gradient-to-b = text-neutral-100 relative top-20 mb-20">
         <div className="container mx-auto px-4 py-16 sm:py-24">
           <div className="max-w-4xl mx-auto">
             {/* Header */}
-            <div className="text-center mb-16">
+            <div className="text-center mb-15">
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium mb-6 text-amber-200">
                 Realizacja Projektu
               </h1>
@@ -116,8 +116,6 @@ export default function RealizacjaPage() {
                 </div>
               </div>
             </section>
-
-            {/* Radecky Studio - usunięta osobna sekcja */}
           </div>
         </div>
       </div>
