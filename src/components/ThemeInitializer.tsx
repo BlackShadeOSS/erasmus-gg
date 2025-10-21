@@ -22,24 +22,22 @@ export default function ThemeInitializer() {
   useEffect(() => {
     const settings = readSettingsFromCookie();
 
-    // Apply theme settings
+    // ALWAYS default to dark mode first
+    document.documentElement.classList.add("dark");
+    document.documentElement.classList.remove("reduced-motion");
+
+    // Only apply light theme if explicitly set in cookie
     if (settings) {
       if (settings.theme === "light") {
+        // User explicitly chose light theme
         document.documentElement.classList.remove("dark");
-      } else if (settings.theme === "dark") {
-        document.documentElement.classList.add("dark");
       }
+      // If theme is "dark" or undefined, keep dark class (already added above)
 
       // Apply reduced motion settings
       if (settings.reduceMotion) {
         document.documentElement.classList.add("reduced-motion");
-      } else {
-        document.documentElement.classList.remove("reduced-motion");
       }
-    } else {
-      // default: dark theme, no reduced motion
-      document.documentElement.classList.add("dark");
-      document.documentElement.classList.remove("reduced-motion");
     }
   }, []);
 
