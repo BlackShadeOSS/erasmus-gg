@@ -287,3 +287,14 @@ body::selection {
   scrollbar-width: thin;
   scrollbar-color: #d97706 #1f2937; /* amber-600 neutral-800 */
 }
+
+/* Reduced motion utility - when `.reduced-motion` is on html element,
+   disable animations and transitions for accessibility */
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}

@@ -147,7 +147,7 @@ const videos: Video[] = [
 
 export default function VideosPage({ user }: UserDashboardProps) {
   return (
-    <div className="min-h-screen bg-neutral-900 relative">
+    <div className="min-h-screen bg-background relative">
       <div>
         <GlowingCircle />
         <GlowingCircle isRight={true} />
@@ -158,10 +158,12 @@ export default function VideosPage({ user }: UserDashboardProps) {
         <div className="flex-1 p-4 md:p-8">
           <div className="space-y-6">
             <div>
-              <h1 className="text-3xl font-bold text-neutral-100">
+              <h1 className="text-3xl font-bold text-foreground">
                 🎥 Filmy Edukacyjne
               </h1>
-              <p className="text-neutral-400 mt-2">Oglądaj materiały wideo</p>
+              <p className="text-muted-foreground mt-2">
+                Oglądaj materiały wideo
+              </p>
             </div>
 
             {/* Video Grid */}
@@ -169,23 +171,23 @@ export default function VideosPage({ user }: UserDashboardProps) {
               {videos.map((video) => (
                 <Card
                   key={video.id}
-                  className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80 hover:border-amber-600/50 transition-all duration-300"
+                  className="bg-card/90 backdrop-blur-md border-border hover:border-amber-600/50 transition-all duration-300"
                 >
                   <CardHeader>
-                    <CardTitle className="text-neutral-100 flex items-center justify-between">
+                    <CardTitle className="text-foreground flex items-center justify-between">
                       <span className="flex items-center">
                         <Play className="mr-2 h-5 w-5 text-amber-500" />
                         {video.title}
                       </span>
                     </CardTitle>
-                    <CardDescription className="text-neutral-300">
+                    <CardDescription className="text-muted-foreground">
                       Materiał wideo edukacyjny
                     </CardDescription>
                   </CardHeader>
 
                   <CardContent className="space-y-4">
                     {/* Video Preview */}
-                    <div className="relative aspect-video rounded-lg overflow-hidden bg-neutral-900/50">
+                    <div className="relative aspect-video rounded-lg overflow-hidden bg-card/50">
                       <iframe
                         src={video.embedUrl}
                         className="w-full h-full"

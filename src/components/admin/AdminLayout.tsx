@@ -11,6 +11,7 @@ import { UserSession } from "@/lib/auth";
 import { useCallback, useMemo, useState } from "react";
 import AuthNavBar from "@/components/AuthNavBar";
 import { Menu, X } from "lucide-react";
+import ThemeInitializer from "@/components/ThemeInitializer";
 
 interface AdminLayoutProps {
   user: UserSession;
@@ -88,22 +89,23 @@ export default function AdminLayout({ user, children }: AdminLayoutProps) {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-neutral-900 relative">
+    <div className="min-h-screen bg-background relative">
+      <ThemeInitializer />
       <div>
         <GlowingCircle />
         <GlowingCircle isRight={true} />
       </div>
 
       {/* Mobile Header */}
-      <div className="lg:hidden bg-neutral-900/95 backdrop-blur-md border-b border-neutral-800 p-4 flex items-center justify-between sticky top-0 z-40">
-        <h1 className="text-xl font-bold text-neutral-100">
+      <div className="lg:hidden bg-card/95 backdrop-blur-md border-b border-border p-4 flex items-center justify-between sticky top-0 z-40">
+        <h1 className="text-xl font-bold text-foreground">
           Panel Administratora
         </h1>
         <Button
           variant="secondary"
           size="sm"
           onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-          className="text-neutral-300 hover:text-white"
+          className="text-muted-foreground hover:text-foreground"
         >
           {isMobileSidebarOpen ? <X size={20} /> : <Menu size={20} />}
         </Button>
@@ -111,11 +113,13 @@ export default function AdminLayout({ user, children }: AdminLayoutProps) {
 
       <div className="flex">
         {/* Desktop Sidebar */}
-        <div className="hidden lg:block w-64 bg-neutral-900/50 backdrop-blur-md border-r border-neutral-800 min-h-screen p-4">
+        <div className="hidden lg:block w-64 bg-card/50 backdrop-blur-md border-r border-border min-h-screen p-4">
           <div className="mb-8">
             <AuthNavBar inline />
-            <p className="text-stone-400 text-sm mt-2">Panel Administratora</p>
-            <p className="text-stone-300 text-sm">Witaj, {user.username}</p>
+            <p className="text-muted-foreground text-sm mt-2">
+              Panel Administratora
+            </p>
+            <p className="text-foreground text-sm">Witaj, {user.username}</p>
           </div>
 
           <nav className="space-y-2">
@@ -133,7 +137,7 @@ export default function AdminLayout({ user, children }: AdminLayoutProps) {
                     "w-full justify-start text-left",
                     isActive
                       ? "bg-amber-600 hover:bg-amber-700 text-white"
-                      : "text-stone-300 hover:text-white hover:bg-neutral-800"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
                   )}
                   onClick={() => router.push(item.path)}
                 >
@@ -162,7 +166,7 @@ export default function AdminLayout({ user, children }: AdminLayoutProps) {
               className="absolute inset-0 bg-black/50 backdrop-blur-sm"
               onClick={() => setIsMobileSidebarOpen(false)}
             />
-            <div className="relative w-64 bg-neutral-900/95 backdrop-blur-md border-r border-neutral-800 min-h-screen p-4">
+            <div className="relative w-64 bg-card/95 backdrop-blur-md border-r border-border min-h-screen p-4">
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-4">
                   <AuthNavBar inline />
@@ -170,15 +174,17 @@ export default function AdminLayout({ user, children }: AdminLayoutProps) {
                     variant="secondary"
                     size="sm"
                     onClick={() => setIsMobileSidebarOpen(false)}
-                    className="text-neutral-400 hover:text-white"
+                    className="text-muted-foreground hover:text-foreground"
                   >
                     <X size={16} />
                   </Button>
                 </div>
-                <p className="text-stone-400 text-sm mt-2">
+                <p className="text-muted-foreground text-sm mt-2">
                   Panel Administratora
                 </p>
-                <p className="text-stone-300 text-sm">Witaj, {user.username}</p>
+                <p className="text-foreground text-sm">
+                  Witaj, {user.username}
+                </p>
               </div>
 
               <nav className="space-y-2">
@@ -196,7 +202,7 @@ export default function AdminLayout({ user, children }: AdminLayoutProps) {
                         "w-full justify-start text-left",
                         isActive
                           ? "bg-amber-600 hover:bg-amber-700 text-white"
-                          : "text-stone-300 hover:text-white hover:bg-neutral-800"
+                          : "text-muted-foreground hover:text-foreground hover:bg-accent"
                       )}
                       onClick={() => {
                         router.push(item.path);
@@ -224,7 +230,7 @@ export default function AdminLayout({ user, children }: AdminLayoutProps) {
         )}
 
         {/* Main Content */}
-        <div className="flex-1 p-4 md:p-6 lg:p-8 bg-neutral-900/20 backdrop-blur-sm">
+        <div className="flex-1 p-4 md:p-6 lg:p-8 bg-background/20 backdrop-blur-sm">
           {children}
         </div>
       </div>

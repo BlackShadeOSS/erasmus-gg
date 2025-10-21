@@ -27,7 +27,7 @@ export default async function VocabularyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-900 relative">
+    <div className="min-h-screen bg-background relative">
       <div>
         <GlowingCircle />
         <GlowingCircle isRight={true} />
@@ -37,7 +37,7 @@ export default async function VocabularyPage() {
         {/* Main Content */}
         <div className="flex-1 p-4 md:p-6 lg:p-10">
           <div className="max-w-6xl mx-auto">
-            <h1 className="text-2xl md:text-3xl font-bold text-neutral-100 mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-6">
               📚 Słownictwo
             </h1>
             {progressSummary?.success && (
@@ -46,10 +46,12 @@ export default async function VocabularyPage() {
                   (c: number, i: number) => (
                     <div
                       key={i}
-                      className="p-3 bg-neutral-800/80 border border-neutral-700 rounded"
+                      className="p-3 bg-card/80 border border-border rounded"
                     >
-                      <div className="text-neutral-300 text-sm">Poziom {i}</div>
-                      <div className="text-neutral-100 font-semibold text-lg">
+                      <div className="text-muted-foreground text-sm">
+                        Poziom {i}
+                      </div>
+                      <div className="text-foreground font-semibold text-lg">
                         {c}
                       </div>
                     </div>

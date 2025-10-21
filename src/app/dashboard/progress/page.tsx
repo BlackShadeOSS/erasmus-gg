@@ -100,7 +100,7 @@ export default async function PostepPage() {
   const totalVocab = Object.keys(safeVocabMap).length;
 
   return (
-    <div className="min-h-screen bg-neutral-900 relative">
+    <div className="min-h-screen bg-background relative">
       <div>
         <GlowingCircle />
         <GlowingCircle isRight={true} />
@@ -110,30 +110,34 @@ export default async function PostepPage() {
         <div className="flex-1 p-4 md:p-8">
           <div className="space-y-6">
             <div>
-              <h1 className="text-3xl font-bold text-neutral-100">
+              <h1 className="text-3xl font-bold text-foreground">
                 Twój postęp
               </h1>
-              <p className="text-neutral-400 mt-2">
+              <p className="text-muted-foreground mt-2">
                 Przeglądaj ostatnie postępy w grach i zadaniach.
               </p>
             </div>
 
             {Object.keys(grouped).length === 0 && (
-              <div className="text-neutral-400">Brak zapisanych postępów</div>
+              <div className="text-muted-foreground">
+                Brak zapisanych postępów
+              </div>
             )}
 
             <div className="space-y-4">
               {/* Summary stats */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="p-4 bg-neutral-800/80 border border-neutral-700 rounded">
-                  <div className="text-sm text-neutral-300">Aktywności</div>
-                  <div className="text-2xl text-neutral-100 font-semibold">
+                <div className="p-4 bg-card/80 border border-border rounded">
+                  <div className="text-sm text-muted-foreground">
+                    Aktywności
+                  </div>
+                  <div className="text-2xl text-foreground font-semibold">
                     {progress.length}
                   </div>
                 </div>
-                <div className="p-4 bg-neutral-800/80 border border-neutral-700 rounded">
-                  <div className="text-sm text-neutral-300">Ukończone</div>
-                  <div className="text-2xl text-neutral-100 font-semibold">
+                <div className="p-4 bg-card/80 border border-border rounded">
+                  <div className="text-sm text-muted-foreground">Ukończone</div>
+                  <div className="text-2xl text-foreground font-semibold">
                     {Math.round(
                       (progress.filter((p) => p.completed).length /
                         Math.max(1, progress.length)) *
@@ -142,9 +146,11 @@ export default async function PostepPage() {
                     %
                   </div>
                 </div>
-                <div className="p-4 bg-neutral-800/80 border border-neutral-700 rounded">
-                  <div className="text-sm text-neutral-300">Średni wynik</div>
-                  <div className="text-2xl text-neutral-100 font-semibold">
+                <div className="p-4 bg-card/80 border border-border rounded">
+                  <div className="text-sm text-muted-foreground">
+                    Średni wynik
+                  </div>
+                  <div className="text-2xl text-foreground font-semibold">
                     {progress.filter((p) => typeof p.score === "number").length
                       ? Math.round(
                           progress
@@ -160,24 +166,24 @@ export default async function PostepPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Vocabulary mastery summary card */}
-                <Card className="bg-neutral-800/90 border-neutral-700">
+                <Card className="bg-card/90 border-border">
                   <CardHeader>
-                    <CardTitle className="text-neutral-100">
+                    <CardTitle className="text-foreground">
                       Słownictwo — postęp
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <div className="text-neutral-300">
+                        <div className="text-muted-foreground">
                           Słówek:{" "}
-                          <strong className="text-neutral-100">
+                          <strong className="text-foreground">
                             {totalVocab}
                           </strong>
                         </div>
-                        <div className="text-neutral-300">
+                        <div className="text-muted-foreground">
                           Średnie opanowanie:{" "}
-                          <strong className="text-neutral-100">
+                          <strong className="text-foreground">
                             {totalVocab
                               ? Math.round(
                                   (masteryCounts.reduce(
@@ -195,14 +201,14 @@ export default async function PostepPage() {
                       <div className="space-y-1">
                         {masteryCounts.map((c, i) => (
                           <div key={i} className="flex items-center gap-3">
-                            <div className="w-24 text-sm text-neutral-300">
+                            <div className="w-24 text-sm text-muted-foreground">
                               {i}:
                             </div>
                             <Progress
                               value={totalVocab ? (c / totalVocab) * 100 : 0}
                               className="flex-1"
                             />
-                            <div className="w-12 text-right text-neutral-200">
+                            <div className="w-12 text-right text-foreground">
                               {c}
                             </div>
                           </div>
@@ -213,9 +219,9 @@ export default async function PostepPage() {
                 </Card>
 
                 {/* Recent activity list */}
-                <Card className="bg-neutral-800/90 border-neutral-700">
+                <Card className="bg-card/90 border-border">
                   <CardHeader>
-                    <CardTitle className="text-neutral-100">
+                    <CardTitle className="text-foreground">
                       Ostatnia aktywność
                     </CardTitle>
                   </CardHeader>

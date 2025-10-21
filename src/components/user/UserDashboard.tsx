@@ -18,6 +18,7 @@ import NoiseFilter from "@/components/NoiseFilter";
 import { UserSession } from "@/lib/auth";
 import DashboardSidebar from "@/components/user/DashboardSidebar";
 import { Menu, X } from "lucide-react";
+import ThemeInitializer from "@/components/ThemeInitializer";
 
 interface UserDashboardProps {
   user: UserSession;
@@ -31,22 +32,23 @@ export default function UserDashboard({ user }: UserDashboardProps) {
   const goToGames = () => router.push("/dashboard/games");
   const goToVideos = () => router.push("/dashboard/videos");
   const goToProgress = () => router.push("/dashboard/progress");
+  const goToSettings = () => router.push("/dashboard/settings");
 
   return (
-    <div className="min-h-screen bg-neutral-900 relative">
+    <div className="min-h-screen bg-background relative">
       <div>
         <GlowingCircle />
         <GlowingCircle isRight={true} />
       </div>
 
       {/* Mobile Header */}
-      <div className="lg:hidden bg-neutral-900/95 backdrop-blur-md border-b border-neutral-800 p-4 flex items-center justify-between sticky top-0 z-40">
-        <h1 className="text-xl font-bold text-neutral-100">Panel Ucznia</h1>
+      <div className="lg:hidden bg-card/95 backdrop-blur-md border-b border-border p-4 flex items-center justify-between sticky top-0 z-40">
+        <h1 className="text-xl font-bold text-foreground">Panel Ucznia</h1>
         <Button
           variant="secondary"
           size="sm"
           onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-          className="text-neutral-300 hover:text-white"
+          className="text-muted-foreground hover:text-foreground"
         >
           {isMobileSidebarOpen ? <X size={20} /> : <Menu size={20} />}
         </Button>
@@ -78,22 +80,22 @@ export default function UserDashboard({ user }: UserDashboardProps) {
         <div className="flex-1 p-4 md:p-8">
           <div className="space-y-6">
             <div className="hidden lg:block">
-              <h1 className="text-3xl font-bold text-neutral-100">
+              <h1 className="text-3xl font-bold text-foreground">
                 Witaj ponownie, {user.username}!
               </h1>
-              <p className="text-neutral-400 mt-2">
+              <p className="text-muted-foreground mt-2">
                 Kontynuuj swoją naukę angielskiego
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              <Card className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80">
+              <Card className="bg-card/90 backdrop-blur-md border-border">
                 <CardHeader>
-                  <CardTitle className="text-neutral-100 flex items-center">
+                  <CardTitle className="text-foreground flex items-center">
                     <span className="mr-2">📚</span>
                     Słownictwo
                   </CardTitle>
-                  <CardDescription className="text-neutral-300">
+                  <CardDescription className="text-muted-foreground">
                     Ucz się nowych słów i zwrotów
                   </CardDescription>
                 </CardHeader>
@@ -107,13 +109,13 @@ export default function UserDashboard({ user }: UserDashboardProps) {
                 </CardContent>
               </Card>
 
-              <Card className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80">
+              <Card className="bg-card/90 backdrop-blur-md border-border">
                 <CardHeader>
-                  <CardTitle className="text-neutral-100 flex items-center">
+                  <CardTitle className="text-foreground flex items-center">
                     <span className="mr-2">🎥</span>
                     Filmy
                   </CardTitle>
-                  <CardDescription className="text-neutral-300">
+                  <CardDescription className="text-muted-foreground">
                     Oglądaj filmy edukacyjne
                   </CardDescription>
                 </CardHeader>
@@ -127,13 +129,13 @@ export default function UserDashboard({ user }: UserDashboardProps) {
                 </CardContent>
               </Card>
 
-              <Card className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80">
+              <Card className="bg-card/90 backdrop-blur-md border-border">
                 <CardHeader>
-                  <CardTitle className="text-neutral-100 flex items-center">
+                  <CardTitle className="text-foreground flex items-center">
                     <span className="mr-2">🎮</span>
                     Ćwiczenia
                   </CardTitle>
-                  <CardDescription className="text-neutral-300">
+                  <CardDescription className="text-muted-foreground">
                     Rozwiązuj ćwiczenia edukacyjne
                   </CardDescription>
                 </CardHeader>
@@ -147,13 +149,13 @@ export default function UserDashboard({ user }: UserDashboardProps) {
                 </CardContent>
               </Card>
 
-              <Card className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80">
+              <Card className="bg-card/90 backdrop-blur-md border-border">
                 <CardHeader>
-                  <CardTitle className="text-neutral-100 flex items-center">
+                  <CardTitle className="text-foreground flex items-center">
                     <span className="mr-2">📊</span>
                     Postęp
                   </CardTitle>
-                  <CardDescription className="text-neutral-300">
+                  <CardDescription className="text-muted-foreground">
                     Śledź swój postęp w nauce
                   </CardDescription>
                 </CardHeader>
@@ -167,18 +169,21 @@ export default function UserDashboard({ user }: UserDashboardProps) {
                 </CardContent>
               </Card>
 
-              <Card className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80">
+              <Card className="bg-card/90 backdrop-blur-md border-border">
                 <CardHeader>
-                  <CardTitle className="text-neutral-100 flex items-center">
+                  <CardTitle className="text-foreground flex items-center">
                     <span className="mr-2">⚙️</span>
                     Ustawienia
                   </CardTitle>
-                  <CardDescription className="text-neutral-300">
+                  <CardDescription className="text-muted-foreground">
                     Zarządzaj ustawieniami konta
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button className="w-full bg-amber-600 hover:bg-amber-700 text-white">
+                  <Button
+                    className="w-full bg-amber-600 hover:bg-amber-700 text-white"
+                    onClick={goToSettings}
+                  >
                     Otwórz Ustawienia
                   </Button>
                 </CardContent>
