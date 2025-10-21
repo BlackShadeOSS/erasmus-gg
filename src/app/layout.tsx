@@ -26,9 +26,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pl">
+    <html lang="pl" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-neutral-900 text-white `}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
         <Suspense fallback={null}>
           <LoadingScreen />
