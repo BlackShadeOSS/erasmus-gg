@@ -4,6 +4,7 @@ import { useState, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import DashboardSidebar from "@/components/user/DashboardSidebar";
 import { Menu, X } from "lucide-react";
+import ThemeInitializer from "@/components/ThemeInitializer";
 
 interface DashboardPageWrapperProps {
   username: string;
@@ -18,14 +19,15 @@ export default function DashboardPageWrapper({
 
   return (
     <>
+      <ThemeInitializer />
       {/* Mobile Header */}
-      <div className="lg:hidden bg-neutral-900/95 backdrop-blur-md border-b border-neutral-800 p-4 flex items-center justify-between sticky top-0 z-40">
-        <h1 className="text-xl font-bold text-neutral-100">Panel Ucznia</h1>
+      <div className="lg:hidden bg-card/95 backdrop-blur-md border-b border-border p-4 flex items-center justify-between sticky top-0 z-40">
+        <h1 className="text-xl font-bold text-foreground">Panel Ucznia</h1>
         <Button
           variant="secondary"
           size="sm"
           onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-          className="text-neutral-300 hover:text-white"
+          className="text-muted-foreground hover:text-foreground"
         >
           {isMobileSidebarOpen ? <X size={20} /> : <Menu size={20} />}
         </Button>

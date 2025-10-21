@@ -60,7 +60,7 @@ export default async function GamesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-900 relative">
+    <div className="min-h-screen bg-background relative">
       <div>
         <GlowingCircle />
         <GlowingCircle isRight={true} />
@@ -71,10 +71,10 @@ export default async function GamesPage() {
         <div className="flex-1 p-4 md:p-8">
           <div className="space-y-6">
             <div>
-              <h1 className="text-3xl font-bold text-neutral-100">
+              <h1 className="text-3xl font-bold text-foreground">
                 Gry Edukacyjne i Ćwiczenia
               </h1>
-              <p className="text-neutral-400 mt-2">
+              <p className="text-muted-foreground mt-2">
                 Ucz się angielskiego przez zabawę!
               </p>
             </div>
@@ -83,23 +83,23 @@ export default async function GamesPage() {
               {games.map((game) => (
                 <Card
                   key={game.id}
-                  className="bg-neutral-800/90 backdrop-blur-md border-neutral-600/80 hover:border-amber-600/50 transition-all duration-300"
+                  className="bg-card/90 backdrop-blur-md border-border hover:border-amber-600/50 transition-all duration-300"
                 >
                   <CardHeader>
                     <div className="flex items-center gap-3">
                       <span className="text-4xl">{game.icon}</span>
                       <div>
-                        <CardTitle className="text-neutral-100">
+                        <CardTitle className="text-foreground">
                           {game.title}
                         </CardTitle>
-                        <CardDescription className="text-neutral-400 text-xs">
+                        <CardDescription className="text-muted-foreground text-xs">
                           Trudność: {game.difficulty}
                         </CardDescription>
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <p className="text-neutral-300 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       {game.description}
                     </p>
                     <Link href={game.path}>

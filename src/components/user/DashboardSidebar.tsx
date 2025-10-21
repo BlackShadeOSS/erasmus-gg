@@ -41,12 +41,13 @@ export default function DashboardSidebar({
     { label: "Filmy", icon: "🎥", path: "/dashboard/videos" },
     { label: "Ćwiczenia", icon: "🎮", path: "/dashboard/games" },
     { label: "Postęp", icon: "📊", path: "/dashboard/progress" },
+    { label: "Ustawienia", icon: "⚙️", path: "/dashboard/settings" },
   ];
 
   const isActive = (path: string) => pathname === path;
 
   return (
-    <div className="w-64 bg-neutral-900/50 backdrop-blur-md border-r border-neutral-800 min-h-screen p-4">
+    <div className="w-64 bg-card/50 backdrop-blur-md border-r border-border min-h-screen p-4">
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <AuthNavBar inline />
@@ -55,14 +56,14 @@ export default function DashboardSidebar({
               variant="secondary"
               size="sm"
               onClick={onClose}
-              className="lg:hidden text-neutral-400 hover:text-white"
+              className="lg:hidden text-muted-foreground hover:text-foreground"
             >
               <X size={16} />
             </Button>
           )}
         </div>
-        <p className="text-neutral-400 text-sm mt-2">Panel Ucznia</p>
-        <p className="text-neutral-300 text-sm">Witaj, {username}</p>
+        <p className="text-muted-foreground text-sm mt-2">Panel Ucznia</p>
+        <p className="text-foreground text-sm">Witaj, {username}</p>
       </div>
 
       <nav className="space-y-2">
@@ -73,7 +74,7 @@ export default function DashboardSidebar({
             className={`w-full justify-start text-left ${
               isActive(item.path)
                 ? "bg-amber-600 hover:bg-amber-700 text-white"
-                : "text-neutral-300 hover:text-white hover:bg-neutral-800"
+                : "text-muted-foreground hover:text-foreground hover:bg-accent"
             }`}
             onClick={() => {
               router.push(item.path);
