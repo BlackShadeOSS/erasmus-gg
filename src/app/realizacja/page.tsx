@@ -33,9 +33,11 @@ export default function RealizacjaPage() {
                 O Projekcie
               </h2>
               <p className="text-lg text-neutral-300 leading-relaxed mb-4">
-                Platforma edukacyjna została stworzona przez uczniów klasy 4PI
-                Zespołu Szkół nr 1 im. Władysława Orkana w Nowym Targu w ramach
-                międzynarodowego programu ERASMUS+.
+                Platforma powstała w ramach projektu „Europejskie praktyki drogą
+                do sukcesu”, realizowanego w Zespole Szkół nr 1 im. Władysława
+                Orkana w Nowym Targu w ramach programu Fundusze Europejskie dla
+                Rozwoju Społecznego 2021-2027 współfinansowanego ze środków
+                Europejskiego Funduszu Społecznego Plus.
               </p>
               <p className="text-lg text-neutral-300 leading-relaxed">
                 Celem projektu jest wspieranie nauki języków obcych oraz rozwój
