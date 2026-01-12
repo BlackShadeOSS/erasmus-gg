@@ -3,35 +3,11 @@ import { authenticateUser, createToken, setAuthCookie } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
-    const { username, password, turnstileToken } = await request.json()
+    const { username, password } = await request.json()
 
-    if (!username || !password || !turnstileToken) {
+    if (!username || !password) {
       return NextResponse.json(
-        { error: 'Username, password, and CAPTCHA are required' },
-        { status: 400 }
-      )
-    }
-
-    // Verify Turnstile token
-    const turnstileResponse = await fetch(
-      'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          secret: process.env.TURNSTILE_SECRET_KEY!,
-          response: turnstileToken,
-        }),
-      }
-    )
-
-    const turnstileData = await turnstileResponse.json()
-    
-    if (!turnstileData.success) {
-      return NextResponse.json(
-        { error: 'CAPTCHA verification failed' },
+        { error: 'Username and password are required' },
         { status: 400 }
       )
     }

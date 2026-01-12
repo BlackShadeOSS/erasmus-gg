@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { registerUser, verifyTurnstileToken, createToken, setAuthCookie } from '@/lib/auth'
+import { registerUser, createToken, setAuthCookie } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,14 +26,13 @@ export async function POST(request: NextRequest) {
       allBodyKeys: Object.keys(body)
     })
 
-    if (!username || !email || !password || !confirmPassword || !activationCode || !turnstileToken) {
+    if (!username || !email || !password || !confirmPassword || !activationCode) {
       const missing = []
       if (!username) missing.push('username')
       if (!email) missing.push('email')
       if (!password) missing.push('password')
       if (!confirmPassword) missing.push('confirmPassword')
       if (!activationCode) missing.push('activationCode')
-      if (!turnstileToken) missing.push('turnstileToken')
       
       console.log('Missing fields:', missing)
       return NextResponse.json(
@@ -55,24 +54,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
-
-    // Verify Turnstile token
-    console.log('=== TURNSTILE VERIFICATION ===')
-    console.log('Turnstile token provided:', turnstileToken ? 'YES' : 'NO')
-    console.log('About to verify Turnstile token...')
-    
-    const isTurnstileValid = await verifyTurnstileToken(turnstileToken)
-    console.log('Turnstile verification result:', isTurnstileValid)
-    
-    if (!isTurnstileValid) {
-      console.log('FAILURE: CAPTCHA verification failed')
-      return NextResponse.json(
-        { error: 'Captcha verification failed' },
-        { status: 400 }
-      )
-    }
-
-    console.log('SUCCESS: CAPTCHA verification passed')
 
     // Register user
     console.log('=== USER REGISTRATION START ===')

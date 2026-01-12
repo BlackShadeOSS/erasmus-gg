@@ -11,7 +11,6 @@ export async function GET(request: NextRequest) {
       supabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
       supabaseKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
       serviceRoleKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-      turnstileSecret: !!process.env.TURNSTILE_SECRET_KEY,
       jwtSecret: !!process.env.JWT_SECRET
     }
     

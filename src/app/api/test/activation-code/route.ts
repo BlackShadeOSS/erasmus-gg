@@ -13,34 +13,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!turnstileToken) {
-      return NextResponse.json(
-        { error: 'CAPTCHA verification is required' },
-        { status: 400 }
-      )
-    }
-
-    // Validate Turnstile token
-    const turnstileResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        secret: process.env.TURNSTILE_SECRET_KEY || '',
-        response: turnstileToken,
-      }),
-    })
-
-    const turnstileData = await turnstileResponse.json()
-
-    if (!turnstileData.success) {
-      return NextResponse.json(
-        { error: 'CAPTCHA verification failed' },
-        { status: 400 }
-      )
-    }
-
     const validation = await validateActivationCode(code)
     
     return NextResponse.json({

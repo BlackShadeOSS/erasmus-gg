@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Turnstile, { TurnstileRef } from "@/components/ui/turnstile";
 import { LineShadowText } from "@/components/ui/line-shadow-text";
 import NoiseFilter from "@/components/NoiseFilter";
 import { BorderBeam } from "@/components/ui/border-beam";
@@ -26,31 +25,23 @@ export default function LoginPage() {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-    turnstileToken: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({
     username: "",
     password: "",
-    captcha: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-  const turnstileRef = useRef<TurnstileRef>(null);
 
   // Polish error messages mapping
   const polishErrorMessages: { [key: string]: string } = {
-    "Username, password, and CAPTCHA are required":
-      "Nazwa użytkownika, hasło i CAPTCHA są wymagane",
-    "CAPTCHA verification failed": "Weryfikacja CAPTCHA nie powiodła się",
     "Invalid username or password": "Nieprawidłowa nazwa użytkownika lub hasło",
     "User not found": "Użytkownik nie znaleziony",
     "Invalid password": "Nieprawidłowe hasło",
     "Login failed": "Logowanie nie powiodło się",
     "An error occurred. Please try again.": "Wystąpił błąd. Spróbuj ponownie.",
-    "Please complete the captcha": "Proszę uzupełnić captcha",
-    "Captcha verification failed": "Weryfikacja captcha nie powiodła się",
     "Internal server error": "Wewnętrzny błąd serwera",
   };
 
@@ -89,21 +80,12 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setFieldErrors({ username: "", password: "", captcha: "" });
+    setFieldErrors({ username: "", password: "" });
     setIsLoading(true);
 
     // Validate all fields
     const isUsernameValid = validateField("username", formData.username);
     const isPasswordValid = validateField("password", formData.password);
-
-    if (!formData.turnstileToken) {
-      setFieldErrors((prev) => ({
-        ...prev,
-        captcha: "Proszę uzupełnić captcha",
-      }));
-      setIsLoading(false);
-      return;
-    }
 
     if (!isUsernameValid || !isPasswordValid) {
       setIsLoading(false);
@@ -116,7 +98,10 @@ export default function LoginPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
       });
 
       const data = await response.json();
@@ -129,33 +114,13 @@ export default function LoginPage() {
         router.push(redirectPath);
       } else {
         setError(translateError(data.error || "Login failed"));
-        turnstileRef.current?.reset();
-        setFormData((prev) => ({ ...prev, turnstileToken: "" }));
-        setFieldErrors((prev) => ({ ...prev, captcha: "" }));
       }
     } catch (error) {
       console.error("Login error:", error);
       setError(translateError("An error occurred. Please try again."));
-      turnstileRef.current?.reset();
-      setFormData((prev) => ({ ...prev, turnstileToken: "" }));
-      setFieldErrors((prev) => ({ ...prev, captcha: "" }));
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleTurnstileVerify = (token: string) => {
-    setFormData((prev) => ({ ...prev, turnstileToken: token }));
-    setFieldErrors((prev) => ({ ...prev, captcha: "" }));
-  };
-
-  const handleTurnstileError = () => {
-    setFieldErrors((prev) => ({
-      ...prev,
-      captcha: "Weryfikacja captcha nie powiodła się",
-    }));
-    setFormData((prev) => ({ ...prev, turnstileToken: "" }));
-    turnstileRef.current?.reset();
   };
 
   return (
@@ -256,19 +221,6 @@ export default function LoginPage() {
                 )}
               </div>
 
-              <div className="space-y-2">
-                <Turnstile
-                  ref={turnstileRef}
-                  onVerify={handleTurnstileVerify}
-                  onError={handleTurnstileError}
-                />
-                {fieldErrors.captcha && (
-                  <div className="text-red-400 text-xs text-center">
-                    {fieldErrors.captcha}
-                  </div>
-                )}
-              </div>
-
               {error && (
                 <div className="text-red-400 text-sm text-center">{error}</div>
               )}
@@ -276,7 +228,7 @@ export default function LoginPage() {
               <Button
                 type="submit"
                 className="w-full hover:bg-stone-200"
-                disabled={isLoading || !formData.turnstileToken}
+                disabled={isLoading}
               >
                 {isLoading ? "Logowanie..." : "Zaloguj się"}
               </Button>

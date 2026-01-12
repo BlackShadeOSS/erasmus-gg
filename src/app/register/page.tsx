@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { BorderBeam } from "@/components/ui/border-beam";
@@ -11,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { TurnstileRef } from "@/components/ui/turnstile";
 import NoiseFilter from "@/components/NoiseFilter";
 import GlowingCircle from "@/components/ui/glowing-circle";
 import NavBar from "@/components/NavBar";
@@ -32,15 +31,11 @@ export default function RegisterPage() {
     password: "",
     confirmPassword: "",
     activationCode: "",
-    turnstileToken: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   const router = useRouter();
-  const turnstileRef = useRef<TurnstileRef>(
-    null
-  ) as React.RefObject<TurnstileRef>;
 
   const { fieldErrors, setFieldErrors, validateField, translateError } =
     useFormValidation();
@@ -107,10 +102,7 @@ export default function RegisterPage() {
   // Validation functions
   const isStep1Valid = () => {
     return (
-      formData.activationCode.trim().length === 8 &&
-      formData.turnstileToken &&
-      !fieldErrors.activationCode &&
-      !fieldErrors.captcha
+      formData.activationCode.trim().length === 8 && !fieldErrors.activationCode
     );
   };
 
@@ -135,10 +127,8 @@ export default function RegisterPage() {
       passwordRequirementsMet &&
       formData.confirmPassword &&
       formData.password === formData.confirmPassword &&
-      formData.turnstileToken &&
       !fieldErrors.password &&
-      !fieldErrors.confirmPassword &&
-      !fieldErrors.captcha
+      !fieldErrors.confirmPassword
     );
   };
 
@@ -162,19 +152,6 @@ export default function RegisterPage() {
     validateConfirmPasswordField(confirmPassword, password);
   };
 
-  const handleTurnstileVerify = (token: string) => {
-    setFormData((prev) => ({ ...prev, turnstileToken: token }));
-    setFieldErrors((prev) => ({ ...prev, captcha: "" }));
-  };
-
-  const handleTurnstileError = () => {
-    setFieldErrors((prev) => ({
-      ...prev,
-      captcha: "Weryfikacja captcha nie powiodła się",
-    }));
-    setFormData((prev) => ({ ...prev, turnstileToken: "" }));
-  };
-
   // Navigation
   const nextStep = async () => {
     if (currentStep === 1) {
@@ -187,7 +164,6 @@ export default function RegisterPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             code: formData.activationCode,
-            turnstileToken: formData.turnstileToken,
           }),
         });
 
@@ -198,20 +174,15 @@ export default function RegisterPage() {
           setError("");
         } else {
           setError(translateError(data.error || "Invalid activation code"));
-          turnstileRef.current?.reset();
-          setFormData((prev) => ({ ...prev, turnstileToken: "" }));
         }
       } catch (error) {
         setError(translateError("An error occurred. Please try again."));
-        turnstileRef.current?.reset();
-        setFormData((prev) => ({ ...prev, turnstileToken: "" }));
       } finally {
         setIsLoading(false);
       }
     } else if (currentStep === 2) {
       if (!isStep2Valid()) return;
       setCurrentStep(3);
-      setFormData((prev) => ({ ...prev, turnstileToken: "" }));
     }
   };
 
@@ -240,13 +211,9 @@ export default function RegisterPage() {
         router.push(data.redirectTo);
       } else {
         setError(translateError(data.error || "Registration failed"));
-        turnstileRef.current?.reset();
-        setFormData((prev) => ({ ...prev, turnstileToken: "" }));
       }
     } catch (error) {
       setError(translateError("An error occurred. Please try again."));
-      turnstileRef.current?.reset();
-      setFormData((prev) => ({ ...prev, turnstileToken: "" }));
     } finally {
       setIsLoading(false);
     }
@@ -306,11 +273,8 @@ export default function RegisterPage() {
                   formData={formData}
                   fieldErrors={fieldErrors}
                   isLoading={isLoading}
-                  turnstileRef={turnstileRef}
                   onInputChange={handleInputChange}
                   onFieldValidation={validateActivationCodeField}
-                  onTurnstileVerify={handleTurnstileVerify}
-                  onTurnstileError={handleTurnstileError}
                 />
               )}
 
@@ -332,12 +296,9 @@ export default function RegisterPage() {
                   passwordStrength={passwordStrength}
                   passwordRequirements={passwordRequirements}
                   isLoading={isLoading}
-                  turnstileRef={turnstileRef}
                   onInputChange={handleInputChange}
                   onPasswordChange={handlePasswordChange}
                   onConfirmPasswordChange={handleConfirmPasswordChange}
-                  onTurnstileVerify={handleTurnstileVerify}
-                  onTurnstileError={handleTurnstileError}
                   getPasswordStrengthLabel={getPasswordStrengthLabel}
                 />
               )}

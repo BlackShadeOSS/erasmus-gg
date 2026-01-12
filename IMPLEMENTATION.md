@@ -33,12 +33,6 @@
     -   Valid activation code requirement
 -   User dashboard at `/dashboard`
 
-✅ **5. Cloudflare Turnstile CAPTCHA**
-
--   Integrated on both login and registration forms
--   Server-side verification using `TURNSTILE_SECRET_KEY`
--   Dark theme styling to match the app design
-
 ## Additional Features
 
 -   **JWT Authentication**: Secure token-based authentication with 30-day expiration
@@ -55,10 +49,6 @@ The following variables are already configured in `.env.local`:
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=http://192.168.1.174
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-
-# Cloudflare Turnstile
-NEXT_PUBLIC_TURNSTILE_SITE_KEY=0x4AAAAAABkO_NWVvRbDiaEt
-TURNSTILE_SECRET_KEY=0x4AAAAAABkO_H-ZU3_aN7Sa3FTPZVOlvrw
 
 # Session Secret
 NEXTAUTH_SECRET=your-nextauth-secret-key-here
@@ -94,7 +84,7 @@ NEXTAUTH_SECRET=your-nextauth-secret-key-here
 
 ### Authentication
 
--   `POST /api/auth/login` - User/Admin login with Turnstile
+-   `POST /api/auth/login` - User/Admin login
 -   `POST /api/auth/register` - User registration with activation code
 -   `POST /api/auth/logout` - Logout (clears auth cookie)
 
